@@ -1,0 +1,12 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "HeroData", menuName = "ScriptableObjects/HeroStatistics", order = 1)]
+public class HeroStatisticSheet : ScriptableObject
+{
+    public int Move;
+    public int WeaponRange;
+    public int WeaponDamage;
+    public int ActionPoints;
+}
