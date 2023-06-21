@@ -22,11 +22,6 @@ public class MapController : MonoBehaviour
 
     }
 
-    private void Awake()
-    {
-        //Initialize();
-    }
-
     private void Initialize()
     {
         mapView = GetComponent<MapView>();
@@ -44,9 +39,9 @@ public class MapController : MonoBehaviour
         {
             var randomTileIndex = Random.Range(0, map.Settings.Tiles.Count - 1);
             var index = indexArray[randomTileIndex];
-            indexArray.RemoveAt(randomTileIndex);
+            //indexArray.RemoveAt(randomTileIndex);
             var tile = mapSettingsTemp[index];
-            hero.Initialize(new HeroController.HeroControllerPayload(map, tile));
+            hero.PositionSetup(new HeroController.HeroControllerPayload(map, tile));
         }
     }
 }

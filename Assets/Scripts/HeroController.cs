@@ -5,12 +5,14 @@ using UnityEngine;
 
 public class HeroController : MonoBehaviour
 {
+    public int ControllingPlayer;
+
     [SerializeField] HeroStatisticSheet stats;
     HeroControllerPayload payload;
     HeroStatus heroStatus;
     TileData currentTile;
 
-    public void Initialize(HeroControllerPayload payload)
+    public void PositionSetup(HeroControllerPayload payload)
     {
         this.payload = payload;
         currentTile = payload.StartingTile;
@@ -18,7 +20,6 @@ public class HeroController : MonoBehaviour
         Move(payload.Map.Tile(currentTile.TilePos));
         //TODO: added here so move spawn fucntion does not consume action point
         heroStatus = new HeroStatus(stats);
-
     }
 
     public bool Move(TileEntity targetTile)
@@ -36,7 +37,7 @@ public class HeroController : MonoBehaviour
                 if (currentTile != null)
                     payload.Map.Tile(currentTile.TilePos).FreeTile();
                 currentTile = targetTile.Data;
-                transform.position = transform.position = payload.Map.WorldPosition(targetTile);
+                transform.position = payload.Map.WorldPosition(targetTile);
                 targetTile.OccupyTile(this);
                 UpdateActionPoints(-1);
                 return true;

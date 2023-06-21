@@ -28,7 +28,7 @@ public class PlayerInputController : MonoBehaviour
     {
         //TODO: perform this only on selected hero
         var clickPos = MyInput.GroundPosition(map.Settings.Plane());
-        var tile = map.Tile(clickPos);
+        TileEntity tile = map.Tile(clickPos);
         if(tile != null)
         {
             heroController.Move(tile);

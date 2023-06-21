@@ -38,6 +38,12 @@ MonoBehaviour:
     GridOffset: 0
     Tags:
     - {fileID: 11400000, guid: 29fcbed08a2e00e44a5eff6bba49ac46, type: 2}
+  - Type: Test
+    Id: c8e9127d516e2164f91e66bd1009ad2c
+    MapColor: {r: 0.22921859, g: 0.4811321, b: 0.25261277, a: 0.5}
+    Prefab: {fileID: 1036847699591806, guid: 44eefe2515052ac4ba09c2effff25e40, type: 3}
+    GridOffset: 0
+    Tags: []
   Tiles:
   - TilePos: {x: -1, y: -5, z: 6}
     Id: e4e96c18f709fae43ada5b566ca3cd1f
