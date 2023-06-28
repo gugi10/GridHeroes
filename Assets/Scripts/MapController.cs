@@ -8,7 +8,6 @@ using System.Linq;
 public class MapController : MonoBehaviour
 {
     [SerializeField] private MapSettings MapSettings;
-    [SerializeField] private PlayerInputController playerInputController;
     private MapView mapView;
     private MapEntity map;
 
@@ -16,17 +15,12 @@ public class MapController : MonoBehaviour
     {
         if(MapSettings == null)
             Debug.LogError($"MapSettings is null");
-        if(playerInputController == null)
-            Debug.LogError($"PlayerController is null");
-
-
     }
 
     private void Initialize()
     {
         mapView = GetComponent<MapView>();
         map = new MapEntity(MapSettings, mapView);
-        playerInputController.Init(map);
     }
     
     //random spawner
@@ -37,11 +31,13 @@ public class MapController : MonoBehaviour
         List<int> indexArray = Enumerable.Range(0, mapSettingsTemp.Count).ToList();
         foreach(var hero in heroesToPosition)
         {
-            var randomTileIndex = Random.Range(0, map.Settings.Tiles.Count - 1);
+            var randomTileIndex = Random.Range(0, indexArray.Count - 1);
             var index = indexArray[randomTileIndex];
-            //indexArray.RemoveAt(randomTileIndex);
+            indexArray.RemoveAt(randomTileIndex);
             var tile = mapSettingsTemp[index];
-            hero.PositionSetup(new HeroController.HeroControllerPayload(map, tile));
+            var meshRenderer = hero.GetComponent<MeshRenderer>();
+            meshRenderer.material.color = new Color(1f, 1f, hero.ControllingPlayer * 1f);
+            hero.SetupHero(new HeroController.HeroControllerPayload(map, tile));
         }
     }
 }

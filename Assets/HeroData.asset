@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0506185f312ba54db79258113e6e9d0, type: 3}
   m_Name: HeroData
   m_EditorClassIdentifier: 
-  Move: 2
+  Move: 1
   WeaponRange: 1
   WeaponDamage: 1
-  ActionPoints: 2
+  ActionPoints: -4

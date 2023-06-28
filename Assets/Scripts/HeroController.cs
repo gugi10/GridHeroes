@@ -12,8 +12,9 @@ public class HeroController : MonoBehaviour
     HeroStatus heroStatus;
     TileData currentTile;
 
-    public void PositionSetup(HeroControllerPayload payload)
+    public void SetupHero(HeroControllerPayload payload)
     {
+        
         this.payload = payload;
         currentTile = payload.StartingTile;
         heroStatus = new HeroStatus(stats);

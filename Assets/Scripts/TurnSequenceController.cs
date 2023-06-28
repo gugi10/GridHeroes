@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class TurnSequenceController : MonoBehaviour
 {
-    private const int NUMBER_OF_PLAYERS = 2;
-
-    [SerializeField] Player player;
-    [SerializeField] MapController mapController;
-
     public static TurnSequenceController Instance { get; private set; }
-    public List<HeroController> heroControllers;
-    private List<Player> players = new List<Player>();
+
+    [SerializeField] MapController mapController;
+    [SerializeField] HeroController heroPrefab;
+
+    private const int NUMBER_OF_PLAYERS = 2;
+    private const int HEROES_TO_SPAWN = 6;
+
+    private List<HeroController> heroControllerInstances;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -23,30 +25,19 @@ public class TurnSequenceController : MonoBehaviour
         {
             Instance = this;
         }
+
+        heroControllerInstances = Enumerable.Range(0, HEROES_TO_SPAWN).Select(i => {
+            var instance = Instantiate(heroPrefab);
+            instance.ControllingPlayer = i % 2;
+            return instance;
+        }).ToList();
     }
 
     private void Start()
     {
-        for(int i = 0; i < NUMBER_OF_PLAYERS; i++)
-        {
-            Player spawnedPlayer = Instantiate(player);
-            players.Add(spawnedPlayer);
-        }
-
-        var halfOfList = heroControllers.Count / 2;
-
-        for (int i = 0; i < halfOfList; i++)
-        {
-            heroControllers[i].ControllingPlayer = 0;
-        }
-        for (int i = halfOfList; i < heroControllers.Count; i++)
-        {
-            heroControllers[i].ControllingPlayer = 1;
-        }
-
-        //mapController.SpawnHeroes(heroControllers);
+        mapController.SpawnHeroes(heroControllerInstances);
     }
-   
+
     public void FinishTurn(HeroController hero)
     {
 
