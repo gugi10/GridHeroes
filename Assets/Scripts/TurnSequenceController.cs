@@ -1,3 +1,4 @@
+using RedBjorn.ProtoTiles;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ public class TurnSequenceController : MonoBehaviour
     private const int HEROES_TO_SPAWN = 6;
 
     private List<HeroController> heroControllerInstances;
+    private List<PlayerInput> players = new List<PlayerInput>();
+    private int activePlayer;
 
     private void Awake()
     {
@@ -25,17 +28,44 @@ public class TurnSequenceController : MonoBehaviour
         {
             Instance = this;
         }
-
-        heroControllerInstances = Enumerable.Range(0, HEROES_TO_SPAWN).Select(i => {
+        heroControllerInstances = Enumerable.Range(0, HEROES_TO_SPAWN).Select(i =>
+        {
             var instance = Instantiate(heroPrefab);
-            instance.ControllingPlayer = i % 2;
+            instance.ControllingPlayerId = i % 2;
             return instance;
         }).ToList();
     }
 
     private void Start()
     {
-        mapController.SpawnHeroes(heroControllerInstances);
+        for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
+        {
+            var player = new GameObject().AddComponent<PlayerInput>();
+            player.gameObject.name = $"Player_{i}";
+            player.Init(mapController, heroControllerInstances, i);
+            players.Add(player);
+        }
+
+        SetActivePlayer(Random.Range(0, NUMBER_OF_PLAYERS));
+        mapController.SpawnHeroesRandomly(heroControllerInstances);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            SetActivePlayer(Mathf.Abs(activePlayer -1));
+        }
+    }
+
+    private void SetActivePlayer(int playerId)
+    {
+        Debug.Log($"Currently active player {playerId}");
+        activePlayer = playerId;
+        players.ForEach(player =>
+        {
+            player.enabled = player.Id == playerId;
+        });
     }
 
     public void FinishTurn(HeroController hero)

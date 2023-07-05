@@ -31,7 +31,7 @@ namespace RedBjorn.ProtoTiles
         public float Depth { get; set; }
         public float[] NeighbourMovable { get { return Data == null ? null : Data.SideHeight; } }
         public Vector3Int Position { get { return Data == null ? Vector3Int.zero : Data.TilePos; } }
-        public HeroController occupingHero;
+        public HeroController occupyingHero;
         TileEntity() { }
 
         public TileEntity(TileData preset, TilePreset type, MapRules rules)
@@ -45,13 +45,13 @@ namespace RedBjorn.ProtoTiles
         public void OccupyTile(HeroController hero)
         {
             IsOccupied = true;
-            occupingHero = hero;
+            occupyingHero = hero;
         }
 
         public void FreeTile()
         {
             IsOccupied = false;
-            occupingHero = null;
+            occupyingHero = null;
         }
 
         public override string ToString()

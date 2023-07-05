@@ -5,16 +5,23 @@ using UnityEngine;
 
 public class HeroController : MonoBehaviour
 {
-    public int ControllingPlayer;
+    public int ControllingPlayerId;
+    public TileData currentTile { get; private set; }
 
-    [SerializeField] HeroStatisticSheet stats;
-    HeroControllerPayload payload;
-    HeroStatus heroStatus;
-    TileData currentTile;
+    [SerializeField] private HeroStatisticSheet stats;
+    private HeroControllerPayload payload;
+    private HeroStatus heroStatus;
+    private MeshRenderer meshRender;
+    private Color defaultColor;
+
+    private void Awake()
+    {
+        meshRender = GetComponent<MeshRenderer>();
+    }
 
     public void SetupHero(HeroControllerPayload payload)
     {
-        
+
         this.payload = payload;
         currentTile = payload.StartingTile;
         heroStatus = new HeroStatus(stats);
@@ -59,7 +66,7 @@ public class HeroController : MonoBehaviour
 
     public bool Attack(TileEntity targetTile)
     {
-        if(heroStatus.CurrentStats.ActionPoints <= 0)
+        if (heroStatus.CurrentStats.ActionPoints <= 0)
         {
             Debug.LogError($"Cannot perform action, out of action points");
         }
@@ -67,9 +74,9 @@ public class HeroController : MonoBehaviour
         {
             if (targetTile.IsOccupied)
             {
-                if (targetTile.occupingHero != null)
+                if (targetTile.occupyingHero != null)
                 {
-                    targetTile.occupingHero.DealDamage(stats.WeaponDamage);
+                    targetTile.occupyingHero.DealDamage(stats.WeaponDamage);
                     UpdateActionPoints(-1);
                     return true;
                 }
@@ -106,12 +113,36 @@ public class HeroController : MonoBehaviour
                 && Mathf.Abs(targetTile.y - sourceTile.y) <= range && Mathf.Abs(targetTile.z - sourceTile.z) <= range);
     }
 
+    public HeroController SelectHero(int playerId)
+    {
+        if (ControllingPlayerId == playerId)
+        {
+            meshRender.material.color = Color.green;
+        }
+        else
+        {
+            meshRender.material.color = Color.red;
+        }
+        return this;
+    }
+
+    public void Unselect()
+    {
+        meshRender.material.color = defaultColor;
+    }
+
+    //Debug method
+    public void SetColor(Color color)
+    {
+        defaultColor = color;
+        meshRender.material.color = color;
+    }
+
     private void UpdateActionPoints(int difference)
     {
         heroStatus.CurrentStats.ActionPoints += difference;
-        if(heroStatus.CurrentStats.ActionPoints <= 0)
+        if (heroStatus.CurrentStats.ActionPoints <= 0)
         {
-            Debug.Log($"Finished turned");
         }
     }
 

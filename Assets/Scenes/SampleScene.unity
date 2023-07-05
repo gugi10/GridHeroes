@@ -1986,7 +1986,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MapSettings: {fileID: 11400000, guid: 6d77b3459607f3346936d3a33789d533, type: 2}
-  playerInputController: {fileID: 0}
 --- !u!1001 &610096064
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4904,7 +4903,7 @@ GameObject:
   - component: {fileID: 1254061305}
   - component: {fileID: 1254061304}
   m_Layer: 0
-  m_Name: GameController
+  m_Name: TurnSequenceController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4923,13 +4922,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapController: {fileID: 605732617}
-  heroControllers:
-  - {fileID: 2946256911208109239, guid: 914a7587348f877428190928f643aa05, type: 3}
-  - {fileID: 2946256911208109239, guid: 914a7587348f877428190928f643aa05, type: 3}
-  - {fileID: 2946256911208109239, guid: 914a7587348f877428190928f643aa05, type: 3}
-  - {fileID: 2946256911208109239, guid: 914a7587348f877428190928f643aa05, type: 3}
-  - {fileID: 2946256911208109239, guid: 914a7587348f877428190928f643aa05, type: 3}
-  - {fileID: 2946256911208109239, guid: 914a7587348f877428190928f643aa05, type: 3}
+  heroPrefab: {fileID: 2946256911208109239, guid: 914a7587348f877428190928f643aa05, type: 3}
 --- !u!4 &1254061305
 Transform:
   m_ObjectHideFlags: 0
@@ -4938,7 +4931,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1254061303}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.6308936, y: -0.32597542, z: 0.70068043}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

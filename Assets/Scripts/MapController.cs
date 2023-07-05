@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using RedBjorn.ProtoTiles.Example;
 
 [RequireComponent(typeof(MapView))]
 public class MapController : MonoBehaviour
@@ -17,16 +18,16 @@ public class MapController : MonoBehaviour
             Debug.LogError($"MapSettings is null");
     }
 
-    private void Initialize()
+    private void Awake()
     {
         mapView = GetComponent<MapView>();
         map = new MapEntity(MapSettings, mapView);
     }
     
     //random spawner
-    public void SpawnHeroes(List<HeroController> heroesToPosition)
+    public void SpawnHeroesRandomly(List<HeroController> heroesToPosition)
     {
-        Initialize();
+        
         var mapSettingsTemp = map.Settings.Tiles;
         List<int> indexArray = Enumerable.Range(0, mapSettingsTemp.Count).ToList();
         foreach(var hero in heroesToPosition)
@@ -35,9 +36,19 @@ public class MapController : MonoBehaviour
             var index = indexArray[randomTileIndex];
             indexArray.RemoveAt(randomTileIndex);
             var tile = mapSettingsTemp[index];
-            var meshRenderer = hero.GetComponent<MeshRenderer>();
-            meshRenderer.material.color = new Color(1f, 1f, hero.ControllingPlayer * 1f);
+            hero.SetColor(new Color(1f, 1f, hero.ControllingPlayerId * 1f));
             hero.SetupHero(new HeroController.HeroControllerPayload(map, tile));
         }
+    }
+
+    public bool GetMapInput()
+    {
+        return MyInput.GetOnWorldUp(map.Settings.Plane());
+    }
+
+    public TileEntity GetTile()
+    {
+        var clickPos = MyInput.GroundPosition(map.Settings.Plane());
+        return map.Tile(clickPos);
     }
 }
