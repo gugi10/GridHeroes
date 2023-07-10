@@ -54,6 +54,7 @@ public class PlayerInput : MonoBehaviour
         {
             if (selectedHero.Move(tile)) {
                 selectedHero.Unselect();
+                selectedHero = null;
             };
 
             return;
@@ -65,5 +66,11 @@ public class PlayerInput : MonoBehaviour
             selectedHero = null;
             return;
         }
+    }
+
+    private void UnselectHero(HeroController hero)
+    {
+        hero.Unselect();
+        selectedHero = null;
     }
 }
