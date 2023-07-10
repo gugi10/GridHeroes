@@ -10,13 +10,13 @@ public class PlayerInput : MonoBehaviour
 {
     public int Id { get; private set; }
     private MapController map;
-    private List<HeroController> ownedHeroes = new List<HeroController>();
+    private List<HeroController> heroes = new List<HeroController>();
     private HeroController selectedHero;
 
     public void Init(MapController map, List<HeroController> ownedHeroes, int playerId)
     {
         this.map = map;
-        this.ownedHeroes = ownedHeroes;
+        this.heroes = ownedHeroes;
         Id = playerId;
     }
     void Update()
@@ -40,7 +40,7 @@ public class PlayerInput : MonoBehaviour
 
         if(tile.IsOccupied && selectedHero == null)
         {
-            foreach (var hero in ownedHeroes)
+            foreach (var hero in heroes)
             {
                 if (hero.currentTile.TilePos == tile.Data.TilePos)
                     selectedHero = hero.SelectHero(Id);
@@ -52,7 +52,10 @@ public class PlayerInput : MonoBehaviour
 
         if(!tile.IsOccupied && selectedHero != null && selectedHero.ControllingPlayerId == Id)
         {
-            selectedHero.Move(tile);
+            if (selectedHero.Move(tile)) {
+                selectedHero.Unselect();
+            };
+
             return;
         }
         

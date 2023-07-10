@@ -37,7 +37,7 @@ public class MapController : MonoBehaviour
             indexArray.RemoveAt(randomTileIndex);
             var tile = mapSettingsTemp[index];
             hero.SetColor(new Color(1f, 1f, hero.ControllingPlayerId * 1f));
-            hero.SetupHero(new HeroController.HeroControllerPayload(map, tile));
+            hero.SetupHero(map, tile);
         }
     }
 

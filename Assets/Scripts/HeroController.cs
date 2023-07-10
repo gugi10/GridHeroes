@@ -1,7 +1,9 @@
 using RedBjorn.ProtoTiles;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class HeroController : MonoBehaviour
 {
@@ -9,32 +11,36 @@ public class HeroController : MonoBehaviour
     public TileData currentTile { get; private set; }
 
     [SerializeField] private HeroStatisticSheet stats;
-    private HeroControllerPayload payload;
-    private HeroStatus heroStatus;
     private MeshRenderer meshRender;
     private Color defaultColor;
+    private MapEntity map;
+    private Action onActionCallback;
 
     private void Awake()
     {
         meshRender = GetComponent<MeshRenderer>();
     }
 
-    public void SetupHero(HeroControllerPayload payload)
+    public void Init(Action onActionCallback)
+    {
+        this.onActionCallback = onActionCallback;
+    }
+
+    public void SetupHero(MapEntity map, TileData startingTile)
     {
 
-        this.payload = payload;
-        currentTile = payload.StartingTile;
-        heroStatus = new HeroStatus(stats);
-        Move(payload.Map.Tile(currentTile.TilePos));
-        //TODO: added here so move spawn fucntion does not consume action point
-        heroStatus = new HeroStatus(stats);
+        currentTile = startingTile;
+        this.map = map;
+        var tile = map.Tile(currentTile.TilePos);
+        transform.position = map.WorldPosition(tile);
+        tile.OccupyTile(this);
     }
 
     public bool Move(TileEntity targetTile)
     {
-        if (payload == null)
+        if (map == null || currentTile == null)
         {
-            Debug.LogError($"Hero Controller payload is null to use MOVE function you need to specify payload first.");
+            Debug.LogError($"Hero Controller map or currentTile is null to use MOVE function you need to specify them first.");
             return false;
         }
         if (targetTile.Vacant && !targetTile.IsOccupied)
@@ -42,12 +48,12 @@ public class HeroController : MonoBehaviour
             if (Mathf.Abs(targetTile.Position.x - currentTile.TilePos.x) <= stats.Move
                 && Mathf.Abs(targetTile.Position.y - currentTile.TilePos.y) <= stats.Move && Mathf.Abs(targetTile.Position.z - currentTile.TilePos.z) <= stats.Move)
             {
-                if (currentTile != null)
-                    payload.Map.Tile(currentTile.TilePos).FreeTile();
+                map.Tile(currentTile.TilePos).FreeTile();
                 currentTile = targetTile.Data;
-                transform.position = payload.Map.WorldPosition(targetTile);
+                transform.position = map.WorldPosition(targetTile);
                 targetTile.OccupyTile(this);
-                UpdateActionPoints(-1);
+
+                onActionCallback?.Invoke();
                 return true;
             }
             else
@@ -66,10 +72,7 @@ public class HeroController : MonoBehaviour
 
     public bool Attack(TileEntity targetTile)
     {
-        if (heroStatus.CurrentStats.ActionPoints <= 0)
-        {
-            Debug.LogError($"Cannot perform action, out of action points");
-        }
+
         if (CheckTileRange(currentTile.TilePos, targetTile.Data.TilePos, stats.WeaponRange))
         {
             if (targetTile.IsOccupied)
@@ -77,7 +80,7 @@ public class HeroController : MonoBehaviour
                 if (targetTile.occupyingHero != null)
                 {
                     targetTile.occupyingHero.DealDamage(stats.WeaponDamage);
-                    UpdateActionPoints(-1);
+                    onActionCallback?.Invoke();
                     return true;
                 }
                 else
@@ -95,11 +98,6 @@ public class HeroController : MonoBehaviour
             return false;
         }
 
-    }
-
-    public void ResetActionPoints()
-    {
-        heroStatus.CurrentStats.ActionPoints = stats.ActionPoints;
     }
 
     public void DealDamage(int damage)
@@ -138,32 +136,4 @@ public class HeroController : MonoBehaviour
         meshRender.material.color = color;
     }
 
-    private void UpdateActionPoints(int difference)
-    {
-        heroStatus.CurrentStats.ActionPoints += difference;
-        if (heroStatus.CurrentStats.ActionPoints <= 0)
-        {
-        }
-    }
-
-    public class HeroStatus
-    {
-        public HeroStatus(HeroStatisticSheet currentStats)
-        {
-            CurrentStats = currentStats;
-        }
-
-        public HeroStatisticSheet CurrentStats { get; private set; }
-    }
-
-    public class HeroControllerPayload
-    {
-        public MapEntity Map { get; private set; }
-        public TileData StartingTile { get; private set; }
-        public HeroControllerPayload(MapEntity map, TileData startingTile)
-        {
-            Map = map;
-            StartingTile = startingTile;
-        }
-    }
 }
