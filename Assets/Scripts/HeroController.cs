@@ -11,14 +11,19 @@ public class HeroController : MonoBehaviour
     public TileData currentTile { get; private set; }
 
     [SerializeField] private HeroStatisticSheet stats;
-    private MeshRenderer meshRender;
+    [SerializeField] private Transform rotationNode;
+    [SerializeField] private MeshRenderer meshRender;
     private Color defaultColor;
     private MapEntity map;
     private Action onActionCallback;
+    private Coroutine movingCoroutine;
+    private Animator animator;
+    private int walkingHash;
 
     private void Awake()
     {
-        meshRender = GetComponent<MeshRenderer>();
+        animator = GetComponentInChildren<Animator>();
+        walkingHash = Animator.StringToHash("IsWalking");
     }
 
     public void Init(Action onActionCallback)
@@ -38,6 +43,11 @@ public class HeroController : MonoBehaviour
 
     public bool Move(TileEntity targetTile)
     {
+        bool isWalking = animator.GetBool(walkingHash);
+
+        if (isWalking)
+            return false;
+
         if (map == null || currentTile == null)
         {
             Debug.LogError($"Hero Controller map or currentTile is null to use MOVE function you need to specify them first.");
@@ -50,10 +60,9 @@ public class HeroController : MonoBehaviour
             {
                 map.Tile(currentTile.TilePos).FreeTile();
                 currentTile = targetTile.Data;
-                transform.position = map.WorldPosition(targetTile);
-                targetTile.OccupyTile(this);
+                movingCoroutine = StartCoroutine(MoveAnimation(targetTile));
+                //transform.position = map.WorldPosition(targetTile);
 
-                onActionCallback?.Invoke();
                 return true;
             }
             else
@@ -136,4 +145,32 @@ public class HeroController : MonoBehaviour
         meshRender.material.color = color;
     }
 
+    private IEnumerator MoveAnimation(TileEntity targetTile)
+    {
+        animator.SetBool(walkingHash, true);
+
+        var targetPoint = map.WorldPosition(targetTile);
+        var stepDir = (targetPoint - transform.position) * 8;
+        if (map.RotationType == RotationType.LookAt)
+        {
+            rotationNode.rotation = Quaternion.LookRotation(stepDir, Vector3.up);
+        }
+        else if (map.RotationType == RotationType.Flip)
+        {
+            rotationNode.rotation = map.Settings.LookAt(stepDir);
+        }
+
+        var reached = stepDir.sqrMagnitude < 0.01f;
+        while (!reached)
+        {
+            transform.position += stepDir * Time.deltaTime * 0.02f;
+            reached = Vector3.Dot(stepDir, (targetPoint - transform.position)) < 0f;
+            yield return null;
+        }
+
+        targetTile.OccupyTile(this);
+        transform.position = targetPoint;
+        animator.SetBool(walkingHash, false);
+        onActionCallback?.Invoke();
+    }
 }
