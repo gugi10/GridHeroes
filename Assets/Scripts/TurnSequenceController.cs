@@ -32,10 +32,14 @@ public class TurnSequenceController : MonoBehaviour
         {
             var instance = Instantiate(heroPrefab);
             instance.ControllingPlayerId = i % 2;
+            instance.Init(OnHeroMove);
             return instance;
         }).ToList();
     }
-
+    private void OnHeroMove(int arg1)
+    {
+        Debug.Log($"On hero move");
+    }
     private void Start()
     {
         for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
@@ -54,7 +58,7 @@ public class TurnSequenceController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            SetActivePlayer(Mathf.Abs(activePlayer -1));
+            SetActivePlayer(Mathf.Abs(activePlayer - 1));
         }
     }
 
