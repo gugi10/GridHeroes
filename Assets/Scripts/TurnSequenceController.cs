@@ -13,10 +13,14 @@ public class TurnSequenceController : MonoBehaviour
 
     private const int NUMBER_OF_PLAYERS = 2;
     private const int HEROES_TO_SPAWN = 6;
+    private const int MAX_ACTIONS = 5;
+
+
 
     private List<HeroController> heroControllerInstances;
     private List<PlayerInput> players = new List<PlayerInput>();
     private int activePlayer;
+    private List<uint> players_remaining_actions = new List<uint> { MAX_ACTIONS, MAX_ACTIONS };
 
     private void Awake()
     {
@@ -32,14 +36,11 @@ public class TurnSequenceController : MonoBehaviour
         {
             var instance = Instantiate(heroPrefab);
             instance.ControllingPlayerId = i % 2;
-            instance.Init(OnHeroMove);
+            instance.Init(FinishTurn);
             return instance;
         }).ToList();
     }
-    private void OnHeroMove(int arg1)
-    {
-        Debug.Log($"On hero move");
-    }
+
     private void Start()
     {
         for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
@@ -58,8 +59,25 @@ public class TurnSequenceController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            SetActivePlayer(Mathf.Abs(activePlayer - 1));
+            NextPlayer();
         }
+    }
+
+    private void FinishTurn()
+    {
+        players_remaining_actions[activePlayer] -= 1;
+        NextPlayer();
+        Debug.Log($"{players_remaining_actions[0]}, {players_remaining_actions[1]}");
+    }
+
+    private int CalculateNextPlayer()
+    {
+        return Mathf.Abs(activePlayer - 1);
+    }
+
+    private void NextPlayer()
+    {
+        SetActivePlayer(CalculateNextPlayer());
     }
 
     private void SetActivePlayer(int playerId)
@@ -72,8 +90,4 @@ public class TurnSequenceController : MonoBehaviour
         });
     }
 
-    public void FinishTurn(HeroController hero)
-    {
-
-    }
 }
