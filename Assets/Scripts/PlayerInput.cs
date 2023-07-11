@@ -50,9 +50,9 @@ public class PlayerInput : MonoBehaviour
             return;
         }
 
-        if(!tile.IsOccupied && selectedHero != null && selectedHero.ControllingPlayerId == Id)
+        if(selectedHero != null && selectedHero.ControllingPlayerId == Id)
         {
-            if (selectedHero.Move(tile)) {
+            if (selectedHero.PerformAction(tile)) {
                 selectedHero.Unselect();
                 selectedHero = null;
             };

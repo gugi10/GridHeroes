@@ -20,7 +20,7 @@ public class TurnSequenceController : MonoBehaviour
     private List<HeroController> heroControllerInstances;
     private List<PlayerInput> players = new List<PlayerInput>();
     private int activePlayer;
-    private List<uint> players_remaining_actions = new List<uint> { MAX_ACTIONS, MAX_ACTIONS };
+    private List<uint> playersRemainingActions = new List<uint> { MAX_ACTIONS, MAX_ACTIONS };
 
     private void Awake()
     {
@@ -63,11 +63,20 @@ public class TurnSequenceController : MonoBehaviour
         }
     }
 
-    private void FinishTurn()
+    private void FinishTurn(HeroAction heroAction)
     {
-        players_remaining_actions[activePlayer] -= 1;
+        playersRemainingActions[activePlayer] -= 1;
         NextPlayer();
-        Debug.Log($"{players_remaining_actions[0]}, {players_remaining_actions[1]}");
+        Debug.Log($"{playersRemainingActions[0]}, {playersRemainingActions[1]}");
+        if(playersRemainingActions.All(x => x == 0))
+        {
+            FinishRound();
+        }
+    }
+
+    private void FinishRound()
+    {
+        playersRemainingActions.ForEach(x => x = MAX_ACTIONS);
     }
 
     private int CalculateNextPlayer()

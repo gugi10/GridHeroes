@@ -8,5 +8,5 @@ public class HeroStatisticSheet : ScriptableObject
     public int Move;
     public int WeaponRange;
     public int WeaponDamage;
-    public int ActionPoints;
+    public int Health;
 }

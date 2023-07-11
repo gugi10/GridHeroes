@@ -16,7 +16,7 @@ public class HeroController : MonoBehaviour
     [SerializeField] private MeshRenderer meshRender;
     private Color defaultColor;
     private MapEntity map;
-    private Action onActionCallback;
+    private Action<HeroAction> onActionCallback;
     private Coroutine movingCoroutine;
     private Animator animator;
 
@@ -30,7 +30,7 @@ public class HeroController : MonoBehaviour
         attackHash = Animator.StringToHash("Attack");
     }
 
-    public void Init(Action onActionCallback)
+    public void Init(Action<HeroAction> onActionCallback)
     {
         this.onActionCallback = onActionCallback;
     }
@@ -43,6 +43,18 @@ public class HeroController : MonoBehaviour
         var tile = map.Tile(currentTile.TilePos);
         transform.position = map.WorldPosition(tile);
         tile.OccupyTile(this);
+    }
+
+    public bool PerformAction(TileEntity targetTile)
+    {
+        if (targetTile.IsOccupied && targetTile.occupyingHero != null && ControllingPlayerId != targetTile.occupyingHero.ControllingPlayerId)
+        {
+            return Attack(targetTile);
+        }
+        else
+        {
+            return Move(targetTile);
+        }
     }
 
     public bool Move(TileEntity targetTile)
@@ -93,7 +105,7 @@ public class HeroController : MonoBehaviour
                 if (targetTile.occupyingHero != null)
                 {
                     targetTile.occupyingHero.DealDamage(stats.WeaponDamage);
-                    onActionCallback?.Invoke();
+                    onActionCallback?.Invoke(HeroAction.Attack);
                     return true;
                 }
                 else
@@ -115,6 +127,11 @@ public class HeroController : MonoBehaviour
 
     public void DealDamage(int damage)
     {
+        stats.Health -= damage;
+        if(stats.Health <= 0)
+        {
+            gameObject.SetActive(false);
+        }
         Debug.Log($"{gameObject.name} is dealt {damage} damage");
     }
 
@@ -180,6 +197,6 @@ public class HeroController : MonoBehaviour
         targetTile.OccupyTile(this);
         transform.position = targetPoint;
         animator.SetBool(walkingHash, false);
-        onActionCallback?.Invoke();
+        onActionCallback?.Invoke(HeroAction.Move);
     }
 }
