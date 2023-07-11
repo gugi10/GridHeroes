@@ -9,6 +9,7 @@ public class HeroController : MonoBehaviour
 {
     public int ControllingPlayerId;
     public TileData currentTile { get; private set; }
+    public Action onHeroSelected { get; private set; }
 
     [SerializeField] private HeroStatisticSheet stats;
     [SerializeField] private Transform rotationNode;
@@ -18,12 +19,15 @@ public class HeroController : MonoBehaviour
     private Action onActionCallback;
     private Coroutine movingCoroutine;
     private Animator animator;
+
     private int walkingHash;
+    private int attackHash;
 
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
         walkingHash = Animator.StringToHash("IsWalking");
+        attackHash = Animator.StringToHash("Attack");
     }
 
     public void Init(Action onActionCallback)
@@ -138,13 +142,18 @@ public class HeroController : MonoBehaviour
         meshRender.material.color = defaultColor;
     }
 
-    //Debug method
+    //Debug method to see which unit is selected
     public void SetColor(Color color)
     {
+        onHeroSelected?.Invoke();
         defaultColor = color;
         meshRender.material.color = color;
     }
 
+    //TODO: pomys³ na refaktor. Mo¿na by metodê move animation lub coœ w tym stylu przenieœæ do osobnego skryptu
+    //w celu odizolowania fukncjonalnoœci zwi¹zanych z animowaniem do osobnego skryptu.
+    //Istnieje szansa, ¿e bêdziemy mieæ rózne modele z ró¿nymi sposobami animacji
+    //(w idealnym œwiecie chcemy mieæ wszystkie modele animowane tymi samymi parematrami ale z racji tego, ¿e pewnie bêdziemy korzystaæ z kupnych lub darmowych assetów mog¹ byæ rózne podejœcia)
     private IEnumerator MoveAnimation(TileEntity targetTile)
     {
         animator.SetBool(walkingHash, true);
@@ -163,7 +172,7 @@ public class HeroController : MonoBehaviour
         var reached = stepDir.sqrMagnitude < 0.01f;
         while (!reached)
         {
-            transform.position += stepDir * Time.deltaTime * 0.02f;
+            transform.position += stepDir * Time.deltaTime * 1f;
             reached = Vector3.Dot(stepDir, (targetPoint - transform.position)) < 0f;
             yield return null;
         }
