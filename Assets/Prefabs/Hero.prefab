@@ -49,6 +49,7 @@ MonoBehaviour:
   stats: {fileID: 11400000, guid: 62de22b5096ed9c40bb4b4e8b848e951, type: 2}
   rotationNode: {fileID: 1629717314155687644}
   meshRender: {fileID: 2531816355558863229}
+  areaPrefab: {fileID: 114964435729023602, guid: fe2319e9d6e840f409af77b3e7a85259, type: 3}
 --- !u!1001 &734926845206956458
 PrefabInstance:
   m_ObjectHideFlags: 0

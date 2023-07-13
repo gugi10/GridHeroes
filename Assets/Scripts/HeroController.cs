@@ -1,4 +1,5 @@
 using RedBjorn.ProtoTiles;
+using RedBjorn.ProtoTiles.Example;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,11 +15,13 @@ public class HeroController : MonoBehaviour
     [SerializeField] private HeroStatisticSheet stats;
     [SerializeField] private Transform rotationNode;
     [SerializeField] private MeshRenderer meshRender;
+    [SerializeField] private AreaOutline areaPrefab;
     private Color defaultColor;
     private MapEntity map;
     private Action<HeroAction> onActionCallback;
     private Coroutine movingCoroutine;
     private Animator animator;
+    private AreaOutline area;
 
     private int walkingHash;
     private int attackHash;
@@ -28,6 +31,9 @@ public class HeroController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         walkingHash = Animator.StringToHash("IsWalking");
         attackHash = Animator.StringToHash("Attack");
+        area = Instantiate(areaPrefab, Vector3.zero, Quaternion.identity, transform);
+        area.gameObject.SetActive(false);
+        area.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
     }
 
     public void Init(Action<HeroAction> onActionCallback)
@@ -40,6 +46,8 @@ public class HeroController : MonoBehaviour
 
         currentTile = startingTile;
         this.map = map;
+        area.Show(map.WalkableBorder(transform.position, 1), map);
+
         var tile = map.Tile(currentTile.TilePos);
         transform.position = map.WorldPosition(tile);
         tile.OccupyTile(this);
@@ -102,7 +110,7 @@ public class HeroController : MonoBehaviour
         {
             if (targetTile.IsOccupied)
             {
-                if (targetTile.occupyingHero != null)
+                if (targetTile.occupyingHero != null && targetTile.occupyingHero != this)
                 {
                     targetTile.occupyingHero.DealDamage(stats.WeaponDamage);
                     onActionCallback?.Invoke(HeroAction.Attack);
@@ -143,6 +151,7 @@ public class HeroController : MonoBehaviour
 
     public HeroController SelectHero(int playerId)
     {
+        area.gameObject.SetActive(true);
         if (ControllingPlayerId == playerId)
         {
             meshRender.material.color = Color.green;
@@ -156,6 +165,7 @@ public class HeroController : MonoBehaviour
 
     public void Unselect()
     {
+        area.gameObject.SetActive(false);
         meshRender.material.color = defaultColor;
     }
 
