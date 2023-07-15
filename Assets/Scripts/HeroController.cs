@@ -46,7 +46,7 @@ public class HeroController : MonoBehaviour
 
         currentTile = startingTile;
         this.map = map;
-        area.Show(map.WalkableBorder(transform.position, 1), map);
+        area.Show(map.WalkableBorder(transform.position, stats.Move), map);
 
         var tile = map.Tile(currentTile.TilePos);
         transform.position = map.WorldPosition(tile);
