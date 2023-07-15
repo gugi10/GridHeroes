@@ -9,4 +9,5 @@ public class HeroStatisticSheet : ScriptableObject
     public int WeaponRange;
     public int WeaponDamage;
     public int Health;
+    public int ActionLimit;
 }

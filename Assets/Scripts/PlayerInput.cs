@@ -50,20 +50,20 @@ public class PlayerInput : MonoBehaviour
             return;
         }
 
-        if(selectedHero != null && selectedHero.ControllingPlayerId == Id)
+        if (tile.IsOccupied && selectedHero != null && tile.occupyingHero == selectedHero)
+        {
+            selectedHero.Unselect();
+            selectedHero = null;
+            return;
+        }
+
+        if (selectedHero != null && selectedHero.ControllingPlayerId == Id)
         {
             if (selectedHero.PerformAction(tile)) {
                 selectedHero.Unselect();
                 selectedHero = null;
             };
 
-            return;
-        }
-        
-        if(tile.IsOccupied && selectedHero != null && tile.occupyingHero == selectedHero)
-        {
-            selectedHero.Unselect();
-            selectedHero = null;
             return;
         }
     }

@@ -12,10 +12,12 @@ public class HeroController : MonoBehaviour
     public TileData currentTile { get; private set; }
     public Action onHeroSelected { get; private set; }
 
-    [SerializeField] private HeroStatisticSheet stats;
+    [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private Transform rotationNode;
     [SerializeField] private MeshRenderer meshRender;
     [SerializeField] private AreaOutline areaPrefab;
+    private HeroStatisticSheet currentStats;
+    private int remainingActions;
     private Color defaultColor;
     private MapEntity map;
     private Action<HeroAction> onActionCallback;
@@ -31,6 +33,8 @@ public class HeroController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         walkingHash = Animator.StringToHash("IsWalking");
         attackHash = Animator.StringToHash("Attack");
+        currentStats = originalStats;
+        remainingActions = currentStats.ActionLimit;
         area = Instantiate(areaPrefab, Vector3.zero, Quaternion.identity, transform);
         area.gameObject.SetActive(false);
         area.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
@@ -46,7 +50,7 @@ public class HeroController : MonoBehaviour
 
         currentTile = startingTile;
         this.map = map;
-        area.Show(map.WalkableBorder(transform.position, stats.Move), map);
+        area.Show(map.WalkableBorder(transform.position, currentStats.Move), map);
 
         var tile = map.Tile(currentTile.TilePos);
         transform.position = map.WorldPosition(tile);
@@ -55,14 +59,26 @@ public class HeroController : MonoBehaviour
 
     public bool PerformAction(TileEntity targetTile)
     {
+        if (remainingActions <= 0)
+        {
+            return false;
+
+        }
+
+        bool actionResult;
         if (targetTile.IsOccupied && targetTile.occupyingHero != null && ControllingPlayerId != targetTile.occupyingHero.ControllingPlayerId)
         {
-            return Attack(targetTile);
+            actionResult = Attack(targetTile);
         }
         else
         {
-            return Move(targetTile);
+            actionResult = Move(targetTile);
         }
+
+        remainingActions = actionResult ? remainingActions - 1 : remainingActions;
+
+        Debug.Log($"Action result = {actionResult}, Remaining actions = {remainingActions}");
+        return actionResult;
     }
 
     public bool Move(TileEntity targetTile)
@@ -79,8 +95,8 @@ public class HeroController : MonoBehaviour
         }
         if (targetTile.Vacant && !targetTile.IsOccupied)
         {
-            if (Mathf.Abs(targetTile.Position.x - currentTile.TilePos.x) <= stats.Move
-                && Mathf.Abs(targetTile.Position.y - currentTile.TilePos.y) <= stats.Move && Mathf.Abs(targetTile.Position.z - currentTile.TilePos.z) <= stats.Move)
+            if (Mathf.Abs(targetTile.Position.x - currentTile.TilePos.x) <= currentStats.Move
+                && Mathf.Abs(targetTile.Position.y - currentTile.TilePos.y) <= currentStats.Move && Mathf.Abs(targetTile.Position.z - currentTile.TilePos.z) <= currentStats.Move)
             {
                 map.Tile(currentTile.TilePos).FreeTile();
                 currentTile = targetTile.Data;
@@ -106,13 +122,13 @@ public class HeroController : MonoBehaviour
     public bool Attack(TileEntity targetTile)
     {
 
-        if (CheckTileRange(currentTile.TilePos, targetTile.Data.TilePos, stats.WeaponRange))
+        if (CheckTileRange(currentTile.TilePos, targetTile.Data.TilePos, currentStats.WeaponRange))
         {
             if (targetTile.IsOccupied)
             {
                 if (targetTile.occupyingHero != null && targetTile.occupyingHero != this)
                 {
-                    targetTile.occupyingHero.DealDamage(stats.WeaponDamage);
+                    targetTile.occupyingHero.DealDamage(currentStats.WeaponDamage);
                     onActionCallback?.Invoke(HeroAction.Attack);
                     return true;
                 }
@@ -127,7 +143,7 @@ public class HeroController : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"Cannot perform attack your weapon range is {stats.WeaponRange} and target is too far");
+            Debug.LogError($"Cannot perform attack your weapon range is {currentStats.WeaponRange} and target is too far");
             return false;
         }
 
@@ -135,8 +151,8 @@ public class HeroController : MonoBehaviour
 
     public void DealDamage(int damage)
     {
-        stats.Health -= damage;
-        if(stats.Health <= 0)
+        currentStats.Health -= damage;
+        if(currentStats.Health <= 0)
         {
             gameObject.SetActive(false);
         }
@@ -175,6 +191,11 @@ public class HeroController : MonoBehaviour
         onHeroSelected?.Invoke();
         defaultColor = color;
         meshRender.material.color = color;
+    }
+
+    public void ResetActions()
+    {
+        remainingActions = currentStats.ActionLimit;
     }
 
     //TODO: pomys³ na refaktor. Mo¿na by metodê move animation lub coœ w tym stylu przenieœæ do osobnego skryptu
