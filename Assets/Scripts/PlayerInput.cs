@@ -12,6 +12,13 @@ public class PlayerInput : MonoBehaviour
     private MapController map;
     private List<HeroController> heroes = new List<HeroController>();
     private HeroController selectedHero;
+    private List<List<HeroAction>> playerActions;
+
+    private void Awake()
+    {
+        TurnSequenceController.Instance.onRoundStart += SetPlayerActions;
+        TurnSequenceController.Instance.onTurnFinished += SetPlayerActions;
+    }
 
     public void Init(MapController map, List<HeroController> ownedHeroes, int playerId)
     {
@@ -19,6 +26,12 @@ public class PlayerInput : MonoBehaviour
         this.heroes = ownedHeroes;
         Id = playerId;
     }
+
+    private void SetPlayerActions(List<List<HeroAction>> actions)
+    {
+        playerActions = new List<List<HeroAction>>(actions);
+    }
+
     void Update()
     {
         if (map == null)
@@ -29,6 +42,11 @@ public class PlayerInput : MonoBehaviour
         if (map.GetMapInput())
         {
             HandleWorldClick();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+
         }
     }
 
@@ -59,18 +77,43 @@ public class PlayerInput : MonoBehaviour
 
         if (selectedHero != null && selectedHero.ControllingPlayerId == Id)
         {
-            if (selectedHero.PerformAction(tile)) {
-                selectedHero.Unselect();
-                selectedHero = null;
-            };
-
+            if (IsTargetingEnemy(tile) && HasAction(HeroAction.Attack))
+            {
+                if (selectedHero.Attack(tile))
+                {
+                    UnselectHero();
+                }
+            }
+            else if(!tile.IsOccupied && HasAction(HeroAction.Move))
+            {
+                if (selectedHero.Move(tile))
+                {
+                    UnselectHero();
+                }
+            }
+            
             return;
         }
     }
 
-    private void UnselectHero(HeroController hero)
+    private void UnselectHero()
     {
-        hero.Unselect();
+        selectedHero.Unselect();
         selectedHero = null;
+    }
+
+    private bool IsTargetingEnemy(TileEntity tile)
+    {
+        return tile.IsOccupied && tile.occupyingHero != null && selectedHero.ControllingPlayerId != tile.occupyingHero.ControllingPlayerId;
+    }
+
+    private bool HasAction(HeroAction action)
+    {
+        return playerActions[selectedHero.ControllingPlayerId].Contains(action);
+    }
+
+    private void Pass()
+    {
+
     }
 }

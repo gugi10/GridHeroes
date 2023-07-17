@@ -57,7 +57,7 @@ public class HeroController : MonoBehaviour
         tile.OccupyTile(this);
     }
 
-    public bool PerformAction(TileEntity targetTile)
+    /*public bool PerformAction(TileEntity targetTile)
     {
         if (remainingActions <= 0)
         {
@@ -79,7 +79,7 @@ public class HeroController : MonoBehaviour
 
         Debug.Log($"Action result = {actionResult}, Remaining actions = {remainingActions}");
         return actionResult;
-    }
+    }*/
 
     public bool Move(TileEntity targetTile)
     {

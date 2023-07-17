@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 public class TurnSequenceController : MonoBehaviour
 {
@@ -11,15 +12,16 @@ public class TurnSequenceController : MonoBehaviour
     [SerializeField] MapController mapController;
     [SerializeField] HeroController heroPrefab;
 
+    public int ActivePlayer { get; private set; }
+    public Action<List<List<HeroAction>>> onRoundStart;
+    public Action<List<List<HeroAction>>> onTurnFinished;
+
     private const int NUMBER_OF_PLAYERS = 2;
     private const int HEROES_TO_SPAWN = 6;
     private const int MAX_ACTIONS = 3;
 
-
-
     private List<HeroController> heroControllerInstances;
     private List<PlayerInput> players = new();
-    private int activePlayer;
     private List<List<HeroAction>> playersRemainingActions = new();
 
     private void Awake()
@@ -51,8 +53,9 @@ public class TurnSequenceController : MonoBehaviour
             player.Init(mapController, heroControllerInstances, i);
             players.Add(player);
         }
+        onRoundStart?.Invoke(playersRemainingActions);
 
-        SetActivePlayer(Random.Range(0, NUMBER_OF_PLAYERS));
+        SetActivePlayer(UnityEngine.Random.Range(0, NUMBER_OF_PLAYERS));
         mapController.SpawnHeroesRandomly(heroControllerInstances);
     }
 
@@ -64,12 +67,13 @@ public class TurnSequenceController : MonoBehaviour
         }
     }
 
-    private void FinishTurn(HeroAction heroAction)
+    public void FinishTurn(HeroAction heroAction)
     {
-        playersRemainingActions[activePlayer].Remove(heroAction);
+        playersRemainingActions[ActivePlayer].Remove(heroAction);
         NextPlayer();
         Debug.Log($"{playersRemainingActions[0]}, {playersRemainingActions[1]}");
-        if(playersRemainingActions.All(x => x.Count() == 0))
+        onTurnFinished?.Invoke(playersRemainingActions);
+        if (playersRemainingActions.All(x => x.Count() == 0))
         {
             FinishRound();
         }
@@ -79,11 +83,12 @@ public class TurnSequenceController : MonoBehaviour
     {
         playersRemainingActions = playersRemainingActions.Select(_ => GenerateActionList()).ToList();
         heroControllerInstances.ForEach(hero => hero.ResetActions());
+        onRoundStart?.Invoke(playersRemainingActions);
     }
 
     private int CalculateNextPlayer()
     {
-        return Mathf.Abs(activePlayer - 1);
+        return Mathf.Abs(ActivePlayer - 1);
     }
 
     private void NextPlayer()
@@ -94,7 +99,7 @@ public class TurnSequenceController : MonoBehaviour
     private void SetActivePlayer(int playerId)
     {
         Debug.Log($"Currently active player {playerId}");
-        activePlayer = playerId;
+        ActivePlayer = playerId;
         players.ForEach(player =>
         {
             player.enabled = player.Id == playerId;
@@ -108,7 +113,7 @@ public class TurnSequenceController : MonoBehaviour
         {
             Debug.Log($"{action}");
         }
-        return Enumerable.Range(0, MAX_ACTIONS).Select(_ => HeroActionChooser.ChooseRandomAction()).ToList();
+        return actions;
     }
 
 }
