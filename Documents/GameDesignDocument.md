@@ -97,13 +97,13 @@ For example one player decides to go with Ranged Attacker, Tank and two Supports
 
 Classes with abilities ideas:
 1. Ranged attacker:
-   - passive #1: Can only attack units that are 2 hexes away
-   - active #1: Can perform range 3 attack
+   - passive #1: Can only attack units that are 2 hexes away (+)
+   - active #1: Can perform range 3 attack (+)
    - active #2: Can perform free move action after attack
 2. Tank:
    - passive #1: Has a x% to negate incoming attack damage, to balance the x% value can be highly decreased after each succesful block or limit the time it occurs
-   - passive #2: Has 2/3 health
-   - active #1: Add temporary health to self for few turns
+   - passive #2: Has 2/3 health (+)
+   - active #1: Add temporary health to self for few turns (+)
    - active #2: If we would got with negate incoming damage and limit it occurance, this ability could bring back the original value for this passive abillity)
    - active #3: Gain invulnerability to negative effects and damage for short amount
 3. Support:
@@ -113,14 +113,15 @@ Classes with abilities ideas:
    - active #3: Reset action point limits for target unit within range
    - active #4: Push target other unit
 4. Melee attacker
-   - passive #1: +1 move
+   - passive #1: +1 move (+)
    - passive #2: After killing enemy or capturing objective(?) gain +1 action for this turn
    - active #1: Double move action (we can chose if we want to consuem special + move actions or only special, it should only cost 1 action point)
+   - active #2: Charge (+)
 5. Mage?Enchanter?Utility?Misc?
-   - passive #1: Can consume two basic actions to perform special one
-   - active #1: Summon/Spawn base unit (1move 1hp 1range) (It can be limited by having only one active unit)
-   - active #2: Creat impassable hexes (Like stone boulders)
-   - active #3: Creat damaging hexes (like firewall or smth)
+   - passive #1: Can consume two basic actions to perform special one (+)
+   - active #1: Summon/Spawn base unit (1move 1hp 1range) (It can be limited by having only one active unit) (+)
+   - active #2: Create impassable hexes (Like stone boulders)
+   - active #3: Create damaging hexes (like firewall or smth)
 
 ### Keywords ideas [wip]
 
@@ -148,6 +149,6 @@ As an example:
 4. Duration
      - Fixed amount of turns
      - Fixed amount of rounds
-     - Until some event
+     - Until some condition
 
  
