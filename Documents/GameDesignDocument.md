@@ -122,7 +122,7 @@ Classes with abilities ideas:
    - active #2: Creat impassable hexes (Like stone boulders)
    - active #3: Creat damaging hexes (like firewall or smth)
 
-# Keywords ideas [wip]
+### Keywords ideas [wip]
 
 In order to group up abilities and their effect I came up with an idea of keywording each of them in terms of their: range, effect, possible target etc.
 It can make implementation easier
