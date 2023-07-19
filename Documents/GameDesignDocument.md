@@ -86,3 +86,68 @@ Types of actions:
 - Health Points
 - Active Special Ability
 - Passive Special Ability (a modifier that can modify how move or attack)
+
+## Special abilities and classes [wip]
+All stuff written in this topic is only an idea and concept, which can be changed
+We can distinguish two types of abilities passive and ones that are used as an activation. Passive abilities can come as a modifiers to base stats of units. 
+We are assuming that for now maximum of 1 ability of each type is defined for a class.
+Class is an idea to follow typical game desigin which categorizes certain units into groups for example: Tanks, DD's, supports.
+Preset of abilities combination can be a specialization, we need to decided if its predefined or players can decide what they want to pick.
+For example one player decides to go with Ranged Attacker, Tank and two Supports picking different abilities for each of them or following the other idea chosing among the specialization presets.
+
+Classes with abilities ideas:
+1. Ranged attacker:
+   - passive #1: Can only attack units that are 2 hexes away
+   - active #1: Can perform range 3 attack
+   - active #2: Can perform free move action after attack
+2. Tank:
+   - passive #1: Has a x% to negate incoming attack damage, to balance the x% value can be highly decreased after each succesful block or limit the time it occurs
+   - passive #2: Has 2/3 health
+   - active #1: Add temporary health to self for few turns
+   - active #2: If we would got with negate incoming damage and limit it occurance, this ability could bring back the original value for this passive abillity)
+   - active #3: Gain invulnerability to negative effects and damage for short amount
+3. Support:
+   - passive #1: Other allies that begin move action within 2 hexes of this unit have +1 to move
+   - active #1: Reroll one action to different one
+   - active #2: Remove all negative effects
+   - active #3: Reset action point limits for target unit within range
+   - active #4: Push target other unit
+4. Melee attacker
+   - passive #1: +1 move
+   - passive #2: After killing enemy or capturing objective(?) gain +1 action for this turn
+   - active #1: Double move action (we can chose if we want to consuem special + move actions or only special, it should only cost 1 action point)
+5. Mage?Enchanter?Utility?Misc?
+   - passive #1: Can consume two basic actions to perform special one
+   - active #1: Summon/Spawn base unit (1move 1hp 1range) (It can be limited by having only one active unit)
+   - active #2: Creat impassable hexes (Like stone boulders)
+   - active #3: Creat damaging hexes (like firewall or smth)
+
+# Keywords ideas [wip]
+
+In order to group up abilities and their effect I came up with an idea of keywording each of them in terms of their: range, effect, possible target etc.
+It can make implementation easier
+As an example:
+1. Area effects:
+   - Area of effect: All units in target ranged area (Aoe)
+   - Aura: All units in range from the source (Aura)
+   - Targeted: Target specific unit (Target)
+2. Possible targets
+   - Only enemies (Enemy)
+   - Only Allies (Allies)
+   - All units (All)
+   - Other units (exclude self) (All other, OTher allies)
+   - Can target self? (Self)
+   - Can target unit which are under specific condition (for example, next to enemy, next to another ally, have no more than 1 health) (Conditional)
+3. Effect
+     - Damage
+     - Modifier
+     - Buff
+     - Debuff
+     - Terrain modifiers 
+     - Possible actions manipulation (Reroll one action to another
+4. Duration
+     - Fixed amount of turns
+     - Fixed amount of rounds
+     - Until some event
+
+ 
