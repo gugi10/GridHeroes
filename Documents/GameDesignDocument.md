@@ -151,4 +151,59 @@ As an example:
      - Fixed amount of rounds
      - Until some condition
 
+
+Some comments from me (Krzysztof) (without reading what is above):
+
+I think an there are many important questions to ask before
+we can actually start thinking about designing specific skills.
+Those questions are:
+- Do we consider abilities that take 2 action points and immediately
+"exhaust" a character, but are stronger as a trade off?
+- Do we consider passive abilities? If so should the be working
+together with active abilities meaning one character can have
+both active and passive abilities at the same time?
+- Should character have more than one skill?
+- Should leveling character replace old skill we new improved/changed one?
+- Should active skills include skills that modify character stats?
+
+Every "yes" anwser will make the game harder to learn and less
+intuitive for the player I think but it might (but not necessarily)
+make the gameplay deeper. Also it makes it easier for us to design
+specific skills as the restrictions get looser.
+
+On the other hand, more restrictions make the game easier to understand,
+more intuitive, and probably simpler to implement.
+
+I think we should start with the most restricted set so for example:
+- the games consists only of active abilities,
+- every ability in the game uses one action point.
+
+Then we should proceed to design the specific skills and see whether
+we can achieve satisfying gameplay depth. If not we should lessen
+the restictions one by one until we reach the satisfying results.
+
+Some skill examples:
+Basic:
+- Shoot singular target - there can be many different types of this
+skill, e. g., short range with big damage, long range with low damage.
+(we should also devise shooting mechanics, blocking, non-blocking etc.)
+- shoot hex with AOE
+- shoot singular target but chain into two closes enemy from him (if in range)
+- Stronger melee attack
+- Melee attack with push
+- Heal range (small heal)
+- Heal adjacent (strong heal)
+
+More complex:
+- hook enemy within hexes to yourself
+- make blocked hex
+- make lethal hex
+- make shadow clones (place yourself randomly between 3 shadows, oponnent does not know which is which)
+- teleport friendly character
+- spinning melee attack
+- attack in cone
+- attack in line
  
+ If buffs consider then of course:
+ - spells for modifying all stats, targeting either oponent or friendly
+
