@@ -1,5 +1,3 @@
-using RedBjorn.ProtoTiles;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,12 +5,23 @@ using System;
 
 public class TurnSequenceController : MonoBehaviour
 {
-    public static TurnSequenceController Instance { get; private set; }
+    public static TurnSequenceController Instance { get
+        {
+            if(instance == null)
+            {
+                instance = FindObjectOfType<TurnSequenceController>();
+            }
+            return instance;
+        }
+        
+    }
+    private static TurnSequenceController instance;
 
     [SerializeField] MapController mapController;
     [SerializeField] HeroController heroPrefab;
 
     public int ActivePlayer { get; private set; }
+
     public Action<List<List<HeroAction>>> onRoundStart;
     public Action<List<List<HeroAction>>> onTurnFinished;
     public Action<HeroController> onHeroSelected;
@@ -34,8 +43,9 @@ public class TurnSequenceController : MonoBehaviour
         }
         else
         {
-            Instance = this;
+            instance = this;
         }
+
         heroControllerInstances = Enumerable.Range(0, HEROES_TO_SPAWN).Select(i =>
         {
             var instance = Instantiate(heroPrefab);

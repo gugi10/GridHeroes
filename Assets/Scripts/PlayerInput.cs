@@ -1,10 +1,6 @@
 using RedBjorn.ProtoTiles;
-using RedBjorn.ProtoTiles.Example;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class PlayerInput : MonoBehaviour
 {
@@ -14,16 +10,22 @@ public class PlayerInput : MonoBehaviour
     private HeroController selectedHero;
     private List<List<HeroAction>> playerActions;
 
-    private void Awake()
+    private void OnEnable()
     {
         TurnSequenceController.Instance.onRoundStart += SetPlayerActions;
         TurnSequenceController.Instance.onTurnFinished += SetPlayerActions;
     }
 
+    private void OnDisable()
+    {
+        TurnSequenceController.Instance.onRoundStart -= SetPlayerActions;
+        TurnSequenceController.Instance.onTurnFinished -= SetPlayerActions;
+    }
+
     public void Init(MapController map, List<HeroController> ownedHeroes, int playerId)
     {
         this.map = map;
-        this.heroes = ownedHeroes;
+        heroes = ownedHeroes;
         Id = playerId;
     }
 
@@ -110,10 +112,5 @@ public class PlayerInput : MonoBehaviour
     private bool HasAction(HeroAction action)
     {
         return playerActions[selectedHero.ControllingPlayerId].Contains(action);
-    }
-
-    private void Pass()
-    {
-
     }
 }

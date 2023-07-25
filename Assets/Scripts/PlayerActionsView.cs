@@ -1,24 +1,21 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System.Linq;
-using System;
 
 public class PlayerActionsView : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI playerHeaderPrefab;
-    [SerializeField] TurnSequenceController turnSequence;
-    [SerializeField] PlayerActionView playerAction;
-    List<GameObject> spawnedElements = new();
+    [SerializeField] private TextMeshProUGUI playerHeaderPrefab;
+    [SerializeField] private TurnSequenceController turnSequence;
+    [SerializeField] private PlayerActionView playerAction;
+    private List<GameObject> spawnedElements = new();
 
-    private void Start()
+    private void OnEnable()
     {
         TurnSequenceController.Instance.onTurnFinished += ShowPlayerActions;
         TurnSequenceController.Instance.onRoundStart += ShowPlayerActions;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         TurnSequenceController.Instance.onTurnFinished -= ShowPlayerActions;
         TurnSequenceController.Instance.onRoundStart -= ShowPlayerActions;

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -8,10 +6,16 @@ public class HeroUIView : MonoBehaviour
     [SerializeField] GameObject content;
     [SerializeField] TextMeshProUGUI info;
 
-    public void Start()
+    private void OnEnable()
     {
         TurnSequenceController.Instance.onHeroSelected += ShowSelectedHeroUI;
         //TurnSequenceController.Instance.onHeroUnselected += HideUI;
+    }
+
+    private void OnDisable()
+    {
+        TurnSequenceController.Instance.onHeroSelected -= ShowSelectedHeroUI;
+
     }
 
     /*public void OnDisable()
@@ -22,7 +26,6 @@ public class HeroUIView : MonoBehaviour
 
     private void ShowSelectedHeroUI(HeroController hero)
     {
-        Debug.Log($"hud show");
         var heroStats = hero.GetHeroStats();
         var current = heroStats.Item1;
         var baseStats = heroStats.Item1;
@@ -34,8 +37,6 @@ public class HeroUIView : MonoBehaviour
 
     private void HideUI()
     {
-        Debug.Log($"hud hide");
-
         content.SetActive(false);
     }
 }
