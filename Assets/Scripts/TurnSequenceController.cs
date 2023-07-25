@@ -15,6 +15,8 @@ public class TurnSequenceController : MonoBehaviour
     public int ActivePlayer { get; private set; }
     public Action<List<List<HeroAction>>> onRoundStart;
     public Action<List<List<HeroAction>>> onTurnFinished;
+    public Action<HeroController> onHeroSelected;
+    public Action onHeroUnselected;
 
     private const int NUMBER_OF_PLAYERS = 2;
     private const int HEROES_TO_SPAWN = 6;
@@ -39,6 +41,8 @@ public class TurnSequenceController : MonoBehaviour
             var instance = Instantiate(heroPrefab);
             instance.ControllingPlayerId = i % 2;
             instance.Init(FinishTurn);
+            instance.onHeroSelected += OnHeroSelectedCallback;
+            instance.onHeroUnselected += OnHeroSelectedCallback;
             return instance;
         }).ToList();
     }
@@ -114,6 +118,16 @@ public class TurnSequenceController : MonoBehaviour
             Debug.Log($"{action}");
         }
         return actions;
+    }
+
+    private void OnHeroSelectedCallback(HeroController hero)
+    {
+        onHeroSelected?.Invoke(hero);
+    }
+
+    private void OnHeroSelectedCallback()
+    {
+        onHeroUnselected?.Invoke();
     }
 
 }

@@ -10,20 +10,23 @@ public class HeroController : MonoBehaviour
 {
     public int ControllingPlayerId;
     public TileData currentTile { get; private set; }
-    public Action onHeroSelected { get; private set; }
+    public Action<HeroController> onHeroSelected;
+    public Action onHeroUnselected;
+    public int RemainingActions { get; private set; }
 
     [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private Transform rotationNode;
     [SerializeField] private MeshRenderer meshRender;
     [SerializeField] private AreaOutline areaPrefab;
+
     private HeroStatisticSheet currentStats;
-    private int remainingActions;
     private Color defaultColor;
     private MapEntity map;
     private Action<HeroAction> onActionCallback;
     private Coroutine movingCoroutine;
     private Animator animator;
     private AreaOutline area;
+    private AreaOutline heroHighLight;
 
     private int walkingHash;
     private int attackHash;
@@ -34,10 +37,15 @@ public class HeroController : MonoBehaviour
         walkingHash = Animator.StringToHash("IsWalking");
         attackHash = Animator.StringToHash("Attack");
         currentStats = originalStats;
-        remainingActions = currentStats.ActionLimit;
+        RemainingActions = currentStats.ActionLimit;
+
         area = Instantiate(areaPrefab, Vector3.zero, Quaternion.identity, transform);
         area.gameObject.SetActive(false);
         area.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+
+        heroHighLight = Instantiate(areaPrefab, Vector3.zero, Quaternion.identity, transform);
+        heroHighLight.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+
     }
 
     public void Init(Action<HeroAction> onActionCallback)
@@ -51,7 +59,11 @@ public class HeroController : MonoBehaviour
         currentTile = startingTile;
         this.map = map;
         area.Show(map.WalkableBorder(transform.position, currentStats.Move), map);
-
+        heroHighLight.Show(map.WalkableBorder(transform.position, 0), map);
+        if (ControllingPlayerId % 2 == 0)
+            heroHighLight.ActiveState();
+        else
+            heroHighLight.InactiveState();
         var tile = map.Tile(currentTile.TilePos);
         transform.position = map.WorldPosition(tile);
         tile.OccupyTile(this);
@@ -176,6 +188,8 @@ public class HeroController : MonoBehaviour
         {
             meshRender.material.color = Color.red;
         }
+        onHeroSelected?.Invoke(this);
+
         return this;
     }
 
@@ -183,25 +197,30 @@ public class HeroController : MonoBehaviour
     {
         area.gameObject.SetActive(false);
         meshRender.material.color = defaultColor;
+        onHeroUnselected?.Invoke();
     }
 
     //Debug method to see which unit is selected
     public void SetColor(Color color)
     {
-        onHeroSelected?.Invoke();
         defaultColor = color;
         meshRender.material.color = color;
     }
 
     public void ResetActions()
     {
-        remainingActions = currentStats.ActionLimit;
+        RemainingActions = currentStats.ActionLimit;
     }
 
-    //TODO: pomys³ na refaktor. Mo¿na by metodê move animation lub coœ w tym stylu przenieœæ do osobnego skryptu
-    //w celu odizolowania fukncjonalnoœci zwi¹zanych z animowaniem do osobnego skryptu.
-    //Istnieje szansa, ¿e bêdziemy mieæ rózne modele z ró¿nymi sposobami animacji
-    //(w idealnym œwiecie chcemy mieæ wszystkie modele animowane tymi samymi parematrami ale z racji tego, ¿e pewnie bêdziemy korzystaæ z kupnych lub darmowych assetów mog¹ byæ rózne podejœcia)
+    public Tuple<HeroStatisticSheet, HeroStatisticSheet> GetHeroStats()
+    {
+        return new Tuple<HeroStatisticSheet, HeroStatisticSheet>(currentStats, originalStats);
+    }
+
+    //TODO: pomys? na refaktor. Mo?na by metod? move animation lub co? w tym stylu przenie?? do osobnego skryptu
+    //w celu odizolowania fukncjonalno?ci zwi?zanych z animowaniem do osobnego skryptu.
+    //Istnieje szansa, ?e b?dziemy mie? r?zne modele z r??nymi sposobami animacji
+    //(w idealnym ?wiecie chcemy mie? wszystkie modele animowane tymi samymi parematrami ale z racji tego, ?e pewnie b?dziemy korzysta? z kupnych lub darmowych asset?w mog? by? r?zne podej?cia)
     private IEnumerator MoveAnimation(TileEntity targetTile)
     {
         animator.SetBool(walkingHash, true);
