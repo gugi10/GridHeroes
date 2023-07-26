@@ -10,4 +10,15 @@ public class HeroStatisticSheet : ScriptableObject
     public int WeaponDamage;
     public int Health;
     public int ActionLimit;
+
+    public HeroStatisticSheet(HeroStatisticSheet heroStats)
+    {
+        Move = heroStats.Move;
+        WeaponRange = heroStats.WeaponRange;
+        WeaponDamage = heroStats.WeaponDamage;
+        Health = heroStats.Health;
+        ActionLimit = heroStats.ActionLimit;
+    }
+
+
 }
