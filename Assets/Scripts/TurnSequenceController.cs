@@ -37,15 +37,6 @@ public class TurnSequenceController : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            instance = this;
-        }
-
         heroControllerInstances = Enumerable.Range(0, HEROES_TO_SPAWN).Select(i =>
         {
             var instance = Instantiate(heroPrefab);
