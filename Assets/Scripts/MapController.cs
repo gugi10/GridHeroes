@@ -23,6 +23,18 @@ public class MapController : MonoBehaviour
         mapView = GetComponent<MapView>();
         map = new MapEntity(MapSettings, mapView);
     }
+
+    public MapEntity GetMapEntity()
+    {
+        if(map == null)
+        {
+            mapView = GetComponent<MapView>();
+            map = new MapEntity(MapSettings, mapView);
+            return map;
+        }
+
+        return map;
+    }
     
     //random spawner
     public void SpawnHeroesRandomly(List<HeroController> heroesToPosition)

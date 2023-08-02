@@ -32,7 +32,7 @@ public class TurnSequenceController : MonoBehaviour
     private const int MAX_ACTIONS = 3;
 
     private List<HeroController> heroControllerInstances;
-    private List<PlayerInput> players = new();
+    private List<IPlayer> players = new();
     private List<List<HeroAction>> playersRemainingActions = new();
 
     private void Awake()
@@ -50,14 +50,18 @@ public class TurnSequenceController : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
-        {
-            playersRemainingActions.Add(GenerateActionList());
-            var player = new GameObject().AddComponent<PlayerInput>();
-            player.gameObject.name = $"Player_{i}";
-            player.Init(mapController, heroControllerInstances, i);
-            players.Add(player);
-        }
+        playersRemainingActions.Add(GenerateActionList());
+        var player = new GameObject().AddComponent<PlayerInput>();
+        player.gameObject.name = $"Player_0";
+        player.Init(mapController, heroControllerInstances, 0);
+        players.Add(player);
+
+        playersRemainingActions.Add(GenerateActionList());
+        var ai = new GameObject().AddComponent<AIAgent>();
+        ai.gameObject.name = $"AI";
+        ai.Init(mapController, heroControllerInstances, 0);
+        players.Add(ai);
+
         onRoundStart?.Invoke(playersRemainingActions);
 
         SetActivePlayer(UnityEngine.Random.Range(0, NUMBER_OF_PLAYERS));
@@ -107,7 +111,7 @@ public class TurnSequenceController : MonoBehaviour
         ActivePlayer = playerId;
         players.ForEach(player =>
         {
-            player.enabled = player.Id == playerId;
+            player.SetActiveState(player.Id == playerId);
         });
     }
 

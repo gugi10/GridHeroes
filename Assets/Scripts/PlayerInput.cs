@@ -1,14 +1,22 @@
 using RedBjorn.ProtoTiles;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class PlayerInput : MonoBehaviour
+public interface IPlayer 
 {
-    public int Id { get; private set; }
+    public void Init(MapController map, List<HeroController> ownedHeroes, int playerId);
+    public void SetActiveState(bool flag);
+    public int Id { get; set; }
+
+}
+
+public class PlayerInput : MonoBehaviour, IPlayer
+{
     private MapController map;
     private List<HeroController> heroes = new List<HeroController>();
     private HeroController selectedHero;
     private List<List<HeroAction>> playerActions;
+
+    public int Id { get; set; }
 
     private void OnEnable()
     {
@@ -112,5 +120,10 @@ public class PlayerInput : MonoBehaviour
     private bool HasAction(HeroAction action)
     {
         return playerActions[selectedHero.ControllingPlayerId].Contains(action);
+    }
+
+    public void SetActiveState(bool flag)
+    {
+        this.enabled = flag;
     }
 }
