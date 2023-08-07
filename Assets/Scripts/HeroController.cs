@@ -11,41 +11,33 @@ public class HeroController : MonoBehaviour
     public int ControllingPlayerId;
     public TileData currentTile { get; private set; }
     public Action<HeroController> onHeroSelected;
+    public Action<HeroAction> onActionEvent { get; set; }
+
+    public Action OnMoveStart { get; set; }
     public Action onHeroUnselected;
     public int RemainingActions { get; private set; }
 
     [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private Transform rotationNode;
-    [SerializeField] private MeshRenderer meshRender;
     [SerializeField] private AreaOutline areaPrefab;
 
+    private Action<HeroAction> onActionCallback { get; set; }
     private HeroStatisticSheet currentStats;
     private Color defaultColor;
     private MapEntity map;
-    private Action<HeroAction> onActionCallback;
     private Coroutine movingCoroutine;
-    private Animator animator;
     private AreaOutline area;
     private AreaOutline heroHighLight;
 
-    private int walkingHash;
-    private int attackHash;
-
     private void Awake()
     {
-        animator = GetComponentInChildren<Animator>();
-        walkingHash = Animator.StringToHash("IsWalking");
-        attackHash = Animator.StringToHash("Attack");
         currentStats = originalStats;
         RemainingActions = currentStats.ActionLimit;
 
         area = Instantiate(areaPrefab, Vector3.zero, Quaternion.identity, transform);
         area.gameObject.SetActive(false);
-        area.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
         heroHighLight = Instantiate(areaPrefab, Vector3.zero, Quaternion.identity, transform);
-        heroHighLight.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-
     }
 
     public void Init(Action<HeroAction> onActionCallback)
@@ -95,11 +87,6 @@ public class HeroController : MonoBehaviour
 
     public bool Move(TileEntity targetTile)
     {
-        bool isWalking = animator.GetBool(walkingHash);
-
-        if (isWalking)
-            return false;
-
         if (map == null || currentTile == null)
         {
             Debug.LogError($"Hero Controller map or currentTile is null to use MOVE function you need to specify them first.");
@@ -112,6 +99,7 @@ public class HeroController : MonoBehaviour
             {
                 map.Tile(currentTile.TilePos).FreeTile();
                 currentTile = targetTile.Data;
+                OnMoveStart?.Invoke();
                 movingCoroutine = StartCoroutine(MoveAnimation(targetTile));
                 //transform.position = map.WorldPosition(targetTile);
 
@@ -142,6 +130,7 @@ public class HeroController : MonoBehaviour
                 {
                     targetTile.occupyingHero.DealDamage(currentStats.WeaponDamage);
                     onActionCallback?.Invoke(HeroAction.Attack);
+                    onActionEvent?.Invoke(HeroAction.Attack);
                     return true;
                 }
                 else
@@ -182,11 +171,11 @@ public class HeroController : MonoBehaviour
         area.gameObject.SetActive(true);
         if (ControllingPlayerId == playerId)
         {
-            meshRender.material.color = Color.green;
+            //meshRender.material.color = Color.green;
         }
         else
         {
-            meshRender.material.color = Color.red;
+            //meshRender.material.color = Color.red;
         }
         onHeroSelected?.Invoke(this);
 
@@ -196,7 +185,7 @@ public class HeroController : MonoBehaviour
     public void Unselect()
     {
         area.gameObject.SetActive(false);
-        meshRender.material.color = defaultColor;
+        //meshRender.material.color = defaultColor;
         onHeroUnselected?.Invoke();
     }
 
@@ -204,7 +193,7 @@ public class HeroController : MonoBehaviour
     public void SetColor(Color color)
     {
         defaultColor = color;
-        meshRender.material.color = color;
+        //meshRender.material.color = color;
     }
 
     public void ResetActions()
@@ -217,16 +206,10 @@ public class HeroController : MonoBehaviour
         return new Tuple<HeroStatisticSheet, HeroStatisticSheet>(currentStats, originalStats);
     }
 
-    //TODO: pomys? na refaktor. Mo?na by metod? move animation lub co? w tym stylu przenie?? do osobnego skryptu
-    //w celu odizolowania fukncjonalno?ci zwi?zanych z animowaniem do osobnego skryptu.
-    //Istnieje szansa, ?e b?dziemy mie? r?zne modele z r??nymi sposobami animacji
-    //(w idealnym ?wiecie chcemy mie? wszystkie modele animowane tymi samymi parematrami ale z racji tego, ?e pewnie b?dziemy korzysta? z kupnych lub darmowych asset?w mog? by? r?zne podej?cia)
     private IEnumerator MoveAnimation(TileEntity targetTile)
     {
-        animator.SetBool(walkingHash, true);
-
         var targetPoint = map.WorldPosition(targetTile);
-        var stepDir = (targetPoint - transform.position) * 8;
+        var stepDir = (targetPoint - transform.position) * 1;
         if (map.RotationType == RotationType.LookAt)
         {
             rotationNode.rotation = Quaternion.LookRotation(stepDir, Vector3.up);
@@ -246,7 +229,8 @@ public class HeroController : MonoBehaviour
 
         targetTile.OccupyTile(this);
         transform.position = targetPoint;
-        animator.SetBool(walkingHash, false);
         onActionCallback?.Invoke(HeroAction.Move);
+        onActionEvent?.Invoke(HeroAction.Move);
+
     }
 }
