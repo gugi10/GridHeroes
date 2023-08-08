@@ -119,6 +119,22 @@ public class HeroController : MonoBehaviour
         return false;
     }
 
+    public bool MoveByPath(List<TileEntity> path)
+    {
+        if (map == null || currentTile == null || path == null)
+        {
+            Debug.LogError($"Hero Controller map or currentTile is null to use MOVE function you need to specify them first.");
+            return false;
+        }
+        if (movingCoroutine != null)
+            StopCoroutine(movingCoroutine);
+        map.Tile(currentTile.TilePos).FreeTile();
+        currentTile = path[path.Count - 1].Data;
+        OnMoveStart?.Invoke();
+        movingCoroutine = StartCoroutine(Moving(path));
+        return true;
+    }
+
     public bool Attack(TileEntity targetTile)
     {
 
@@ -231,6 +247,38 @@ public class HeroController : MonoBehaviour
         transform.position = targetPoint;
         onActionCallback?.Invoke(HeroAction.Move);
         onActionEvent?.Invoke(HeroAction.Move);
+    }
 
+    IEnumerator Moving(List<TileEntity> path)
+    {
+        var nextIndex = 0;
+        transform.position = map.Settings.Projection(transform.position);
+
+        while (nextIndex < path.Count)
+        {
+            var targetPoint = map.WorldPosition(path[nextIndex]);
+            var stepDir = (targetPoint - transform.position) * 1;
+            if (map.RotationType == RotationType.LookAt)
+            {
+                rotationNode.rotation = Quaternion.LookRotation(stepDir, Vector3.up);
+            }
+            else if (map.RotationType == RotationType.Flip)
+            {
+                rotationNode.rotation = map.Settings.Flip(stepDir);
+            }
+            var reached = stepDir.sqrMagnitude < 0.01f;
+            while (!reached)
+            {
+
+                transform.position += stepDir * Time.deltaTime;
+                reached = Vector3.Dot(stepDir, (targetPoint - transform.position)) < 0f;
+                yield return null;
+            }
+            transform.position = targetPoint;
+            nextIndex++;
+        }
+        path[path.Count - 1].OccupyTile(this);
+        onActionCallback?.Invoke(HeroAction.Move);
+        onActionEvent?.Invoke(HeroAction.Move);
     }
 }

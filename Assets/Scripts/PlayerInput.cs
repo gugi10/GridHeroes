@@ -59,12 +59,9 @@ public class PlayerInput : MonoBehaviour
             HandleWorldClick();
         }
 
-        if(map != null && path != null)
+        if(path != null)
         {
-            if (MyInput.GetOnWorldUp(map.map.Settings.Plane()) && selectedHero != null)
-            {
-                HandleWorldHover();
-            }
+           
             PathUpdate();
         }
        
@@ -72,6 +69,8 @@ public class PlayerInput : MonoBehaviour
 
     private void HandleWorldClick()
     {
+        
+
         TileEntity tile = map.GetTile();
         if (tile == null)
             return;
@@ -108,10 +107,11 @@ public class PlayerInput : MonoBehaviour
             }
             else if (!tile.IsOccupied && HasAction(HeroAction.Move))
             {
-                if (selectedHero.Move(tile))
+                if (MyInput.GetOnWorldUp(map.map.Settings.Plane()))
                 {
-                    UnselectHero();
+                    HandleMovePath();
                 }
+               
             }
 
             return;
@@ -154,7 +154,7 @@ public class PlayerInput : MonoBehaviour
         if (path && path.IsEnabled)
         {
             var tile = map.map.Tile(MyInput.GroundPosition(map.map.Settings.Plane()));
-            if (tile != null && tile.Vacant)
+            if (tile != null && tile.Vacant && !tile.IsOccupied)
             {
                 var path = map.map.PathPoints(selectedHero.transform.position, map.map.WorldPosition(tile.Position), (float)selectedHero?.GetHeroStats().Item1.Move);
                 this.path.Show(path, map.map);
@@ -167,24 +167,20 @@ public class PlayerInput : MonoBehaviour
         }
     }
 
-    void HandleWorldHover()
+    void HandleMovePath()
     {
-        if (selectedHero == null)
-        {
-            if (path.gameObject.activeSelf)
-                PathHide();
-            return;
-        }
-
         var clickPos = MyInput.GroundPosition(map.map.Settings.Plane());
         var tile = map.map.Tile(clickPos);
-        if (tile != null && tile.Vacant)
+        if (tile != null && tile.Vacant && !tile.IsOccupied)
         {
             this.path.IsEnabled = false;
             PathHide();
             var path = map.map.PathTiles(selectedHero.transform.position, clickPos, (float)selectedHero?.GetHeroStats().Item1.Move);
             this.path.IsEnabled = true;
-
+            if (selectedHero.MoveByPath(path))
+            {
+                UnselectHero();
+            }
         }
         else
         {
