@@ -19,6 +19,7 @@ public class TurnSequenceController : MonoBehaviour
 
     [SerializeField] MapController mapController;
     [SerializeField] HeroController heroPrefab;
+    [SerializeField] PlayerInput playerInputPrefab;
 
     public int ActivePlayer { get; private set; }
 
@@ -53,7 +54,7 @@ public class TurnSequenceController : MonoBehaviour
         for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
         {
             playersRemainingActions.Add(GenerateActionList());
-            var player = new GameObject().AddComponent<PlayerInput>();
+            var player = Instantiate(playerInputPrefab);
             player.gameObject.name = $"Player_{i}";
             player.Init(mapController, heroControllerInstances, i);
             players.Add(player);

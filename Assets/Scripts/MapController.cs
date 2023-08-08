@@ -10,7 +10,7 @@ public class MapController : MonoBehaviour
 {
     [SerializeField] private MapSettings MapSettings;
     private MapView mapView;
-    private MapEntity map;
+    public MapEntity map;
 
     private void OnValidate()
     {

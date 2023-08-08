@@ -5,7 +5,6 @@ using TMPro;
 public class PlayerActionsView : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI playerHeaderPrefab;
-    [SerializeField] private TurnSequenceController turnSequence;
     [SerializeField] private PlayerActionView playerAction;
     private List<GameObject> spawnedElements = new();
 
