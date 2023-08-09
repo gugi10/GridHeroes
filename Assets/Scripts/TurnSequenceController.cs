@@ -56,7 +56,7 @@ public class TurnSequenceController : MonoBehaviour
     private void Start()
     {
         playersRemainingActions.Add(GenerateActionList());
-        var player = new GameObject().AddComponent<PlayerInput>();
+        var player = Instantiate(playerInputPrefab);
         player.gameObject.name = $"Player_0";
         player.Init(mapController, heroControllerInstances, 0);
         players.Add(player);
