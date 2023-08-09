@@ -16,6 +16,8 @@ public class PlayerActionsView : MonoBehaviour
 
     private void OnDisable()
     {
+        if (TurnSequenceController.Instance == null)
+            return;
         TurnSequenceController.Instance.onTurnFinished -= ShowPlayerActions;
         TurnSequenceController.Instance.onRoundStart -= ShowPlayerActions;
     }
