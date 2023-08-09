@@ -5,7 +5,6 @@ using TMPro;
 public class PlayerActionsView : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI playerHeaderPrefab;
-    [SerializeField] private TurnSequenceController turnSequence;
     [SerializeField] private PlayerActionView playerAction;
     private List<GameObject> spawnedElements = new();
 
@@ -17,6 +16,8 @@ public class PlayerActionsView : MonoBehaviour
 
     private void OnDisable()
     {
+        if (TurnSequenceController.Instance == null)
+            return;
         TurnSequenceController.Instance.onTurnFinished -= ShowPlayerActions;
         TurnSequenceController.Instance.onRoundStart -= ShowPlayerActions;
     }

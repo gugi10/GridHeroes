@@ -150,7 +150,7 @@ namespace RedBjorn.ProtoTiles
 
                 closed.Add(check);
                 open.Remove(check);
-                foreach (var node in map.NeighborsMovable(check).Where(n => n.Vacant))
+                foreach (var node in map.NeighborsMovable(check).Where(n => n.Vacant && !n.IsOccupied))
                 {
                     var currengScoreG = ScoreG[check] + map.Distance(node, finish);
                     var gN = -1f;

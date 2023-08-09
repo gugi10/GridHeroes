@@ -27,7 +27,7 @@ namespace RedBjorn.ProtoTiles
 
         public bool Visited { get; set; }
         public bool Considered { get; set; }
-        public bool IsOccupied { get; private set; }
+        public bool IsOccupied { get; set; }
         public float Depth { get; set; }
         public float[] NeighbourMovable { get { return Data == null ? null : Data.SideHeight; } }
         public Vector3Int Position { get { return Data == null ? Vector3Int.zero : Data.TilePos; } }

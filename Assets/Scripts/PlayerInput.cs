@@ -1,4 +1,5 @@
 using RedBjorn.ProtoTiles;
+using RedBjorn.ProtoTiles.Example;
 using System.Collections.Generic;
 using UnityEngine;
 public interface IPlayer 
@@ -11,12 +12,14 @@ public interface IPlayer
 
 public class PlayerInput : MonoBehaviour, IPlayer
 {
+    public int Id { get; set; }
+    [SerializeField] PathDrawer PathPrefab;
+    private PathDrawer path;
     private MapController map;
     private List<HeroController> heroes = new List<HeroController>();
     private HeroController selectedHero;
     private List<List<HeroAction>> playerActions;
 
-    public int Id { get; set; }
 
     private void OnEnable()
     {
@@ -30,11 +33,21 @@ public class PlayerInput : MonoBehaviour, IPlayer
         TurnSequenceController.Instance.onTurnFinished -= SetPlayerActions;
     }
 
+    private void Start()
+    {
+
+    }
+
     public void Init(MapController map, List<HeroController> ownedHeroes, int playerId)
     {
         this.map = map;
         heroes = ownedHeroes;
         Id = playerId;
+
+        path = Instantiate(PathPrefab, transform);
+        path.InactiveState();
+        path.IsEnabled = true;
+        path.Hide();
     }
 
     private void SetPlayerActions(List<List<HeroAction>> actions)
@@ -54,24 +67,30 @@ public class PlayerInput : MonoBehaviour, IPlayer
             HandleWorldClick();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if(path != null)
         {
-
+           
+            PathUpdate();
         }
+       
     }
 
     private void HandleWorldClick()
     {
+        
+
         TileEntity tile = map.GetTile();
         if (tile == null)
             return;
 
-        if(tile.IsOccupied && selectedHero == null)
+        if (tile.IsOccupied && selectedHero == null)
         {
             foreach (var hero in heroes)
             {
                 if (hero.currentTile.TilePos == tile.Data.TilePos)
+                {
                     selectedHero = hero.SelectHero(Id);
+                }
                 else
                     hero.Unselect();
             }
@@ -94,14 +113,15 @@ public class PlayerInput : MonoBehaviour, IPlayer
                     UnselectHero();
                 }
             }
-            else if(!tile.IsOccupied && HasAction(HeroAction.Move))
+            else if (!tile.IsOccupied && HasAction(HeroAction.Move))
             {
-                if (selectedHero.Move(tile))
+                if (MyInput.GetOnWorldUp(map.map.Settings.Plane()))
                 {
-                    UnselectHero();
+                    HandleMovePath();
                 }
+               
             }
-            
+
             return;
         }
     }
@@ -125,5 +145,58 @@ public class PlayerInput : MonoBehaviour, IPlayer
     public void SetActiveState(bool flag)
     {
         this.enabled = flag;
+    }
+
+    void PathHide()
+    {
+        if (path)
+        {
+            path.Hide();
+        }
+    }
+
+    void PathUpdate()
+    {
+        if (selectedHero == null)
+        {
+            if (path.gameObject.activeSelf)
+                PathHide();
+            return;
+        }
+
+        if (path && path.IsEnabled)
+        {
+            var tile = map.map.Tile(MyInput.GroundPosition(map.map.Settings.Plane()));
+            if (tile != null && tile.Vacant && !tile.IsOccupied)
+            {
+                var path = map.map.PathPoints(selectedHero.transform.position, map.map.WorldPosition(tile.Position), (float)selectedHero?.GetHeroStats().Item1.Move);
+                this.path.Show(path, map.map);
+                this.path.ActiveState();
+            }
+            else
+            {
+                path.InactiveState();
+            }
+        }
+    }
+    void HandleMovePath()
+    {
+        var clickPos = MyInput.GroundPosition(map.map.Settings.Plane());
+        var tile = map.map.Tile(clickPos);
+        if (tile != null && tile.Vacant && !tile.IsOccupied)
+        {
+            this.path.IsEnabled = false;
+            PathHide();
+            var path = map.map.PathTiles(selectedHero.transform.position, clickPos, (float)selectedHero?.GetHeroStats().Item1.Move);
+            this.path.IsEnabled = true;
+            if (selectedHero.MoveByPath(path))
+            {
+                UnselectHero();
+            }
+        }
+        else
+        {
+            Debug.LogError($"tile is null");
+        }
     }
 }

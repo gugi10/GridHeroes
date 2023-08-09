@@ -10,6 +10,8 @@ namespace RedBjorn.ProtoTiles
 
         bool Vacant { get; }
 
+        bool IsOccupied { get; set; }
+
         float Depth { get; set; }
         bool Visited { get; set; }
         bool Considered { get; set; }

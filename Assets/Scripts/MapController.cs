@@ -10,7 +10,7 @@ public class MapController : MonoBehaviour
 {
     [SerializeField] private MapSettings MapSettings;
     private MapView mapView;
-    private MapEntity map;
+    public MapEntity map;
 
     private void OnValidate()
     {
@@ -40,7 +40,7 @@ public class MapController : MonoBehaviour
     public void SpawnHeroesRandomly(List<HeroController> heroesToPosition)
     {
         
-        var mapSettingsTemp = map.Settings.Tiles;
+        var mapSettingsTemp = map.Settings.Tiles.Where(x => x.MovableArea > 0).ToList();
         List<int> indexArray = Enumerable.Range(0, mapSettingsTemp.Count).ToList();
         foreach(var hero in heroesToPosition)
         {
