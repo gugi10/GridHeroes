@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public class TurnSequenceController : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class TurnSequenceController : MonoBehaviour
         
     }
     private static TurnSequenceController instance;
-
+    [SerializeField] List<HeroListWrapper> units = new();
     [SerializeField] MapController mapController;
     [SerializeField] HeroController heroPrefab;
     [SerializeField] PlayerInput playerInputPrefab;
@@ -32,21 +33,24 @@ public class TurnSequenceController : MonoBehaviour
     private const int HEROES_TO_SPAWN = 6;
     private const int MAX_ACTIONS = 3;
 
-    private List<HeroController> heroControllerInstances;
+    private List<HeroController> heroControllerInstances = new();
     private List<PlayerInput> players = new();
     private List<List<HeroAction>> playersRemainingActions = new();
 
     private void Awake()
     {
-        heroControllerInstances = Enumerable.Range(0, HEROES_TO_SPAWN).Select(i =>
+        for (int i = 0; i < units.Count; i++)
         {
-            var instance = Instantiate(heroPrefab);
-            instance.ControllingPlayerId = i % 2;
-            instance.Init(FinishTurn);
-            instance.onHeroSelected += OnHeroSelectedCallback;
-            instance.onHeroUnselected += OnHeroSelectedCallback;
-            return instance;
-        }).ToList();
+            units[i].Units.ForEach(hero =>
+            {
+                var instance = Instantiate(hero);
+                instance.ControllingPlayerId = i;
+                instance.Init(FinishTurn);
+                instance.onHeroSelected += OnHeroSelectedCallback;
+                instance.onHeroUnselected += OnHeroSelectedCallback;
+                heroControllerInstances.Add(instance);
+            });
+        }
     }
 
     private void Start()
@@ -114,7 +118,7 @@ public class TurnSequenceController : MonoBehaviour
 
     private List<HeroAction> GenerateActionList()
     {
-        var actions = Enumerable.Range(0, MAX_ACTIONS).Select(_ => HeroActionChooser.ChooseRandomAction()).ToList();
+        var actions = Enumerable.Range(0, MAX_ACTIONS).Select(_ => HeroActionChooser.ChooseRandomAction ()).ToList();
         foreach (var action in actions)
         {
             Debug.Log($"{action}");
@@ -132,4 +136,10 @@ public class TurnSequenceController : MonoBehaviour
         onHeroUnselected?.Invoke();
     }
 
+}
+
+[System.Serializable]
+public class HeroListWrapper
+{
+    public List<HeroController> Units;
 }

@@ -34,12 +34,14 @@ public class UnitAnimations : MonoBehaviour
     {
         heroController.onActionEvent += ParseUnitAction;
         heroController.OnMoveStart += PlayMove;
+        heroController.onDie += PlayDie;
     }
 
     private void OnDisable()
     {
         heroController.onActionEvent -= ParseUnitAction;
         heroController.OnMoveStart -= PlayMove;
+        heroController.onDie -= PlayDie;
     }
 
     void Update()

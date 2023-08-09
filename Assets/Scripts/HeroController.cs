@@ -12,7 +12,7 @@ public class HeroController : MonoBehaviour
     public TileData currentTile { get; private set; }
     public Action<HeroController> onHeroSelected;
     public Action<HeroAction> onActionEvent { get; set; }
-
+    public Action onDie { get; set; }
     public Action OnMoveStart { get; set; }
     public Action onHeroUnselected;
     public int RemainingActions { get; private set; }
@@ -171,9 +171,9 @@ public class HeroController : MonoBehaviour
         currentStats.Health -= damage;
         if(currentStats.Health <= 0)
         {
-            gameObject.SetActive(false);
+            onDie?.Invoke();
+            StartCoroutine(RemoveModel());
         }
-        Debug.Log($"{gameObject.name} is dealt {damage} damage");
     }
 
     public bool CheckTileRange(Vector3 sourceTile, Vector3 targetTile, int range)
@@ -280,5 +280,11 @@ public class HeroController : MonoBehaviour
         path[path.Count - 1].OccupyTile(this);
         onActionCallback?.Invoke(HeroAction.Move);
         onActionEvent?.Invoke(HeroAction.Move);
+    }
+
+    IEnumerator RemoveModel()
+    {
+        yield return new WaitForSeconds(5f);
+        gameObject.SetActive(false);
     }
 }
