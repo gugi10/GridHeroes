@@ -2,7 +2,8 @@ using RedBjorn.ProtoTiles;
 using RedBjorn.ProtoTiles.Example;
 using System.Collections.Generic;
 using UnityEngine;
-public interface IPlayer 
+using System.Linq;
+public interface IPlayer
 {
     public void Init(MapController map, List<HeroController> ownedHeroes, int playerId);
     public void SetActiveState(bool flag);
@@ -61,24 +62,28 @@ public class PlayerInput : MonoBehaviour, IPlayer
         {
             return;
         }
-
         if (map.GetMapInput())
         {
             HandleWorldClick();
         }
 
-        if(path != null)
+        if (path != null)
         {
-           
             PathUpdate();
         }
-       
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (selectedHero != null)
+            {
+                selectedHero.DoSpecialAbility();
+            }
+        }
+
     }
 
     private void HandleWorldClick()
     {
-        
-
         TileEntity tile = map.GetTile();
         if (tile == null)
             return;
@@ -119,7 +124,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
                 {
                     HandleMovePath();
                 }
-               
+
             }
 
             return;

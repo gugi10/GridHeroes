@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4105363074153309481}
   - component: {fileID: 6390770937447195161}
+  - component: {fileID: 7788117714196224813}
   m_Layer: 0
   m_Name: CrabUnit
   m_TagString: Untagged
@@ -49,6 +50,20 @@ MonoBehaviour:
   originalStats: {fileID: 11400000, guid: 62de22b5096ed9c40bb4b4e8b848e951, type: 2}
   rotationNode: {fileID: 2397066353274874460}
   areaPrefab: {fileID: 114964435729023602, guid: fe2319e9d6e840f409af77b3e7a85259, type: 3}
+--- !u!114 &7788117714196224813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4253190124307769117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e2002f80c2acb946b3f96b5a2d564c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 1
+  damage: 1
 --- !u!1001 &2261668112591179410
 PrefabInstance:
   m_ObjectHideFlags: 0

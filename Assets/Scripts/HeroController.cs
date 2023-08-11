@@ -5,6 +5,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum HeroState
+{
+    Idle,
+    SpecialAbility,
+    Dead
+}
 
 public class HeroController : MonoBehaviour
 {
@@ -28,6 +34,8 @@ public class HeroController : MonoBehaviour
     private Coroutine movingCoroutine;
     private AreaOutline area;
     private AreaOutline heroHighLight;
+    private ISpecialAbility[] specialAbilities;
+    private HeroState heroState;
 
     private void Awake()
     {
@@ -38,6 +46,8 @@ public class HeroController : MonoBehaviour
         area.gameObject.SetActive(false);
 
         heroHighLight = Instantiate(areaPrefab, Vector3.zero, Quaternion.identity, transform);
+        specialAbilities = GetComponents<ISpecialAbility>();
+        heroState = HeroState.Idle;
     }
 
     public void Init(Action<HeroAction> onActionCallback)
@@ -84,6 +94,13 @@ public class HeroController : MonoBehaviour
         Debug.Log($"Action result = {actionResult}, Remaining actions = {remainingActions}");
         return actionResult;
     }*/
+
+    public void DoSpecialAbility()
+    {
+        heroState = HeroState.SpecialAbility;
+        specialAbilities[0].DoSpecialAbility(this, map);
+        heroState = HeroState.Idle;
+    }
 
     public bool Move(TileEntity targetTile)
     {
@@ -171,6 +188,7 @@ public class HeroController : MonoBehaviour
         currentStats.Health -= damage;
         if(currentStats.Health <= 0)
         {
+            map.Tile(currentTile.TilePos).FreeTile();
             onDie?.Invoke();
             StartCoroutine(RemoveModel());
         }
