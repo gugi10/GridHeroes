@@ -71,15 +71,6 @@ public class PlayerInput : MonoBehaviour, IPlayer
         {
             PathUpdate();
         }
-
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            if (selectedHero != null)
-            {
-                selectedHero.DoSpecialAbility();
-            }
-        }
-
     }
 
     private void HandleWorldClick()

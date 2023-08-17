@@ -35,6 +35,7 @@ public class UnitAnimations : MonoBehaviour
         heroController.onActionEvent += ParseUnitAction;
         heroController.OnMoveStart += PlayMove;
         heroController.onDie += PlayDie;
+        heroController.onSpecialAbility += PlaySpecialAbillity;
     }
 
     private void OnDisable()
@@ -42,6 +43,7 @@ public class UnitAnimations : MonoBehaviour
         heroController.onActionEvent -= ParseUnitAction;
         heroController.OnMoveStart -= PlayMove;
         heroController.onDie -= PlayDie;
+        heroController.onSpecialAbility -= PlaySpecialAbillity;
     }
 
     void Update()

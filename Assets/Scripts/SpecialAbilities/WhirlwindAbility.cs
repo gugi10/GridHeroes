@@ -7,6 +7,10 @@ public class WhirlwindAbility : MonoBehaviour, ISpecialAbility
 {
     public int range = 1;
     public int damage = 1;
+
+    [Header("Visual settings")]
+    [SerializeField] string animationId = "Attack02";
+    [SerializeField] private Sprite icon;
     public bool DoSpecialAbility(HeroController source, MapEntity map)
     {
         HashSet<TileEntity> surroundingTiles = map.WalkableTiles(source.currentTile.TilePos, range);
@@ -16,5 +20,15 @@ public class WhirlwindAbility : MonoBehaviour, ISpecialAbility
                 tile.occupyingHero.DealDamage(damage);
         }
         return false;
+    }
+
+    public string GetSkillAnimation()
+    {
+        return animationId;
+    }
+
+    public Sprite GetSkillIcon()
+    {
+        return icon;
     }
 }

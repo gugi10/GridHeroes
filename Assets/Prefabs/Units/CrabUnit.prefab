@@ -64,6 +64,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 1
   damage: 1
+  animationId: Attack02
+  icon: {fileID: 21300000, guid: 7ab74e659e1f0a34d9cfec21c478fc12, type: 3}
 --- !u!1001 &2261668112591179410
 PrefabInstance:
   m_ObjectHideFlags: 0

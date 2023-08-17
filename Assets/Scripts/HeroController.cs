@@ -21,7 +21,9 @@ public class HeroController : MonoBehaviour
     public Action onDie { get; set; }
     public Action OnMoveStart { get; set; }
     public Action onHeroUnselected;
+    public Action<string> onSpecialAbility { get; set; }
     public int RemainingActions { get; private set; }
+    public ISpecialAbility[] specialAbilities { get; private set; }
 
     [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private Transform rotationNode;
@@ -34,7 +36,6 @@ public class HeroController : MonoBehaviour
     private Coroutine movingCoroutine;
     private AreaOutline area;
     private AreaOutline heroHighLight;
-    private ISpecialAbility[] specialAbilities;
     private HeroState heroState;
 
     private void Awake()
@@ -95,10 +96,11 @@ public class HeroController : MonoBehaviour
         return actionResult;
     }*/
 
-    public void DoSpecialAbility()
+    public void DoSpecialAbility(int id)
     {
         heroState = HeroState.SpecialAbility;
-        specialAbilities[0].DoSpecialAbility(this, map);
+        specialAbilities[id].DoSpecialAbility(this, map);
+        onSpecialAbility.Invoke(specialAbilities[id].GetSkillAnimation());
         heroState = HeroState.Idle;
     }
 
