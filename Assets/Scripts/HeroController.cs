@@ -31,12 +31,7 @@ public class HeroController : MonoBehaviour
     [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private Transform rotationNode;
     [SerializeField] private AreaOutline areaPrefab;
-    public void FinishSpecialAbility(bool isCanceled)
-    {
-        onSpecialAbilityFinished?.Invoke();
-        if (!isCanceled)
-            onActionEvent.Invoke(HeroAction.Special);
-    }
+
     private HeroStatisticSheet currentStats;
     private Color defaultColor;
     private MapEntity map;
