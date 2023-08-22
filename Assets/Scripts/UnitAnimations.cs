@@ -35,7 +35,6 @@ public class UnitAnimations : MonoBehaviour
         heroController.onActionEvent += ParseUnitAction;
         heroController.OnMoveStart += PlayMove;
         heroController.onDie += PlayDie;
-        heroController.onSpecialAbility += PlaySpecialAbillity;
     }
 
     private void OnDisable()
@@ -43,7 +42,6 @@ public class UnitAnimations : MonoBehaviour
         heroController.onActionEvent -= ParseUnitAction;
         heroController.OnMoveStart -= PlayMove;
         heroController.onDie -= PlayDie;
-        heroController.onSpecialAbility -= PlaySpecialAbillity;
     }
 
     void Update()
@@ -78,7 +76,7 @@ public class UnitAnimations : MonoBehaviour
         basicAttack.particles?.Play();
     }
 
-    private void ParseUnitAction(HeroAction action)
+    public void ParseUnitAction(HeroAction action)
     {
         switch (action)
         {
@@ -93,47 +91,47 @@ public class UnitAnimations : MonoBehaviour
         }
     }
 
-    private void PlayMove()
+    public void PlayMove()
     {
         Debug.Log($"play move animation");
 
         animator.SetBool(isWalkingHash, true);
     }
 
-    private void StopMove()
+    public void StopMove()
     {
         Debug.Log($"stop move animation");
 
         animator.SetBool(isWalkingHash, false);
     }
 
-    private void PlayAttack()
+    public void PlayAttack()
     {
         Debug.Log($"Play attack animation");
         animator.Play(attackHash);
     }
 
-    private void PlayVictory()
+    public void PlayVictory()
     {
         animator.Play(victoryHash);
     }
 
-    private void PlayDie()
+    public void PlayDie()
     {
         animator.Play(dieHash);
     }
 
-    private void PlayDizzy()
+    public void PlayDizzy()
     {
         animator.Play(dizzyHash);
     }
 
-    private void PlayGetHit(float delay)
+    public void PlayGetHit(float delay)
     {
         StartCoroutine(GetHitCoroutine(delay));
     }
 
-    private void PlaySpecialAbillity(string abilityName = "Attack02")
+    public void PlaySpecialAbillity(string abilityName = "Attack02")
     {
         animator.Play(specialAnimsHashDict[abilityName]);
     }

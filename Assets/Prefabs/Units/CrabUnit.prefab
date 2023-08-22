@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4105363074153309481}
   - component: {fileID: 6390770937447195161}
+  - component: {fileID: 6328759048173481327}
   - component: {fileID: 7788117714196224813}
   m_Layer: 0
   m_Name: CrabUnit
@@ -50,6 +51,28 @@ MonoBehaviour:
   originalStats: {fileID: 11400000, guid: 62de22b5096ed9c40bb4b4e8b848e951, type: 2}
   rotationNode: {fileID: 2397066353274874460}
   areaPrefab: {fileID: 114964435729023602, guid: fe2319e9d6e840f409af77b3e7a85259, type: 3}
+--- !u!114 &6328759048173481327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4253190124307769117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d509d9289d8fcd84891a97d36b68b966, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  specialAbilities:
+  - animationName: Attack02
+    particles: {fileID: 3108774469677777647}
+  - animationName: Attack03
+    particles: {fileID: 7579954285628799144}
+  basicAttack:
+    animationName: Attack01
+    particles: {fileID: 7579954285628799144}
+  animator: {fileID: 2397066353265313196}
+  heroController: {fileID: 6390770937447195161}
 --- !u!114 &7788117714196224813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,6 +204,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4105363074153309481}
     m_Modifications:
+    - target: {fileID: 6928589415477418630, guid: 33376466761f4650acc04a2405bdfb62, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6928589415477418788, guid: 33376466761f4650acc04a2405bdfb62, type: 3}
       propertyPath: m_Name
       value: CrabMonsterPBRDefault
@@ -802,43 +829,13 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6928589415477905156, guid: 33376466761f4650acc04a2405bdfb62, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7579954285628799151}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6928589415477418788, guid: 33376466761f4650acc04a2405bdfb62, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7847145121544465513}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33376466761f4650acc04a2405bdfb62, type: 3}
 --- !u!95 &2397066353265313196 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6928589415484844276, guid: 33376466761f4650acc04a2405bdfb62, type: 3}
   m_PrefabInstance: {fileID: 4711711309147336024}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2397066353274713724 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6928589415477418788, guid: 33376466761f4650acc04a2405bdfb62, type: 3}
-  m_PrefabInstance: {fileID: 4711711309147336024}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7847145121544465513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2397066353274713724}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d509d9289d8fcd84891a97d36b68b966, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  specialAbilities:
-  - animationName: Attack02
-    particles: {fileID: 3108774469677777647}
-  - animationName: Attack03
-    particles: {fileID: 7579954285628799144}
-  basicAttack:
-    animationName: Attack01
-    particles: {fileID: 7579954285628799144}
-  animator: {fileID: 2397066353265313196}
-  heroController: {fileID: 6390770937447195161}
 --- !u!4 &2397066353274874460 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6928589415477905156, guid: 33376466761f4650acc04a2405bdfb62, type: 3}

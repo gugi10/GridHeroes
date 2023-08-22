@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//TODO: zostawiam jako pomysl, mielibysmy jakas forme obserwatora stanu bohatera. Robilibysmy subskrypcje obserwujace zmiany stanu bohatera i na podstawie tej zmiany stanu wykonywali odpowiednie akcje
+// pomysl na rozwiazanie problemu z przetwarzaniem input dla ability
 public enum HeroState
 {
     Idle,
@@ -21,22 +23,26 @@ public class HeroController : MonoBehaviour
     public Action onDie { get; set; }
     public Action OnMoveStart { get; set; }
     public Action onHeroUnselected;
-    public Action<string> onSpecialAbility { get; set; }
+    public Action onSpecialAbilityStarted;
+    public Action onSpecialAbilityFinished;
     public int RemainingActions { get; private set; }
     public ISpecialAbility[] specialAbilities { get; private set; }
 
     [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private Transform rotationNode;
     [SerializeField] private AreaOutline areaPrefab;
-
-    private Action<HeroAction> onActionCallback { get; set; }
+    public void FinishSpecialAbility(bool isCanceled)
+    {
+        onSpecialAbilityFinished?.Invoke();
+        if (!isCanceled)
+            onActionEvent.Invoke(HeroAction.Special);
+    }
     private HeroStatisticSheet currentStats;
     private Color defaultColor;
     private MapEntity map;
     private Coroutine movingCoroutine;
     private AreaOutline area;
     private AreaOutline heroHighLight;
-    private HeroState heroState;
 
     private void Awake()
     {
@@ -48,12 +54,11 @@ public class HeroController : MonoBehaviour
 
         heroHighLight = Instantiate(areaPrefab, Vector3.zero, Quaternion.identity, transform);
         specialAbilities = GetComponents<ISpecialAbility>();
-        heroState = HeroState.Idle;
     }
 
     public void Init(Action<HeroAction> onActionCallback)
     {
-        this.onActionCallback = onActionCallback;
+        this.onActionEvent += onActionCallback;
     }
 
     public void SetupHero(MapEntity map, TileData startingTile)
@@ -98,10 +103,9 @@ public class HeroController : MonoBehaviour
 
     public void DoSpecialAbility(int id)
     {
-        heroState = HeroState.SpecialAbility;
+        onSpecialAbilityStarted?.Invoke();
+        //onSpecialAbility.Invoke(specialAbilities[id].GetSkillAnimation());
         specialAbilities[id].DoSpecialAbility(this, map);
-        onSpecialAbility.Invoke(specialAbilities[id].GetSkillAnimation());
-        heroState = HeroState.Idle;
     }
 
     public bool Move(TileEntity targetTile)
@@ -119,7 +123,7 @@ public class HeroController : MonoBehaviour
                 map.Tile(currentTile.TilePos).FreeTile();
                 currentTile = targetTile.Data;
                 OnMoveStart?.Invoke();
-                movingCoroutine = StartCoroutine(MoveAnimation(targetTile));
+                movingCoroutine = StartCoroutine(Fly(targetTile));
                 //transform.position = map.WorldPosition(targetTile);
 
                 return true;
@@ -150,7 +154,7 @@ public class HeroController : MonoBehaviour
         map.Tile(currentTile.TilePos).FreeTile();
         currentTile = path[path.Count - 1].Data;
         OnMoveStart?.Invoke();
-        movingCoroutine = StartCoroutine(Moving(path));
+        movingCoroutine = StartCoroutine(Move(path));
         return true;
     }
 
@@ -164,7 +168,6 @@ public class HeroController : MonoBehaviour
                 if (targetTile.occupyingHero != null && targetTile.occupyingHero != this)
                 {
                     targetTile.occupyingHero.DealDamage(currentStats.WeaponDamage);
-                    onActionCallback?.Invoke(HeroAction.Attack);
                     onActionEvent?.Invoke(HeroAction.Attack);
                     return true;
                 }
@@ -242,7 +245,7 @@ public class HeroController : MonoBehaviour
         return new Tuple<HeroStatisticSheet, HeroStatisticSheet>(currentStats, originalStats);
     }
 
-    private IEnumerator MoveAnimation(TileEntity targetTile)
+    private IEnumerator Fly(TileEntity targetTile)
     {
         var targetPoint = map.WorldPosition(targetTile);
         var stepDir = (targetPoint - transform.position) * 1;
@@ -265,11 +268,10 @@ public class HeroController : MonoBehaviour
 
         targetTile.OccupyTile(this);
         transform.position = targetPoint;
-        onActionCallback?.Invoke(HeroAction.Move);
         onActionEvent?.Invoke(HeroAction.Move);
     }
 
-    IEnumerator Moving(List<TileEntity> path)
+    IEnumerator Move(List<TileEntity> path)
     {
         var nextIndex = 0;
         transform.position = map.Settings.Projection(transform.position);
@@ -298,13 +300,12 @@ public class HeroController : MonoBehaviour
             nextIndex++;
         }
         path[path.Count - 1].OccupyTile(this);
-        onActionCallback?.Invoke(HeroAction.Move);
         onActionEvent?.Invoke(HeroAction.Move);
     }
 
     IEnumerator RemoveModel()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(2f);
         gameObject.SetActive(false);
     }
 }

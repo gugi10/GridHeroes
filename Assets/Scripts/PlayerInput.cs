@@ -43,12 +43,28 @@ public class PlayerInput : MonoBehaviour, IPlayer
     {
         this.map = map;
         heroes = ownedHeroes;
+        heroes.ForEach(hero =>
+        {
+            hero.onSpecialAbilityStarted += BlockInput;
+            hero.onSpecialAbilityFinished += FreeInput;
+        }); 
+
         Id = playerId;
 
         path = Instantiate(PathPrefab, transform);
         path.InactiveState();
         path.IsEnabled = true;
         path.Hide();
+    }
+
+    private void BlockInput()
+    {
+        SetActiveState(false);
+    }
+
+    private void FreeInput()
+    {
+        SetActiveState(true);
     }
 
     private void SetPlayerActions(List<List<HeroAction>> actions)

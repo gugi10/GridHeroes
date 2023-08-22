@@ -18,10 +18,5 @@ public class AIAgent : MonoBehaviour, IPlayer
     public void SetActiveState(bool flag)
     {
         this.enabled = flag;
-
-        foreach(HeroController hero in heroes)
-        {
-            Debug.Log($"hero name {hero.gameObject.name} {hero.ControllingPlayerId}");
-        }
     }
 }

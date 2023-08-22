@@ -10,7 +10,7 @@ public class SkillBarView : MonoBehaviour
     {
         TurnSequenceController.Instance.onHeroSelected += ShowHeroSkills;
     }
-
+  
     private void OnDisable()
     {
         TurnSequenceController.Instance.onHeroSelected -= ShowHeroSkills;
@@ -38,6 +38,6 @@ public class SkillBarView : MonoBehaviour
         {
             instantiatedSkills[i].gameObject.SetActive(false);
         }
-    }
+    } 
 
 }
