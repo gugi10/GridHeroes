@@ -45,7 +45,7 @@ public class TurnSequenceController : MonoBehaviour
             {
                 var instance = Instantiate(hero);
                 instance.ControllingPlayerId = i;
-                instance.Init(FinishTurn);
+                instance.Init(FinishTurn, () => { FinishTurn(HeroAction.Special); });
                 instance.onHeroSelected += OnHeroSelectedCallback;
                 instance.onHeroUnselected += OnHeroSelectedCallback;
                 heroControllerInstances.Add(instance);

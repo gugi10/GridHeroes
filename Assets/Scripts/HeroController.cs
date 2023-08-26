@@ -51,9 +51,10 @@ public class HeroController : MonoBehaviour
         specialAbilities = GetComponents<ISpecialAbility>();
     }
 
-    public void Init(Action<HeroAction> onActionCallback)
+    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished)
     {
         this.onActionEvent += onActionCallback;
+        this.onSpecialAbilityFinished += onSpecialAbilityFinished;
     }
 
     public void SetupHero(MapEntity map, TileData startingTile)
