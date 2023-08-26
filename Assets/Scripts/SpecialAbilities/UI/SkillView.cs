@@ -43,6 +43,12 @@ public class SkillView : MonoBehaviour
             return;
         }
 
-        hero.DoSpecialAbility(id);
+        var turnSequenceController = TurnSequenceController.Instance;
+        var activePlayer = turnSequenceController.ActivePlayer;
+        // Better way to do it would be do gray out the button and make it non clickable when player has no special actions
+        if (turnSequenceController.GetPlayerRemainingActions(activePlayer).Contains(HeroAction.Special))
+        {
+            hero.DoSpecialAbility(id);
+        }
     }
 }

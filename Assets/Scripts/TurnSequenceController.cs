@@ -81,6 +81,12 @@ public class TurnSequenceController : MonoBehaviour
         }
     }
 
+    public List<HeroAction> GetPlayerRemainingActions(int playerId)
+    {
+        return playersRemainingActions[playerId];
+    }
+
+
     public void FinishTurn(HeroAction heroAction)
     {
         playersRemainingActions[ActivePlayer].Remove(heroAction);
