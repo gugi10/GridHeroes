@@ -10,7 +10,7 @@ public class MapController : MonoBehaviour
 {
     [SerializeField] private MapSettings MapSettings;
     private MapView mapView;
-    public MapEntity map;
+    public MapEntity mapEntity;
 
     private void OnValidate()
     {
@@ -21,26 +21,26 @@ public class MapController : MonoBehaviour
     private void Awake()
     {
         mapView = GetComponent<MapView>();
-        map = new MapEntity(MapSettings, mapView);
+        mapEntity = new MapEntity(MapSettings, mapView);
     }
 
     public MapEntity GetMapEntity()
     {
-        if(map == null)
+        if(mapEntity == null)
         {
             mapView = GetComponent<MapView>();
-            map = new MapEntity(MapSettings, mapView);
-            return map;
+            mapEntity = new MapEntity(MapSettings, mapView);
+            return mapEntity;
         }
 
-        return map;
+        return mapEntity;
     }
     
     //random spawner
     public void SpawnHeroesRandomly(List<HeroController> heroesToPosition)
     {
         
-        var mapSettingsTemp = map.Settings.Tiles.Where(x => x.MovableArea > 0).ToList();
+        var mapSettingsTemp = mapEntity.Settings.Tiles.Where(x => x.MovableArea > 0).ToList();
         List<int> indexArray = Enumerable.Range(0, mapSettingsTemp.Count).ToList();
         foreach(var hero in heroesToPosition)
         {
@@ -49,18 +49,18 @@ public class MapController : MonoBehaviour
             indexArray.RemoveAt(randomTileIndex);
             var tile = mapSettingsTemp[index];
             hero.SetColor(new Color(1f, 1f, hero.ControllingPlayerId * 1f));
-            hero.SetupHero(map, tile);
+            hero.SetupHero(mapEntity, tile);
         }
     }
 
     public bool GetMapInput()
     {
-        return MyInput.GetOnWorldUp(map.Settings.Plane());
+        return MyInput.GetOnWorldUp(mapEntity.Settings.Plane());
     }
 
     public TileEntity GetTile()
     {
-        var clickPos = MyInput.GroundPosition(map.Settings.Plane());
-        return map.Tile(clickPos);
+        var clickPos = MyInput.GroundPosition(mapEntity.Settings.Plane());
+        return mapEntity.Tile(clickPos);
     }
 }

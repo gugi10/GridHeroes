@@ -43,7 +43,7 @@ public class FireboltAbility : AbilityBase
 
         if (tile.IsOccupied)
         {
-            if (TileUtilities.CheckTileRange(source.currentTile.TilePos, tile.Position, range) &&
+            if (TileUtilities.AreTilesInRange(source.currentTile.TilePos, tile.Position, range) &&
                 tile.occupyingHero != source && tile.occupyingHero.ControllingPlayerId != source.ControllingPlayerId)
             {
                 tile.occupyingHero.DealDamage(damage);

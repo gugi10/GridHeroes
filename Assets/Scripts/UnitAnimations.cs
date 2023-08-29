@@ -54,8 +54,6 @@ public class UnitAnimations : MonoBehaviour
             PlayAttack();
         if (Input.GetKeyDown(KeyCode.F4))
             PlayVictory();
-        if (Input.GetKeyDown(KeyCode.F5))
-            PlayDie();
         if (Input.GetKeyDown(KeyCode.F6))
             PlayGetHit(2f);
         if (Input.GetKeyDown(KeyCode.F7))
@@ -116,7 +114,7 @@ public class UnitAnimations : MonoBehaviour
         animator.Play(victoryHash);
     }
 
-    public void PlayDie()
+    public void PlayDie(HeroController _hero)
     {
         animator.Play(dieHash);
     }

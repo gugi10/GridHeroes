@@ -19,7 +19,6 @@ public class TurnSequenceController : MonoBehaviour
     private static TurnSequenceController instance;
     [SerializeField] List<HeroListWrapper> units = new();
     [SerializeField] MapController mapController;
-    [SerializeField] HeroController heroPrefab;
     [SerializeField] PlayerInput playerInputPrefab;
 
     public int ActivePlayer { get; private set; }
@@ -30,8 +29,7 @@ public class TurnSequenceController : MonoBehaviour
     public Action onHeroUnselected;
 
     private const int NUMBER_OF_PLAYERS = 2;
-    private const int HEROES_TO_SPAWN = 6;
-    private const int MAX_ACTIONS = 3;
+    private const int MAX_ACTIONS = 10;
 
     private List<IPlayer> players = new();
     private List<HeroController> heroControllerInstances = new();
@@ -45,7 +43,7 @@ public class TurnSequenceController : MonoBehaviour
             {
                 var instance = Instantiate(hero);
                 instance.ControllingPlayerId = i;
-                instance.Init(FinishTurn, () => { FinishTurn(HeroAction.Special); });
+                instance.Init(FinishTurn, () => { FinishTurn(HeroAction.Special); }, this.OnDie);
                 instance.onHeroSelected += OnHeroSelectedCallback;
                 instance.onHeroUnselected += OnHeroSelectedCallback;
                 heroControllerInstances.Add(instance);
@@ -64,13 +62,14 @@ public class TurnSequenceController : MonoBehaviour
         playersRemainingActions.Add(GenerateActionList());
         var ai = new GameObject().AddComponent<AIAgent>();
         ai.gameObject.name = $"AI";
-        ai.Init(mapController, heroControllerInstances, 0);
+        ai.Init(mapController, heroControllerInstances, 1);
         players.Add(ai);
 
         onRoundStart?.Invoke(playersRemainingActions);
 
-        SetActivePlayer(UnityEngine.Random.Range(0, NUMBER_OF_PLAYERS));
+        
         mapController.SpawnHeroesRandomly(heroControllerInstances);
+        SetActivePlayer(UnityEngine.Random.Range(0, NUMBER_OF_PLAYERS));
     }
 
     private void Update()
@@ -97,6 +96,11 @@ public class TurnSequenceController : MonoBehaviour
         {
             FinishRound();
         }
+    }
+
+    private void OnDie(HeroController hero)
+    {
+        heroControllerInstances.Remove(hero);
     }
 
     private void FinishRound()

@@ -20,7 +20,7 @@ public class HeroController : MonoBehaviour
     public TileData currentTile { get; private set; }
     public Action<HeroController> onHeroSelected;
     public Action<HeroAction> onActionEvent { get; set; }
-    public Action onDie { get; set; }
+    public Action<HeroController> onDie { get; set; }
     public Action OnMoveStart { get; set; }
     public Action onHeroUnselected;
     public Action onSpecialAbilityStarted;
@@ -51,10 +51,11 @@ public class HeroController : MonoBehaviour
         specialAbilities = GetComponents<ISpecialAbility>();
     }
 
-    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished)
+    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished, Action<HeroController> onDie)
     {
         this.onActionEvent += onActionCallback;
         this.onSpecialAbilityFinished += onSpecialAbilityFinished;
+        this.onDie += onDie;
     }
 
     public void SetupHero(MapEntity map, TileData startingTile)
@@ -190,7 +191,7 @@ public class HeroController : MonoBehaviour
         if(currentStats.Health <= 0)
         {
             map.Tile(currentTile.TilePos).FreeTile();
-            onDie?.Invoke();
+            onDie?.Invoke(this);
             StartCoroutine(RemoveModel());
         }
     }

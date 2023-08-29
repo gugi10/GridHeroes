@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Linq;
 public interface IPlayer
 {
-    public void Init(MapController map, List<HeroController> ownedHeroes, int playerId);
+    public void Init(MapController map, List<HeroController> allHeroes, int playerId);
     public void SetActiveState(bool flag);
     public int Id { get; set; }
 
@@ -127,7 +127,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
             }
             else if (!tile.IsOccupied && HasAction(HeroAction.Move))
             {
-                if (MyInput.GetOnWorldUp(map.map.Settings.Plane()))
+                if (MyInput.GetOnWorldUp(map.mapEntity.Settings.Plane()))
                 {
                     HandleMovePath();
                 }
@@ -178,11 +178,11 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
         if (path && path.IsEnabled)
         {
-            var tile = map.map.Tile(MyInput.GroundPosition(map.map.Settings.Plane()));
+            var tile = map.mapEntity.Tile(MyInput.GroundPosition(map.mapEntity.Settings.Plane()));
             if (tile != null && tile.Vacant && !tile.IsOccupied)
             {
-                var path = map.map.PathPoints(selectedHero.transform.position, map.map.WorldPosition(tile.Position), (float)selectedHero?.GetHeroStats().Item1.Move);
-                this.path.Show(path, map.map);
+                var path = map.mapEntity.PathPoints(selectedHero.transform.position, map.mapEntity.WorldPosition(tile.Position), (float)selectedHero?.GetHeroStats().Item1.Move);
+                this.path.Show(path, map.mapEntity);
                 this.path.ActiveState();
             }
             else
@@ -193,13 +193,13 @@ public class PlayerInput : MonoBehaviour, IPlayer
     }
     void HandleMovePath()
     {
-        var clickPos = MyInput.GroundPosition(map.map.Settings.Plane());
-        var tile = map.map.Tile(clickPos);
+        var clickPos = MyInput.GroundPosition(map.mapEntity.Settings.Plane());
+        var tile = map.mapEntity.Tile(clickPos);
         if (tile != null && tile.Vacant && !tile.IsOccupied)
         {
             this.path.IsEnabled = false;
             PathHide();
-            var path = map.map.PathTiles(selectedHero.transform.position, clickPos, (float)selectedHero?.GetHeroStats().Item1.Move);
+            var path = map.mapEntity.PathTiles(selectedHero.transform.position, clickPos, (float)selectedHero?.GetHeroStats().Item1.Move);
             this.path.IsEnabled = true;
             if (selectedHero.MoveByPath(path))
             {
