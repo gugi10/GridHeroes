@@ -23,7 +23,7 @@ public class HeroController : MonoBehaviour
     public Action<HeroController> onDie { get; set; }
     public Action OnMoveStart { get; set; }
     public Action onHeroUnselected;
-    public Action onSpecialAbilityStarted;
+    public Action<ISpecialAbility> onSpecialAbilityStarted;
     public Action onSpecialAbilityFinished;
     public int RemainingActions { get; private set; }
     public ISpecialAbility[] specialAbilities { get; private set; }
@@ -100,7 +100,7 @@ public class HeroController : MonoBehaviour
 
     public void DoSpecialAbility(int id)
     {
-        onSpecialAbilityStarted?.Invoke();
+        onSpecialAbilityStarted?.Invoke(specialAbilities[id]);
         //onSpecialAbility.Invoke(specialAbilities[id].GetSkillAnimation());
         specialAbilities[id].DoSpecialAbility(this, map);
     }

@@ -20,20 +20,14 @@ public class WhirlwindAbility : AbilityBase
 
     public override void DoSpecialAbility(HeroController source, MapEntity map)
     {
-        base.DoSpecialAbility(source, map);
-
         this.source = source;
         this.map = map;
     }
 
-    private void Update()
+    public override void ProcessInput()
     {
-        if (!readInput)
-            return;
-
         if (Input.GetMouseButtonDown(0))
             PerformAbility();
-
     }
 
     private void PerformAbility()

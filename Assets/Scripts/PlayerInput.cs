@@ -3,6 +3,8 @@ using RedBjorn.ProtoTiles.Example;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEditor.Playables;
+
 public interface IPlayer
 {
     public void Init(MapController map, List<HeroController> allHeroes, int playerId);
@@ -20,6 +22,8 @@ public class PlayerInput : MonoBehaviour, IPlayer
     private List<HeroController> heroes = new List<HeroController>();
     private HeroController selectedHero;
     private List<List<HeroAction>> playerActions;
+    private bool abilityInputIsProcessing;
+    private ISpecialAbility processedAbility;
 
 
     private void OnEnable()
@@ -45,8 +49,8 @@ public class PlayerInput : MonoBehaviour, IPlayer
         heroes = ownedHeroes;
         heroes.ForEach(hero =>
         {
-            hero.onSpecialAbilityStarted += BlockInput;
-            hero.onSpecialAbilityFinished += FreeInput;
+            hero.onSpecialAbilityStarted += StartSpecialAbility;
+            hero.onSpecialAbilityFinished += StopSpecialAbility;
         }); 
 
         Id = playerId;
@@ -57,14 +61,16 @@ public class PlayerInput : MonoBehaviour, IPlayer
         path.Hide();
     }
 
-    private void BlockInput()
+    private void StartSpecialAbility(ISpecialAbility ability)
     {
-        SetActiveState(false);
+        abilityInputIsProcessing = true;
+        processedAbility = ability;
     }
 
-    private void FreeInput()
+    private void StopSpecialAbility()
     {
-        SetActiveState(true);
+        abilityInputIsProcessing = false;
+        processedAbility = null;
     }
 
     private void SetPlayerActions(List<List<HeroAction>> actions)
@@ -74,6 +80,12 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     void Update()
     {
+        if (abilityInputIsProcessing)
+        {
+            processedAbility.ProcessInput();
+            return;
+        }
+
         if (map == null)
         {
             return;

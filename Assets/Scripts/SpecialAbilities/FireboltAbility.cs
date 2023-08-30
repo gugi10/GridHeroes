@@ -14,15 +14,11 @@ public class FireboltAbility : AbilityBase
 
     public override void DoSpecialAbility(HeroController source, MapEntity map)
     {
-        base.DoSpecialAbility(source, map);
-
         this.source = source;
         this.map = map;
     }
-    void Update()
+    public override void ProcessInput()
     {
-        if (!readInput)
-            return;
         if (map == null)
         {
             return;

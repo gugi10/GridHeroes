@@ -8,11 +8,10 @@ public abstract class AbilityBase : MonoBehaviour, ISpecialAbility
 {
     [SerializeField] protected string animationId = "Attack02";
     [SerializeField] protected Sprite icon;
-    protected bool readInput;
 
     public virtual void DoSpecialAbility(HeroController source, MapEntity map)
     {
-        readInput = true;
+        throw new System.NotImplementedException();
     }
 
     public virtual Sprite GetSkillIcon()
@@ -20,4 +19,8 @@ public abstract class AbilityBase : MonoBehaviour, ISpecialAbility
         return icon;
     }
 
+    public virtual void ProcessInput()
+    {
+        throw new System.NotImplementedException();
+    }
 }

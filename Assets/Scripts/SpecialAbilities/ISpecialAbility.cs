@@ -7,4 +7,6 @@ public interface ISpecialAbility
     public void DoSpecialAbility(HeroController source, MapEntity map);
 
     public Sprite GetSkillIcon();
+
+    public void ProcessInput();
 }
