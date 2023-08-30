@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System;
-using System.Linq;
 
 public class TurnSequenceController : MonoBehaviour
 {
@@ -29,7 +28,7 @@ public class TurnSequenceController : MonoBehaviour
     public Action onHeroUnselected;
 
     private const int NUMBER_OF_PLAYERS = 2;
-    private const int MAX_ACTIONS = 10;
+    private const int MAX_ACTIONS = 5;
 
     private List<IPlayer> players = new();
     private List<HeroController> heroControllerInstances = new();

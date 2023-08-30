@@ -27,20 +27,30 @@ public class AIAgent : MonoBehaviour, IPlayer
         var randomAiHero = aiHeroes[randomIdx];
         Debug.Log($"Randomly chosen hero = {randomAiHero.gameObject.name}");
 
-        var foundEnemy = FindEnemyInRange(randomAiHero);
-        if (foundEnemy)
+
+        if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
         {
-            if(TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
+            var foundEnemy = FindEnemyInRange(randomAiHero);
+            if (foundEnemy)
             {
-                var targetTile = map.mapEntity.Tile(foundEnemy.currentTile.TilePos);
-                randomAiHero.Attack(targetTile);
-                return;
+                if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
+                {
+                    var targetTile = map.mapEntity.Tile(foundEnemy.currentTile.TilePos);
+                    randomAiHero.Attack(targetTile);
+                    return;
+                }
             }
         }
 
-        var walkableTiles = map.mapEntity.WalkableTiles(randomAiHero.currentTile.TilePos, randomAiHero.GetHeroStats().Item1.Move).Where(tile => !tile.IsOccupied).ToList();
-        var randomWalkableTileIdx = Random.Range(0, walkableTiles.Count);
-        randomAiHero.Move(walkableTiles[randomWalkableTileIdx]);
+        if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Move))
+        {
+            var walkableTiles = map.mapEntity.WalkableTiles(randomAiHero.currentTile.TilePos, randomAiHero.GetHeroStats().Item1.Move).Where(tile => !tile.IsOccupied).ToList();
+            var randomWalkableTileIdx = Random.Range(0, walkableTiles.Count);
+            randomAiHero.Move(walkableTiles[randomWalkableTileIdx]);
+            return;
+        }
+
+        TurnSequenceController.Instance.FinishTurn(TurnSequenceController.Instance.GetPlayerRemainingActions(Id)[0]);
     }
 
     
