@@ -2,6 +2,7 @@ using RedBjorn.ProtoTiles;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static FireboltAbility;
 
 [RequireComponent(typeof(UnitAnimations))]
 public class WhirlwindAbility : AbilityBase
@@ -12,6 +13,12 @@ public class WhirlwindAbility : AbilityBase
     HeroController source;
     MapEntity map;
     UnitAnimations unitAnimations;
+    public struct Properties
+    {
+        public int range;
+        public int damage;
+    }
+
 
     private void Awake()
     {
@@ -32,7 +39,7 @@ public class WhirlwindAbility : AbilityBase
 
     public override AbilitySpec GetAbilitySpec()
     {
-        return new AbilitySpec { target = AbilityTarget.AllAdjacent, effect = AbilityEffect.Damage, range = 1};
+        return new AbilitySpec { kind = AbilityKind.Whirlwind, properties = new Properties { range = this.range, damage = this.damage } };
     }
 
     public override void PerformAbility(TileEntity chosenTile)

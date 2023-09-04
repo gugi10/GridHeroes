@@ -3,22 +3,15 @@ using UnityEngine;
 
 public struct AbilitySpec
 {
-    public AbilityTarget target;
-    public AbilityEffect effect;
-    public int range;
+    public AbilityKind kind;
+    public object properties;
 }
 
-public enum AbilityTarget
+public enum AbilityKind
 {
-    SingleEnemy,
-    AllAdjacent,
+    Bolt,
+    Whirlwind,
 }
-
-public enum AbilityEffect
-{
-    Damage,
-}
-
 public interface ISpecialAbility
 {
     public void DoSpecialAbility(HeroController source, MapEntity map);

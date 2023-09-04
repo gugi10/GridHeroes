@@ -32,15 +32,21 @@ public class AIAgent : MonoBehaviour, IPlayer
         {
             var ability = randomAiHero.specialAbilities[0];
             var abilitySpec = ability.GetAbilitySpec();
-            if (abilitySpec.target == AbilityTarget.SingleEnemy)
+
+            switch (abilitySpec.kind)
             {
-                var foundEnemy = FindEnemyInRange(randomAiHero, abilitySpec.range);
-                if (foundEnemy)
-                {
-                    ability.DoSpecialAbility(randomAiHero, map.mapEntity);
-                    ability.PerformAbility(map.mapEntity.Tile(foundEnemy.currentTile.TilePos));
-                    return;
-                }
+                case AbilityKind.Whirlwind:
+                    break;
+                case AbilityKind.Bolt:
+                    var properties = (FireboltAbility.Properties)abilitySpec.properties;
+                    var foundEnemy = FindEnemyInRange(randomAiHero, properties.range);
+                    if (foundEnemy)
+                    {
+                        ability.DoSpecialAbility(randomAiHero, map.mapEntity);
+                        ability.PerformAbility(map.mapEntity.Tile(foundEnemy.currentTile.TilePos));
+                        return;
+                    }
+                    break;
             }
 
         }
@@ -85,7 +91,7 @@ public class AIAgent : MonoBehaviour, IPlayer
         TurnSequenceController.Instance.FinishTurn(TurnSequenceController.Instance.GetPlayerRemainingActions(Id)[0]);
     }
 
-    
+
 
     private HeroController FindEnemyInRange(HeroController aiHero, int range)
     {

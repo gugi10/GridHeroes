@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [RequireComponent(typeof(UnitAnimations))]
 public class FireboltAbility : AbilityBase
 {
@@ -11,6 +12,12 @@ public class FireboltAbility : AbilityBase
     private int damage = 1;
     private HeroController source;
     private MapEntity map;
+
+    public struct Properties
+    {
+        public int range;
+        public int damage;
+    } 
 
     public override void DoSpecialAbility(HeroController source, MapEntity map)
     {
@@ -32,7 +39,7 @@ public class FireboltAbility : AbilityBase
     }
     public override AbilitySpec GetAbilitySpec()
     {
-        return new AbilitySpec { target = AbilityTarget.SingleEnemy, effect = AbilityEffect.Damage, range = this.range};
+        return new AbilitySpec { kind = AbilityKind.Bolt, properties = new Properties { range = this.range, damage = this.damage} };
     }
 
     public override void PerformAbility(TileEntity chosenTile)
