@@ -44,9 +44,23 @@ public class AIAgent : MonoBehaviour, IPlayer
 
         if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Move))
         {
-            var walkableTiles = map.mapEntity.WalkableTiles(randomAiHero.currentTile.TilePos, randomAiHero.GetHeroStats().Item1.Move).Where(tile => !tile.IsOccupied).ToList();
+            //trzeba przeliczyc pathy dla kazdego wealkable tile'a i odfiltrowac te ktore sa w zasiegu iczy nic nie blokuje.
+            var walkableTiles = map.mapEntity.WalkableTiles(randomAiHero.currentTile.TilePos, randomAiHero.GetHeroStats().Item1.Move).Where(x => !x.IsOccupied).ToList();
             var randomWalkableTileIdx = Random.Range(0, walkableTiles.Count);
-            randomAiHero.Move(walkableTiles[randomWalkableTileIdx]);
+            var selectedRandomTile = walkableTiles[randomWalkableTileIdx].Data.TilePos;
+            Debug.Log($"selected Tile {selectedRandomTile} for {randomAiHero.gameObject.name}");
+            var path = map.mapEntity.PathTiles
+                (randomAiHero.transform.position, map.mapEntity.WorldPosition(walkableTiles[randomWalkableTileIdx].Data.TilePos), randomAiHero.GetHeroStats().Item1.Move);
+            string pathstring = "";
+            
+            foreach (var tiles in path)
+            {
+                pathstring += $"{tiles.Data.TilePos}"; 
+            }
+            Debug.Log($"Path string {pathstring}");
+            if(path != null || path.Count > 0)
+                randomAiHero.MoveByPath(path);
+            //randomAiHero.Move(walkableTiles[randomWalkableTileIdx]);
             return;
         }
 

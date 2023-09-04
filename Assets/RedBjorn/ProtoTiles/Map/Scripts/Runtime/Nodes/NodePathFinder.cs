@@ -54,7 +54,7 @@ namespace RedBjorn.ProtoTiles
                 foreach (var n in map.NeighborsMovable(current).Where(neigh => neigh != null))
                 {
                     var currentDistance = current.Depth + map.Distance(current, n);
-                    if (n.Vacant && !n.Considered && currentDistance <= range)
+                    if (n.Vacant && !n.Considered && currentDistance <= range && !n.IsOccupied)
                     {
                         n.Considered = true;
                         n.Depth = currentDistance;
