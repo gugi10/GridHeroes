@@ -28,9 +28,27 @@ public class AIAgent : MonoBehaviour, IPlayer
         Debug.Log($"Randomly chosen hero = {randomAiHero.gameObject.name}");
 
 
+        if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Special))
+        {
+            var ability = randomAiHero.specialAbilities[0];
+            var abilitySpec = ability.GetAbilitySpec();
+            if (abilitySpec.target == AbilityTarget.SingleEnemy)
+            {
+                var foundEnemy = FindEnemyInRange(randomAiHero, abilitySpec.range);
+                if (foundEnemy)
+                {
+                    ability.DoSpecialAbility(randomAiHero, map.mapEntity);
+                    ability.PerformAbility(map.mapEntity.Tile(foundEnemy.currentTile.TilePos));
+                    return;
+                }
+            }
+
+        }
+
+
         if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
         {
-            var foundEnemy = FindEnemyInRange(randomAiHero);
+            var foundEnemy = FindEnemyInRange(randomAiHero, randomAiHero.GetHeroStats().Item1.WeaponRange);
             if (foundEnemy)
             {
                 if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
@@ -69,10 +87,10 @@ public class AIAgent : MonoBehaviour, IPlayer
 
     
 
-    private HeroController FindEnemyInRange(HeroController aiHero)
+    private HeroController FindEnemyInRange(HeroController aiHero, int range)
     {
         var playerHeroes = allHeroes.Where(hero => hero.ControllingPlayerId != Id).ToList();
-        var playerHeroInRange = playerHeroes.FirstOrDefault(hero => TileUtilities.AreTilesInRange(hero.currentTile.TilePos, aiHero.currentTile.TilePos, aiHero.GetHeroStats().Item1.WeaponRange));
+        var playerHeroInRange = playerHeroes.FirstOrDefault(hero => TileUtilities.AreTilesInRange(hero.currentTile.TilePos, aiHero.currentTile.TilePos, range));
         // Debug.Log($"Player hero  in range= {playerHeroInRange.gameObject.name}");
         return playerHeroInRange;
     }

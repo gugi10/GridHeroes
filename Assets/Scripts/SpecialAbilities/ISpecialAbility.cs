@@ -1,12 +1,33 @@
 using RedBjorn.ProtoTiles;
 using UnityEngine;
-using System;
 
-public interface ISpecialAbility 
+public struct AbilitySpec
+{
+    public AbilityTarget target;
+    public AbilityEffect effect;
+    public int range;
+}
+
+public enum AbilityTarget
+{
+    SingleEnemy,
+    AllAdjacent,
+}
+
+public enum AbilityEffect
+{
+    Damage,
+}
+
+public interface ISpecialAbility
 {
     public void DoSpecialAbility(HeroController source, MapEntity map);
 
     public Sprite GetSkillIcon();
 
     public void ProcessInput();
+
+    public void PerformAbility(TileEntity chosenTile);
+
+    public AbilitySpec GetAbilitySpec();
 }

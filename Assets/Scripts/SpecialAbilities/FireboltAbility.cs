@@ -25,28 +25,33 @@ public class FireboltAbility : AbilityBase
         }
         if (MyInput.GetOnWorldUp(map.Settings.Plane()))
         {
-            PerformAbility();
+            var clickPos = MyInput.GroundPosition(map.Settings.Plane());
+            TileEntity tile = map.Tile(clickPos);
+            PerformAbility(tile);
         }
     }
-
-    private void PerformAbility()
+    public override AbilitySpec GetAbilitySpec()
     {
-        var clickPos = MyInput.GroundPosition(map.Settings.Plane());
-        TileEntity tile = map.Tile(clickPos);
+        return new AbilitySpec { target = AbilityTarget.SingleEnemy, effect = AbilityEffect.Damage, range = this.range};
+    }
 
-        if (tile == null)
+    public override void PerformAbility(TileEntity chosenTile)
+    {
+
+        if (chosenTile == null)
             return;
 
-        if (tile.IsOccupied)
+        if (chosenTile.IsOccupied)
         {
-            if (TileUtilities.AreTilesInRange(source.currentTile.TilePos, tile.Position, range) &&
-                tile.occupyingHero != source && tile.occupyingHero.ControllingPlayerId != source.ControllingPlayerId)
+            if (TileUtilities.AreTilesInRange(source.currentTile.TilePos, chosenTile.Position, range) &&
+                chosenTile.occupyingHero != source && chosenTile.occupyingHero.ControllingPlayerId != source.ControllingPlayerId)
             {
-                tile.occupyingHero.DealDamage(damage);
+                chosenTile.occupyingHero.DealDamage(damage);
                 source.onSpecialAbilityFinished(); 
             }
             //TODO:Play particle effect
 
         }
     }
+
 }

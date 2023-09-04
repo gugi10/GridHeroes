@@ -27,10 +27,15 @@ public class WhirlwindAbility : AbilityBase
     public override void ProcessInput()
     {
         if (Input.GetMouseButtonDown(0))
-            PerformAbility();
+            PerformAbility(null);
     }
 
-    private void PerformAbility()
+    public override AbilitySpec GetAbilitySpec()
+    {
+        return new AbilitySpec { target = AbilityTarget.AllAdjacent, effect = AbilityEffect.Damage, range = 1};
+    }
+
+    public override void PerformAbility(TileEntity chosenTile)
     {
         HashSet<TileEntity> surroundingTiles = map.WalkableTiles(source.currentTile.TilePos, range);
         foreach (var tile in surroundingTiles)
