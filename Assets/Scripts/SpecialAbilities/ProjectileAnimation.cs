@@ -6,10 +6,10 @@ using System;
 public class ProjectileAnimation : MonoBehaviour
 {
     [SerializeField] ParticleSystem projectileSystem;
+    [SerializeField] Transform root;
     private bool isLerping;
     private float duration = 1f;
     private float elapsedTime = 0f;
-    private Vector3 start;
     private Vector3 target;
     private Action onHitCallback;
 
@@ -22,21 +22,20 @@ public class ProjectileAnimation : MonoBehaviour
 
         if (elapsedTime < duration)
         {
-            transform.position = Vector3.Lerp(start, target, elapsedTime);
+            transform.position = Vector3.Lerp(root.position, target, elapsedTime);
             elapsedTime += Time.deltaTime;
             return;
         }
-
         onHitCallback?.Invoke();
         elapsedTime = 0;
         isLerping = false;
     }
 
-    public void PlayProjectile(Vector3 source, Vector3 target, float delay, Action onHitCallback)
+    public void PlayProjectile(Vector3 target, float delay, Action onHitCallback)
     {
-        start = source;
         this.target = target;
         this.onHitCallback = onHitCallback;
+        transform.LookAt(target);
         StartCoroutine(DelayPlay(delay));
     }
 

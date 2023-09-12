@@ -132,6 +132,7 @@ public class UnitAnimations : MonoBehaviour
     public void PlaySpecialAbillity(string abilityName = "Attack02")
     {
         animator.Play(specialAnimsHashDict[abilityName]);
+        PlayParticlesForSpecialAttack(abilityName);
     }
 
     IEnumerator GetHitCoroutine(float delay)

@@ -8,9 +8,16 @@ using UnityEngine;
 [RequireComponent(typeof(UnitAnimations))]
 public class FireboltAbility : AbilityBase
 {
+    [SerializeField] ProjectileAnimation projectileAnimation;
+    UnitAnimations unitAnimations;
     private Properties properties = new() { damage = 1, range = 3 };
     private HeroController source;
     private MapEntity map;
+
+    private void Awake()
+    {
+        unitAnimations = GetComponent<UnitAnimations>();
+    }
 
     public struct Properties
     {
@@ -52,12 +59,25 @@ public class FireboltAbility : AbilityBase
             if (TileUtilities.AreTilesInRange(source.currentTile.TilePos, chosenTile.Position, properties.range) &&
                 chosenTile.occupyingHero != source && chosenTile.occupyingHero.ControllingPlayerId != source.ControllingPlayerId)
             {
-                chosenTile.occupyingHero.DealDamage(properties.damage);
-                source.onSpecialAbilityFinished(); 
+                
+                unitAnimations.PlaySpecialAbillity(animationId);
+                projectileAnimation.PlayProjectile(map.WorldPosition(chosenTile.Data.TilePos), 1.1f, CreateOnHit(chosenTile));
+                 
             }
             //TODO:Play particle effect
 
         }
+    }
+
+    private void OnHit(TileEntity chosenTile)
+    {
+        chosenTile.occupyingHero.DealDamage(properties.damage);
+        source.onSpecialAbilityFinished();
+    }
+
+    private System.Action CreateOnHit(TileEntity chosenTile)
+    {
+        return () => { OnHit(chosenTile); };
     }
 
 }
