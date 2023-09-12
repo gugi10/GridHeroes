@@ -8,8 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(UnitAnimations))]
 public class FireboltAbility : AbilityBase
 {
-    private int range = 3;
-    private int damage = 1;
+    private Properties properties = new() { damage = 1, range = 3 };
     private HeroController source;
     private MapEntity map;
 
@@ -39,7 +38,7 @@ public class FireboltAbility : AbilityBase
     }
     public override AbilitySpec GetAbilitySpec()
     {
-        return new AbilitySpec { kind = AbilityKind.Bolt, properties = new Properties { range = this.range, damage = this.damage} };
+        return new AbilitySpec { kind = AbilityKind.Bolt, properties = properties };
     }
 
     public override void PerformAbility(TileEntity chosenTile)
@@ -50,10 +49,10 @@ public class FireboltAbility : AbilityBase
 
         if (chosenTile.IsOccupied)
         {
-            if (TileUtilities.AreTilesInRange(source.currentTile.TilePos, chosenTile.Position, range) &&
+            if (TileUtilities.AreTilesInRange(source.currentTile.TilePos, chosenTile.Position, properties.range) &&
                 chosenTile.occupyingHero != source && chosenTile.occupyingHero.ControllingPlayerId != source.ControllingPlayerId)
             {
-                chosenTile.occupyingHero.DealDamage(damage);
+                chosenTile.occupyingHero.DealDamage(properties.damage);
                 source.onSpecialAbilityFinished(); 
             }
             //TODO:Play particle effect
