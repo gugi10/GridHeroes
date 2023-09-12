@@ -28,9 +28,46 @@ public class AIAgent : MonoBehaviour, IPlayer
         Debug.Log($"Randomly chosen hero = {randomAiHero.gameObject.name}");
 
 
+        if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Special))
+        {
+            var ability = randomAiHero.specialAbilities[0];
+            var abilitySpec = ability.GetAbilitySpec();
+
+            switch (abilitySpec.kind)
+            {
+                case AbilityKind.Whirlwind:
+                    {
+                        var properties = (WhirlwindAbility.Properties)abilitySpec.properties;
+                        var foundEnemies = FindEnemiesInRange(randomAiHero, properties.range);
+                        if (foundEnemies.Count < 2) {
+                            break;
+                        }
+
+                        ability.DoSpecialAbility(randomAiHero, map.mapEntity);
+                        ability.PerformAbility(map.mapEntity.Tile(foundEnemies.First().currentTile.TilePos));
+                        return;
+                    }
+                case AbilityKind.Bolt:
+                    {
+                        var properties = (FireboltAbility.Properties)abilitySpec.properties;
+                        var foundEnemy = FindEnemyInRange(randomAiHero, properties.range);
+                        if (foundEnemy)
+                        {
+                            ability.DoSpecialAbility(randomAiHero, map.mapEntity);
+                            ability.PerformAbility(map.mapEntity.Tile(foundEnemy.currentTile.TilePos));
+                            return;
+                        }
+                        break;
+
+                    }
+            }
+
+        }
+
+
         if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
         {
-            var foundEnemy = FindEnemyInRange(randomAiHero);
+            var foundEnemy = FindEnemyInRange(randomAiHero, randomAiHero.GetHeroStats().Item1.WeaponRange);
             if (foundEnemy)
             {
                 if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
@@ -52,13 +89,13 @@ public class AIAgent : MonoBehaviour, IPlayer
             var path = map.mapEntity.PathTiles
                 (randomAiHero.transform.position, map.mapEntity.WorldPosition(walkableTiles[randomWalkableTileIdx].Data.TilePos), randomAiHero.GetHeroStats().Item1.Move);
             string pathstring = "";
-            
+
             foreach (var tiles in path)
             {
-                pathstring += $"{tiles.Data.TilePos}"; 
+                pathstring += $"{tiles.Data.TilePos}";
             }
             Debug.Log($"Path string {pathstring}");
-            if(path != null || path.Count > 0)
+            if (path != null || path.Count > 0)
                 randomAiHero.MoveByPath(path);
             //randomAiHero.Move(walkableTiles[randomWalkableTileIdx]);
             return;
@@ -66,14 +103,18 @@ public class AIAgent : MonoBehaviour, IPlayer
 
         TurnSequenceController.Instance.FinishTurn(TurnSequenceController.Instance.GetPlayerRemainingActions(Id)[0]);
     }
-
-    
-
-    private HeroController FindEnemyInRange(HeroController aiHero)
+    private HeroController FindEnemyInRange(HeroController aiHero, int range)
     {
-        var playerHeroes = allHeroes.Where(hero => hero.ControllingPlayerId != Id).ToList();
-        var playerHeroInRange = playerHeroes.FirstOrDefault(hero => TileUtilities.AreTilesInRange(hero.currentTile.TilePos, aiHero.currentTile.TilePos, aiHero.GetHeroStats().Item1.WeaponRange));
+        var enemies = allHeroes.Where(hero => hero.ControllingPlayerId != Id).ToList();
+        var enemyInRange = enemies.FirstOrDefault(hero => TileUtilities.AreTilesInRange(hero.currentTile.TilePos, aiHero.currentTile.TilePos, range));
         // Debug.Log($"Player hero  in range= {playerHeroInRange.gameObject.name}");
-        return playerHeroInRange;
+        return enemyInRange;
+    }
+    private List<HeroController> FindEnemiesInRange(HeroController aiHero, int range)
+    {
+        var enemies = allHeroes.Where(hero => hero.ControllingPlayerId != Id).ToList();
+        var enemiesInRange = enemies.FindAll(hero => TileUtilities.AreTilesInRange(hero.currentTile.TilePos, aiHero.currentTile.TilePos, range));
+        // Debug.Log($"Player hero  in range= {playerHeroInRange.gameObject.name}");
+        return enemiesInRange;
     }
 }

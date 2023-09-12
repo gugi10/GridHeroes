@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
 public abstract class AbilityBase : MonoBehaviour, ISpecialAbility
 {
     [SerializeField] protected string animationId = "Attack02";
@@ -20,6 +21,16 @@ public abstract class AbilityBase : MonoBehaviour, ISpecialAbility
     }
 
     public virtual void ProcessInput()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public virtual void PerformAbility(TileEntity chosenTile)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public virtual AbilitySpec GetAbilitySpec()
     {
         throw new System.NotImplementedException();
     }
