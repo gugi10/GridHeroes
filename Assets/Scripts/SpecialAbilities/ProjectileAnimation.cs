@@ -5,14 +5,21 @@ using System;
 
 public class ProjectileAnimation : MonoBehaviour
 {
-    [SerializeField] ParticleSystem projectileSystem;
+    [SerializeField] ParticleSystem projectilePrefab;
+    [SerializeField] ParticleSystem explosionPrefab;
     [SerializeField] Transform root;
+
     private bool isLerping;
     private float duration = 1f;
     private float elapsedTime = 0f;
     private Vector3 target;
     private Action onHitCallback;
+    private ParticleSystem spawnedProjectile;
+    private object spawnedProjectiletransform;
 
+    private void Awake()
+    {
+    }
     private void Update()
     {
         if (!isLerping)
@@ -22,12 +29,17 @@ public class ProjectileAnimation : MonoBehaviour
 
         if (elapsedTime < duration)
         {
-            transform.position = Vector3.Lerp(root.position, target, elapsedTime);
+            spawnedProjectile.transform.position = Vector3.Lerp(root.position, target, elapsedTime);
             elapsedTime += Time.deltaTime;
             return;
         }
+
         onHitCallback?.Invoke();
+        if (spawnedProjectile != null)
+            spawnedProjectile.Stop();
+
         elapsedTime = 0;
+        Instantiate(explosionPrefab).transform.position = target;
         isLerping = false;
     }
 
@@ -35,7 +47,7 @@ public class ProjectileAnimation : MonoBehaviour
     {
         this.target = target;
         this.onHitCallback = onHitCallback;
-        transform.LookAt(target);
+        
         StartCoroutine(DelayPlay(delay));
     }
 
@@ -43,6 +55,11 @@ public class ProjectileAnimation : MonoBehaviour
     private IEnumerator DelayPlay(float delay)
     {
         yield return new WaitForSeconds(delay);
+
+        spawnedProjectile = Instantiate(projectilePrefab, transform);
+        spawnedProjectile.transform.position = root.position;
+        spawnedProjectile.transform.LookAt(target);
+
         isLerping = true;
     }
 

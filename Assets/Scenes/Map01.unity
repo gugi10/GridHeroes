@@ -6463,7 +6463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MapSettings: {fileID: 11400000, guid: 3a341289fd7a6654d884cd3c45901421, type: 2}
-  map:
+  mapEntity:
     Tiles:
       Keys: []
       Values: []
@@ -9113,7 +9113,6 @@ MonoBehaviour:
     - {fileID: 6390770937447195161, guid: 6a5d01e5db674b7408e9f8613a4da383, type: 3}
     - {fileID: 183312758891173421, guid: 86fdf825a5c3c2b4da15625e11a67273, type: 3}
   mapController: {fileID: 1306954802}
-  heroPrefab: {fileID: 6390770937447195161, guid: 6a5d01e5db674b7408e9f8613a4da383, type: 3}
   playerInputPrefab: {fileID: 511948455763736829, guid: 6b62dd0ba399ed44b8d435ee5039e00d, type: 3}
 --- !u!4 &1892475994
 Transform:
