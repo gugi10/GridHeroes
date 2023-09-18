@@ -64,7 +64,7 @@ public class HeroController : MonoBehaviour
 
         currentTile = startingTile;
         this.map = map;
-        area.Show(map.WalkableBorder(transform.position, currentStats.Move), map);
+        
         heroHighLight.Show(map.WalkableBorder(transform.position, 0), map);
         if (ControllingPlayerId % 2 == 0)
             heroHighLight.ActiveState();
@@ -207,6 +207,8 @@ public class HeroController : MonoBehaviour
     public HeroController SelectHero(int playerId)
     {
         area.gameObject.SetActive(true);
+        area.transform.position = Vector3.zero;
+        area.Show(map.WalkableBorder(transform.position, currentStats.Move), map);
         if (ControllingPlayerId == playerId)
         {
             //meshRender.material.color = Color.green;
