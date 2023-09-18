@@ -30,7 +30,8 @@ public class HeroController : MonoBehaviour
 
     [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private Transform rotationNode;
-    [SerializeField] private AreaOutline areaPrefab;
+    [SerializeField] private AreaOutline highLightPrefab;
+    [SerializeField] private AreaOutline walkableAreaPrefab;
 
     private HeroStatisticSheet currentStats;
     private Color defaultColor;
@@ -45,10 +46,11 @@ public class HeroController : MonoBehaviour
         currentStats = originalStats;
         RemainingActions = currentStats.ActionLimit;
 
-        area = Instantiate(areaPrefab, Vector3.zero, Quaternion.identity, transform);
+        area = Instantiate(walkableAreaPrefab, Vector3.zero, Quaternion.identity, transform);
+        area.ActiveState();
         area.gameObject.SetActive(false);
 
-        heroHighLight = Instantiate(areaPrefab, Vector3.zero, Quaternion.identity, transform);
+        heroHighLight = Instantiate(highLightPrefab, Vector3.zero, Quaternion.identity, transform);
         specialAbilities = GetComponents<ISpecialAbility>();
     }
 

@@ -130,7 +130,8 @@ MonoBehaviour:
   ControllingPlayerId: 0
   originalStats: {fileID: 11400000, guid: 62de22b5096ed9c40bb4b4e8b848e951, type: 2}
   rotationNode: {fileID: 1225501658626404585}
-  areaPrefab: {fileID: 114964435729023602, guid: fe2319e9d6e840f409af77b3e7a85259, type: 3}
+  highLightPrefab: {fileID: 114964435729023602, guid: fe2319e9d6e840f409af77b3e7a85259, type: 3}
+  walkableAreaPrefab: {fileID: 114964435729023602, guid: f2932ceb5b171a748b80dac97fabb508, type: 3}
 --- !u!114 &137089160120883482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -264,7 +265,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1206498299807332555, guid: af6c1e3f046eecd4d81330aeb285600f, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3405899300174267242, guid: af6c1e3f046eecd4d81330aeb285600f, type: 3}
       propertyPath: m_Intensity
