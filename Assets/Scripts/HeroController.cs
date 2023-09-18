@@ -38,6 +38,7 @@ public class HeroController : MonoBehaviour
     private Coroutine movingCoroutine;
     private AreaOutline area;
     private AreaOutline heroHighLight;
+    private int walkAnimationSpeed = 2;
 
     private void Awake()
     {
@@ -164,6 +165,7 @@ public class HeroController : MonoBehaviour
             {
                 if (targetTile.occupyingHero != null && targetTile.occupyingHero != this)
                 {
+                    LookAt(map.WorldPosition(targetTile));
                     targetTile.occupyingHero.DealDamage(currentStats.WeaponDamage);
                     onActionEvent?.Invoke(HeroAction.Attack);
                     return true;
@@ -242,6 +244,10 @@ public class HeroController : MonoBehaviour
         return new Tuple<HeroStatisticSheet, HeroStatisticSheet>(currentStats, originalStats);
     }
 
+    public void LookAt(Vector3 target)
+    {
+        rotationNode.LookAt(target);
+    }
     private IEnumerator Fly(TileEntity targetTile)
     {
         var targetPoint = map.WorldPosition(targetTile);
@@ -276,7 +282,7 @@ public class HeroController : MonoBehaviour
         while (nextIndex < path.Count)
         {
             var targetPoint = map.WorldPosition(path[nextIndex]);
-            var stepDir = (targetPoint - transform.position) * 1;
+            var stepDir = (targetPoint - transform.position) * walkAnimationSpeed;
             if (map.RotationType == RotationType.LookAt)
             {
                 rotationNode.rotation = Quaternion.LookRotation(stepDir, Vector3.up);

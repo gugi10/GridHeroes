@@ -34,13 +34,13 @@ public class ProjectileAnimation : MonoBehaviour
             return;
         }
 
-        onHitCallback?.Invoke();
         if (spawnedProjectile != null)
             spawnedProjectile.Stop();
 
         elapsedTime = 0;
         Instantiate(explosionPrefab).transform.position = target;
         isLerping = false;
+        onHitCallback?.Invoke();
     }
 
     public void PlayProjectile(Vector3 target, float delay, Action onHitCallback)

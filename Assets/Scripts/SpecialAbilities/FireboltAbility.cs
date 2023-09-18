@@ -59,9 +59,10 @@ public class FireboltAbility : AbilityBase
             if (TileUtilities.AreTilesInRange(source.currentTile.TilePos, chosenTile.Position, properties.range) &&
                 chosenTile.occupyingHero != source && chosenTile.occupyingHero.ControllingPlayerId != source.ControllingPlayerId)
             {
-                
+
+                source.LookAt(map.WorldPosition(chosenTile));
                 unitAnimations.PlaySpecialAbillity(animationId);
-                projectileAnimation.PlayProjectile(map.WorldPosition(chosenTile.Data.TilePos), 1.1f, CreateOnHit(chosenTile));
+                projectileAnimation.PlayProjectile(map.WorldPosition(chosenTile.Data.TilePos), 0.8f, CreateOnHit(chosenTile));
                  
             }
             //TODO:Play particle effect

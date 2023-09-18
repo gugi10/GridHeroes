@@ -93,7 +93,7 @@ public class TurnSequenceController : MonoBehaviour
         // will be empty which will cause out of bound exception.
         if (playersRemainingActions[ActivePlayer].Contains(heroAction))
             playersRemainingActions[ActivePlayer].Remove(heroAction);
-        else
+        else if(heroAction != HeroAction.Special)
             playersRemainingActions[ActivePlayer].Remove(HeroAction.Special);
 
         Debug.Log($"{playersRemainingActions[0]}, {playersRemainingActions[1]}");

@@ -24,9 +24,13 @@ public class AIAgent : MonoBehaviour, IPlayer
 
         var aiHeroes = allHeroes.Where(hero => hero.ControllingPlayerId == Id).ToList();
         var randomIdx = Random.Range(0, aiHeroes.Count);
-        var randomAiHero = aiHeroes[randomIdx];
-        Debug.Log($"Randomly chosen hero = {randomAiHero.gameObject.name}");
 
+        if (aiHeroes.Count <= 0)
+            return;
+
+        var randomAiHero = aiHeroes[randomIdx];
+
+        
 
         if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Special))
         {
