@@ -82,6 +82,12 @@ public class PlayerInput : MonoBehaviour, IPlayer
     {
         if (abilityInputIsProcessing)
         {
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {
+                abilityInputIsProcessing = false;
+                return;
+            }    
+
             processedAbility.ProcessInput();
             return;
         }
