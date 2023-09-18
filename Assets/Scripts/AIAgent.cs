@@ -65,7 +65,8 @@ public class AIAgent : MonoBehaviour, IPlayer
         }
 
 
-        if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
+        if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack) 
+            || TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Special))
         {
             var foundEnemy = FindEnemyInRange(randomAiHero, randomAiHero.GetHeroStats().Item1.WeaponRange);
             if (foundEnemy)
@@ -79,7 +80,8 @@ public class AIAgent : MonoBehaviour, IPlayer
             }
         }
 
-        if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Move))
+        if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Move)
+            || TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Special))
         {
             //trzeba przeliczyc pathy dla kazdego wealkable tile'a i odfiltrowac te ktore sa w zasiegu iczy nic nie blokuje.
             var walkableTiles = map.mapEntity.WalkableTiles(randomAiHero.currentTile.TilePos, randomAiHero.GetHeroStats().Item1.Move).Where(x => !x.IsOccupied).ToList();

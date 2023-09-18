@@ -88,10 +88,14 @@ public class TurnSequenceController : MonoBehaviour
     public void FinishTurn(HeroAction heroAction)
     {
         // First we need to remove the corresponding action and then we MUST call
-        // finish round before switching active player because it generates new actions.
+        // finish round before switching active player because it generates new actions.    
         // If we don't do it first the AI will try to make an action while its action table
         // will be empty which will cause out of bound exception.
-        playersRemainingActions[ActivePlayer].Remove(heroAction);
+        if (playersRemainingActions[ActivePlayer].Contains(heroAction))
+            playersRemainingActions[ActivePlayer].Remove(heroAction);
+        else
+            playersRemainingActions[ActivePlayer].Remove(HeroAction.Special);
+
         Debug.Log($"{playersRemainingActions[0]}, {playersRemainingActions[1]}");
         if (playersRemainingActions.All(x => x.Count() == 0))
         {

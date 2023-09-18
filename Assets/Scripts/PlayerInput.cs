@@ -130,14 +130,14 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
         if (selectedHero != null && selectedHero.ControllingPlayerId == Id)
         {
-            if (IsTargetingEnemy(tile) && HasAction(HeroAction.Attack))
+            if (IsTargetingEnemy(tile) && (HasAction(HeroAction.Attack) || HasAction(HeroAction.Special)))
             {
                 if (selectedHero.Attack(tile))
                 {
                     UnselectHero();
                 }
             }
-            else if (!tile.IsOccupied && HasAction(HeroAction.Move))
+            else if (!tile.IsOccupied && (HasAction(HeroAction.Move) || HasAction(HeroAction.Special)))
             {
                 if (MyInput.GetOnWorldUp(map.mapEntity.Settings.Plane()))
                 {
