@@ -16,7 +16,6 @@ public class TurnSequenceController : MonoBehaviour
         
     }
     private static TurnSequenceController instance;
-    [SerializeField] List<HeroListWrapper> units = new();
     [SerializeField] MapController mapController;
     [SerializeField] PlayerInput playerInputPrefab;
 
@@ -27,31 +26,41 @@ public class TurnSequenceController : MonoBehaviour
     public Action<HeroController> onHeroSelected;
     public Action onHeroUnselected;
 
+    //List<HeroListWrapper> units = new();
     private const int NUMBER_OF_PLAYERS = 2;
     private const int MAX_ACTIONS = 5;
 
     private List<IPlayer> players = new();
     private List<HeroController> heroControllerInstances = new();
     private List<List<HeroAction>> playersRemainingActions = new();
-
     private void Awake()
     {
-        for (int i = 0; i < units.Count; i++)
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F1))
         {
-            units[i].Units.ForEach(hero =>
-            {
-                var instance = Instantiate(hero);
-                instance.ControllingPlayerId = i;
-                instance.Init(FinishTurn, () => { FinishTurn(HeroAction.Special); }, this.OnDie);
-                instance.onHeroSelected += OnHeroSelectedCallback;
-                instance.onHeroUnselected += OnHeroSelectedCallback;
-                heroControllerInstances.Add(instance);
-            });
+            NextPlayer();
         }
     }
 
-    private void Start()
+    public void Init(List<HeroController> heroes)
     {
+        for (int i = 0; i < heroes.Count; i++)
+        {
+            heroes.ForEach(hero =>
+            {
+                //var instance = Instantiate(hero);
+                //hero.ControllingPlayerId = i;
+                hero.Init(FinishTurn, () => { FinishTurn(HeroAction.Special); }, this.OnDie);
+                hero.onHeroSelected += OnHeroSelectedCallback;
+                hero.onHeroUnselected += OnHeroSelectedCallback;
+                heroControllerInstances.Add(hero);
+            });
+        }
+
         playersRemainingActions.Add(GenerateActionList());
         var player = Instantiate(playerInputPrefab);
         player.gameObject.name = $"Player_0";
@@ -66,17 +75,9 @@ public class TurnSequenceController : MonoBehaviour
 
         onRoundStart?.Invoke(playersRemainingActions);
 
-        
-        mapController.SpawnHeroesRandomly(heroControllerInstances);
-        SetActivePlayer(UnityEngine.Random.Range(0, NUMBER_OF_PLAYERS));
-    }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            NextPlayer();
-        }
+        //mapController.SpawnHeroesRandomly(heroControllerInstances);
+        SetActivePlayer(UnityEngine.Random.Range(0, NUMBER_OF_PLAYERS));
     }
 
     public List<HeroAction> GetPlayerRemainingActions(int playerId)
@@ -163,5 +164,5 @@ public class TurnSequenceController : MonoBehaviour
 [System.Serializable]
 public class HeroListWrapper
 {
-    public List<HeroController> Units;
+    public List<HeroController> HeroPrefabs;
 }
