@@ -23,23 +23,34 @@ MonoBehaviour:
   CellMaterial: {fileID: 2100000, guid: 48097669abeecd047ac9c7d0c9302e74, type: 2}
   Rules:
     IsMovable: {fileID: 11400000, guid: ce303506d48d89d44abd552e9c465edb, type: 2}
-    IsHardTerrain: {fileID: 0}
   Presets:
   - Type: Ground
     Id: 511c4c003ddb784478ec808ed53f4025
-    MapColor: {r: 0.8867924, g: 0.815747, b: 0.1966002, a: 0.5}
-    Prefab: {fileID: 919132149155446097, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}
+    MapColor: {r: 0.5030613, g: 0.8862745, b: 0.1960784, a: 0.5}
+    Prefab: {fileID: 4698398742109105295, guid: 3b0c75582431dee49994090adc792a87, type: 3}
+    GridOffset: 0
+    Tags: []
+  - Type: Ground3
+    Id: 0511d4eedfef58a4f9a38950a938f024
+    MapColor: {r: 1, g: 0, b: 0.019788265, a: 1}
+    Prefab: {fileID: 4698398742109105295, guid: f531742634f83154d8cdbf726cea6263, type: 3}
     GridOffset: 0
     Tags: []
   - Type: Impassable
-    Id: 4b54bc391b871b54da675821240fae29
-    MapColor: {r: 1, g: 0, b: 0, a: 0.5}
+    Id: 27f1e3a622737084abd3348d8860053f
+    MapColor: {r: 0, g: 0, b: 0, a: 0.5}
     Prefab: {fileID: 1272180480792470, guid: 4e97802ac99905343ba67f01d63fdd63, type: 3}
     GridOffset: 0
     Tags:
     - {fileID: 11400000, guid: 25b8c40cae2c9684985e9ebdc6331b8e, type: 2}
+  - Type: Ground
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MapColor: {r: 1, g: 1, b: 1, a: 0.5}
+    Prefab: {fileID: 4698398742109105295, guid: 7a33803a01282eb478642710c3bb0506, type: 3}
+    GridOffset: 0
+    Tags: []
   Tiles:
-  - TilePos: {x: 0, y: 0, z: 0}
+  - TilePos: {x: -3, y: -4, z: 7}
     Id: 511c4c003ddb784478ec808ed53f4025
     MovableArea: 1
     SideHeight:
@@ -49,7 +60,7 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: 0, y: -1, z: 1}
+  - TilePos: {x: -2, y: -4, z: 6}
     Id: 511c4c003ddb784478ec808ed53f4025
     MovableArea: 1
     SideHeight:
@@ -59,7 +70,7 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: 0, y: 1, z: -1}
+  - TilePos: {x: -2, y: -5, z: 7}
     Id: 511c4c003ddb784478ec808ed53f4025
     MovableArea: 1
     SideHeight:
@@ -69,7 +80,107 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: 0, y: 2, z: -2}
+  - TilePos: {x: -1, y: -5, z: 6}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 0, y: -5, z: 5}
+    Id: 27f1e3a622737084abd3348d8860053f
+    MovableArea: 0
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 0, y: -6, z: 6}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 1, y: -6, z: 5}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 2, y: -6, z: 4}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 2, y: -7, z: 5}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 3, y: -7, z: 4}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 4, y: -7, z: 3}
+    Id: 0511d4eedfef58a4f9a38950a938f024
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 4, y: -8, z: 4}
+    Id: 0511d4eedfef58a4f9a38950a938f024
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 5, y: -8, z: 3}
+    Id: 0511d4eedfef58a4f9a38950a938f024
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: -3, y: -5, z: 8}
     Id: 511c4c003ddb784478ec808ed53f4025
     MovableArea: 1
     SideHeight:
@@ -79,7 +190,67 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: 0, y: -2, z: 2}
+  - TilePos: {x: -3, y: -3, z: 6}
+    Id: 511c4c003ddb784478ec808ed53f4025
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: -2, y: -3, z: 5}
+    Id: 511c4c003ddb784478ec808ed53f4025
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: -2, y: -6, z: 8}
+    Id: 511c4c003ddb784478ec808ed53f4025
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: -3, y: -6, z: 9}
+    Id: 511c4c003ddb784478ec808ed53f4025
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: -3, y: -2, z: 5}
+    Id: 511c4c003ddb784478ec808ed53f4025
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: -2, y: -2, z: 4}
+    Id: 511c4c003ddb784478ec808ed53f4025
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: -2, y: -7, z: 9}
     Id: 511c4c003ddb784478ec808ed53f4025
     MovableArea: 1
     SideHeight:
@@ -90,7 +261,7 @@ MonoBehaviour:
     - 0
     - 0
   - TilePos: {x: -1, y: -2, z: 3}
-    Id: 511c4c003ddb784478ec808ed53f4025
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
     MovableArea: 1
     SideHeight:
     - 0
@@ -99,8 +270,8 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: -1, y: -1, z: 2}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: -1, y: -3, z: 4}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
     MovableArea: 1
     SideHeight:
     - 0
@@ -109,8 +280,8 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: -1, y: 0, z: 1}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: -1, y: -4, z: 5}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
     MovableArea: 1
     SideHeight:
     - 0
@@ -119,8 +290,8 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: -1, y: 1, z: 0}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: -1, y: -6, z: 7}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
     MovableArea: 1
     SideHeight:
     - 0
@@ -129,8 +300,8 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: -1, y: 2, z: -1}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: -1, y: -7, z: 8}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
     MovableArea: 1
     SideHeight:
     - 0
@@ -139,8 +310,88 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: -1, y: 3, z: -2}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: -1, y: -8, z: 9}
+    Id: 27f1e3a622737084abd3348d8860053f
+    MovableArea: 0
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 0, y: -9, z: 9}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 0, y: -8, z: 8}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 0, y: -7, z: 7}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 0, y: -4, z: 4}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 0, y: -3, z: 3}
+    Id: 27f1e3a622737084abd3348d8860053f
+    MovableArea: 0
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 0, y: -2, z: 2}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 1, y: -5, z: 4}
+    Id: 27f1e3a622737084abd3348d8860053f
+    MovableArea: 0
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 1, y: -4, z: 3}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
     MovableArea: 1
     SideHeight:
     - 0
@@ -150,7 +401,7 @@ MonoBehaviour:
     - 0
     - 0
   - TilePos: {x: 1, y: -3, z: 2}
-    Id: 511c4c003ddb784478ec808ed53f4025
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
     MovableArea: 1
     SideHeight:
     - 0
@@ -159,8 +410,8 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: 1, y: -2, z: 1}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: 1, y: -7, z: 6}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
     MovableArea: 1
     SideHeight:
     - 0
@@ -169,158 +420,8 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: 1, y: 0, z: -1}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: 1, y: 2, z: -3}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -2, y: 3, z: -1}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -2, y: 2, z: 0}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -2, y: 1, z: 1}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -3, y: 2, z: 1}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -3, y: 3, z: 0}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -3, y: 4, z: -1}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -4, y: 4, z: 0}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -4, y: 3, z: 1}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -4, y: 2, z: 2}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -4, y: 1, z: 3}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -4, y: 0, z: 4}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -3, y: 0, z: 3}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -3, y: -1, z: 4}
-    Id: 511c4c003ddb784478ec808ed53f4025
-    MovableArea: 1
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: 1, y: -1, z: 0}
-    Id: 4b54bc391b871b54da675821240fae29
+  - TilePos: {x: 1, y: -8, z: 7}
+    Id: 27f1e3a622737084abd3348d8860053f
     MovableArea: 0
     SideHeight:
     - 0
@@ -329,8 +430,118 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: 1, y: 1, z: -2}
-    Id: 4b54bc391b871b54da675821240fae29
+  - TilePos: {x: 1, y: -9, z: 8}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 2, y: -10, z: 8}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 2, y: -9, z: 7}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 2, y: -8, z: 6}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 2, y: -5, z: 3}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 2, y: -4, z: 2}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 2, y: -3, z: 1}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 3, y: -4, z: 1}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 3, y: -5, z: 2}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 3, y: -6, z: 3}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 3, y: -8, z: 5}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 3, y: -9, z: 6}
+    Id: 27f1e3a622737084abd3348d8860053f
     MovableArea: 0
     SideHeight:
     - 0
@@ -339,38 +550,8 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: -3, y: 1, z: 2}
-    Id: 4b54bc391b871b54da675821240fae29
-    MovableArea: 0
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -2, y: 0, z: 2}
-    Id: 4b54bc391b871b54da675821240fae29
-    MovableArea: 0
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -2, y: -1, z: 3}
-    Id: 4b54bc391b871b54da675821240fae29
-    MovableArea: 0
-    SideHeight:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-  - TilePos: {x: -5, y: 0, z: 5}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: 3, y: -10, z: 7}
+    Id: ad4d3e9bbc6f2714d9a61b6070e03ac2
     MovableArea: 1
     SideHeight:
     - 0
@@ -379,8 +560,8 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: -5, y: 1, z: 4}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: 4, y: -10, z: 6}
+    Id: 0511d4eedfef58a4f9a38950a938f024
     MovableArea: 1
     SideHeight:
     - 0
@@ -389,8 +570,8 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: -5, y: 2, z: 3}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: 4, y: -9, z: 5}
+    Id: 0511d4eedfef58a4f9a38950a938f024
     MovableArea: 1
     SideHeight:
     - 0
@@ -399,8 +580,8 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: -5, y: 3, z: 2}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: 4, y: -6, z: 2}
+    Id: 0511d4eedfef58a4f9a38950a938f024
     MovableArea: 1
     SideHeight:
     - 0
@@ -409,8 +590,8 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: -5, y: 4, z: 1}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: 4, y: -5, z: 1}
+    Id: 0511d4eedfef58a4f9a38950a938f024
     MovableArea: 1
     SideHeight:
     - 0
@@ -419,8 +600,38 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  - TilePos: {x: -5, y: 5, z: 0}
-    Id: 511c4c003ddb784478ec808ed53f4025
+  - TilePos: {x: 5, y: -6, z: 1}
+    Id: 0511d4eedfef58a4f9a38950a938f024
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 5, y: -7, z: 2}
+    Id: 0511d4eedfef58a4f9a38950a938f024
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 5, y: -9, z: 4}
+    Id: 0511d4eedfef58a4f9a38950a938f024
+    MovableArea: 1
+    SideHeight:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  - TilePos: {x: 5, y: -10, z: 5}
+    Id: 0511d4eedfef58a4f9a38950a938f024
     MovableArea: 1
     SideHeight:
     - 0

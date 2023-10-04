@@ -66,14 +66,14 @@ public class HeroController : MonoBehaviour
 
         currentTile = startingTile;
         this.map = map;
-        
+        var tile = map.Tile(currentTile.TilePos);
+        transform.position = map.WorldPosition(tile);
         heroHighLight.Show(map.WalkableBorder(transform.position, 0), map);
+        heroHighLight.transform.position = Vector3.zero;
         if (ControllingPlayerId % 2 == 0)
             heroHighLight.ActiveState();
         else
             heroHighLight.InactiveState();
-        var tile = map.Tile(currentTile.TilePos);
-        transform.position = map.WorldPosition(tile);
         tile.OccupyTile(this);
     }
 
