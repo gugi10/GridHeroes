@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}
       propertyPath: m_Name
-      value: Hex Variant
+      value: PlayerDeploymentHex
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -81,3 +81,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10cea4e7ae4f48f469c019dc68497f21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerId: 0

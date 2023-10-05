@@ -8,20 +8,22 @@ using RedBjorn.ProtoTiles.Example;
 [RequireComponent(typeof(MapView))]
 public class MapController : MonoBehaviour
 {
+    public List<DeploayableTile> deployableTiles;
+
     [SerializeField] private MapSettings MapSettings;
+    
     private MapView mapView;
-    public MapEntity mapEntity;
+    private MapEntity mapEntity;
+
+    private void Awake()
+    {
+        deployableTiles = GetComponentsInChildren<DeploayableTile>().ToList();
+    }
 
     private void OnValidate()
     {
         if(MapSettings == null)
             Debug.LogError($"MapSettings is null");
-    }
-
-    private void Awake()
-    {
-        mapView = GetComponent<MapView>();
-        mapEntity = new MapEntity(MapSettings, mapView);
     }
 
     public MapEntity GetMapEntity()
@@ -40,7 +42,7 @@ public class MapController : MonoBehaviour
     public void SpawnHeroesRandomly(List<HeroController> heroesToPosition)
     {
         
-        var mapSettingsTemp = mapEntity.Settings.Tiles.Where(x => x.MovableArea > 0).ToList();
+        var mapSettingsTemp = GetMapEntity().Settings.Tiles.Where(x => x.MovableArea > 0).ToList();
         List<int> indexArray = Enumerable.Range(0, mapSettingsTemp.Count).ToList();
         foreach(var hero in heroesToPosition)
         {
@@ -49,18 +51,18 @@ public class MapController : MonoBehaviour
             indexArray.RemoveAt(randomTileIndex);
             var tile = mapSettingsTemp[index];
             hero.SetColor(new Color(1f, 1f, hero.ControllingPlayerId * 1f));
-            hero.SetupHero(mapEntity, tile);
+            hero.SetupHero(GetMapEntity(), tile);
         }
     }
-
+    
     public bool GetMapInput()
     {
-        return MyInput.GetOnWorldUp(mapEntity.Settings.Plane());
+        return MyInput.GetOnWorldUp(GetMapEntity().Settings.Plane());
     }
 
     public TileEntity GetTile()
     {
-        var clickPos = MyInput.GroundPosition(mapEntity.Settings.Plane());
-        return mapEntity.Tile(clickPos);
+        var clickPos = MyInput.GroundPosition(GetMapEntity().Settings.Plane());
+        return GetMapEntity().Tile(clickPos);
     }
 }

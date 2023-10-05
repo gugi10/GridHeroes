@@ -47,8 +47,8 @@ public class AIAgent : MonoBehaviour, IPlayer
                             break;
                         }
 
-                        ability.DoSpecialAbility(randomAiHero, map.mapEntity);
-                        ability.PerformAbility(map.mapEntity.Tile(foundEnemies.First().currentTile.TilePos));
+                        ability.DoSpecialAbility(randomAiHero, map.GetMapEntity());
+                        ability.PerformAbility(map.GetMapEntity().Tile(foundEnemies.First().currentTile.TilePos));
                         return;
                     }
                 case AbilityKind.Bolt:
@@ -57,8 +57,8 @@ public class AIAgent : MonoBehaviour, IPlayer
                         var foundEnemy = FindEnemyInRange(randomAiHero, properties.range);
                         if (foundEnemy)
                         {
-                            ability.DoSpecialAbility(randomAiHero, map.mapEntity);
-                            ability.PerformAbility(map.mapEntity.Tile(foundEnemy.currentTile.TilePos));
+                            ability.DoSpecialAbility(randomAiHero, map.GetMapEntity());
+                            ability.PerformAbility(map.GetMapEntity().Tile(foundEnemy.currentTile.TilePos));
                             return;
                         }
                         break;
@@ -77,7 +77,7 @@ public class AIAgent : MonoBehaviour, IPlayer
             {
                 if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
                 {
-                    var targetTile = map.mapEntity.Tile(foundEnemy.currentTile.TilePos);
+                    var targetTile = map.GetMapEntity().Tile(foundEnemy.currentTile.TilePos);
                     randomAiHero.Attack(targetTile);
                     return;
                 }
@@ -88,12 +88,12 @@ public class AIAgent : MonoBehaviour, IPlayer
             || TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Special))
         {
             //trzeba przeliczyc pathy dla kazdego wealkable tile'a i odfiltrowac te ktore sa w zasiegu iczy nic nie blokuje.
-            var walkableTiles = map.mapEntity.WalkableTiles(randomAiHero.currentTile.TilePos, randomAiHero.GetHeroStats().Item1.Move).Where(x => !x.IsOccupied).ToList();
+            var walkableTiles = map.GetMapEntity().WalkableTiles(randomAiHero.currentTile.TilePos, randomAiHero.GetHeroStats().Item1.Move).Where(x => !x.IsOccupied).ToList();
             var randomWalkableTileIdx = Random.Range(0, walkableTiles.Count);
             var selectedRandomTile = walkableTiles[randomWalkableTileIdx].Data.TilePos;
             Debug.Log($"selected Tile {selectedRandomTile} for {randomAiHero.gameObject.name}");
-            var path = map.mapEntity.PathTiles
-                (randomAiHero.transform.position, map.mapEntity.WorldPosition(walkableTiles[randomWalkableTileIdx].Data.TilePos), randomAiHero.GetHeroStats().Item1.Move);
+            var path = map.GetMapEntity().PathTiles
+                (randomAiHero.transform.position, map.GetMapEntity().WorldPosition(walkableTiles[randomWalkableTileIdx].Data.TilePos), randomAiHero.GetHeroStats().Item1.Move);
             string pathstring = "";
 
             foreach (var tiles in path)

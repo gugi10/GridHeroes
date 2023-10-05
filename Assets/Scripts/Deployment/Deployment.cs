@@ -7,17 +7,19 @@ using RedBjorn.ProtoTiles;
 
 public class Deployment : MonoBehaviour
 {
+    [SerializeField] HeroSelection heroSelection;
     private Action<List<HeroController>> finishDeploymentCallback;
     private List<HeroListWrapper> heroes = new();
     private MapController map;
     private int spawnedHeroes;
     private List<HeroController> instantiatedHeroes = new();
+    private HeroController selectedHero;
 
     void Update()
     {
         if (map == null || heroes == null)
             return;
-        if (map.GetMapInput())
+        if (map.GetMapInput() && selectedHero != null)
         {
             HandleWorldClick();
         }
@@ -28,6 +30,12 @@ public class Deployment : MonoBehaviour
         this.finishDeploymentCallback = finishDeploymentCallback;
         this.map = map;
         this.heroes = heroes;
+        heroSelection.Init(heroes[0].HeroPrefabs, SetSelectedHero);
+    }
+
+    private void SetSelectedHero(HeroController hero)
+    {
+        selectedHero = hero;
     }
 
     private void HandleWorldClick()
@@ -37,7 +45,24 @@ public class Deployment : MonoBehaviour
             return;
         if (tile.IsOccupied || tile.Preset.Prefab.GetComponent<DeploayableTile>()?.playerId != 0)
             return;
-        var heroInstance = Instantiate(heroes[0].HeroPrefabs[spawnedHeroes], 
+        if (spawnedHeroes != heroes[0].HeroPrefabs.Count)
+        {
+            var heroInstance = Instantiate(selectedHero, map.GetMapEntity().WorldPosition(tile), Quaternion.identity);
+            heroInstance.ControllingPlayerId = 0;
+            heroInstance.SetupHero(map.GetMapEntity(), tile.Data);
+            instantiatedHeroes.Add(heroInstance);
+            selectedHero = null;
+            spawnedHeroes++;
+            //After each spawn update the list of  available toggles
+            heroSelection.Init(heroes[0].HeroPrefabs.Except(instantiatedHeroes).ToList(), SetSelectedHero);
+        }
+        else if (spawnedHeroes == heroes[0].HeroPrefabs.Count)
+        {
+            SpawnAiHeroes();
+            finishDeploymentCallback.Invoke(instantiatedHeroes);
+            return;
+        }
+        /*var heroInstance = Instantiate(heroes[0].HeroPrefabs[spawnedHeroes], 
             map.GetMapEntity().WorldPosition(tile),Quaternion.identity);
         heroInstance.ControllingPlayerId = 0;
         heroInstance.SetupHero(map.GetMapEntity(), tile.Data);
@@ -47,13 +72,13 @@ public class Deployment : MonoBehaviour
         {
             SpawnAiHeroes();
             finishDeploymentCallback.Invoke(instantiatedHeroes);
-        }
+        }*/
     }
 
     private void SpawnAiHeroes()
     {
         List<TileEntity> aiTiles = new();
-        foreach(var val in map.GetMapEntity().Tiles)
+        foreach (var val in map.GetMapEntity().Tiles)
         {
             if (val.Value.Preset.Prefab.GetComponent<DeploayableTile>()?.playerId == 1)
                 aiTiles.Add(val.Value);
