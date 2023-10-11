@@ -13,6 +13,7 @@ public class Deployment : MonoBehaviour
     private MapController map;
     private int spawnedHeroes;
     private List<HeroController> instantiatedHeroes = new();
+    private List<HeroController> deploymentHeroes = new();
     private HeroController selectedHero;
 
     void Update()
@@ -27,6 +28,7 @@ public class Deployment : MonoBehaviour
 
     public void Init(MapController map, List<HeroListWrapper> heroes, Action<List<HeroController>> finishDeploymentCallback)
     {
+        deploymentHeroes = new List<HeroController>(heroes[0].HeroPrefabs);
         this.finishDeploymentCallback = finishDeploymentCallback;
         this.map = map;
         this.heroes = heroes;
@@ -50,13 +52,14 @@ public class Deployment : MonoBehaviour
             var heroInstance = Instantiate(selectedHero, map.GetMapEntity().WorldPosition(tile), Quaternion.identity);
             heroInstance.ControllingPlayerId = 0;
             heroInstance.SetupHero(map.GetMapEntity(), tile.Data);
-            instantiatedHeroes.Add(heroInstance);
+            instantiatedHeroes.Add(selectedHero);
+            deploymentHeroes.Remove(selectedHero);
             selectedHero = null;
             spawnedHeroes++;
             //After each spawn update the list of  available toggles
-            heroSelection.Init(heroes[0].HeroPrefabs.Except(instantiatedHeroes).ToList(), SetSelectedHero);
+            heroSelection.Init(deploymentHeroes, SetSelectedHero);
         }
-        else if (spawnedHeroes == heroes[0].HeroPrefabs.Count)
+        if (spawnedHeroes == heroes[0].HeroPrefabs.Count)
         {
             SpawnAiHeroes();
             finishDeploymentCallback.Invoke(instantiatedHeroes);
