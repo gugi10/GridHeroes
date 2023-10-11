@@ -94,21 +94,17 @@ public class UnitAnimations : MonoBehaviour
 
     public void PlayMove()
     {
-        Debug.Log($"play move animation");
 
         animator.SetBool(isWalkingHash, true);
     }
 
     public void StopMove()
     {
-        Debug.Log($"stop move animation");
-
         animator.SetBool(isWalkingHash, false);
     }
 
     public void PlayAttack()
     {
-        Debug.Log($"Play attack animation");
         animator.Play(attackHash);
     }
 

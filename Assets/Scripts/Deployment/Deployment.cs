@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 using RedBjorn.ProtoTiles;
+using System.Threading.Tasks;
 
 public class Deployment : MonoBehaviour
 {
@@ -52,7 +53,8 @@ public class Deployment : MonoBehaviour
             var heroInstance = Instantiate(selectedHero, map.GetMapEntity().WorldPosition(tile), Quaternion.identity);
             heroInstance.ControllingPlayerId = 0;
             heroInstance.SetupHero(map.GetMapEntity(), tile.Data);
-            instantiatedHeroes.Add(selectedHero);
+
+            instantiatedHeroes.Add(heroInstance);
             deploymentHeroes.Remove(selectedHero);
             selectedHero = null;
             spawnedHeroes++;

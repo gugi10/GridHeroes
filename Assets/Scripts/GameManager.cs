@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
         deployment.Init(map, heroes, OnDeploymentFinished);
-        //turnSequenceController.Init(units);
     }
 
     private void OnDeploymentFinished(List<HeroController> spawnedHeroes)

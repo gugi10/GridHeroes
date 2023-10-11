@@ -48,18 +48,15 @@ public class TurnSequenceController : MonoBehaviour
 
     public void Init(List<HeroController> heroes)
     {
-        for (int i = 0; i < heroes.Count; i++)
+        heroes.ForEach(hero =>
         {
-            heroes.ForEach(hero =>
-            {
-                //var instance = Instantiate(hero);
-                //hero.ControllingPlayerId = i;
-                hero.Init(FinishTurn, () => { FinishTurn(HeroAction.Special); }, this.OnDie);
-                hero.onHeroSelected += OnHeroSelectedCallback;
-                hero.onHeroUnselected += OnHeroSelectedCallback;
-                heroControllerInstances.Add(hero);
-            });
-        }
+            //var instance = Instantiate(hero);
+            //hero.ControllingPlayerId = i;
+            hero.Init(FinishTurn, () => { FinishTurn(HeroAction.Special); }, this.OnDie);
+            hero.onHeroSelected += OnHeroSelectedCallback;
+            hero.onHeroUnselected += OnHeroSelectedCallback;
+            heroControllerInstances.Add(hero);
+        });
 
         playersRemainingActions.Add(GenerateActionList());
         var player = Instantiate(playerInputPrefab);
@@ -75,8 +72,6 @@ public class TurnSequenceController : MonoBehaviour
 
         onRoundStart?.Invoke(playersRemainingActions);
 
-
-        //mapController.SpawnHeroesRandomly(heroControllerInstances);
         SetActivePlayer(UnityEngine.Random.Range(0, NUMBER_OF_PLAYERS));
     }
 

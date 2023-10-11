@@ -4281,7 +4281,6 @@ MonoBehaviour:
   heroes:
   - HeroPrefabs:
     - {fileID: 6390770937447195161, guid: 6a5d01e5db674b7408e9f8613a4da383, type: 3}
-    - {fileID: 183312758891173421, guid: 86fdf825a5c3c2b4da15625e11a67273, type: 3}
   - HeroPrefabs:
     - {fileID: 6390770937447195161, guid: 6a5d01e5db674b7408e9f8613a4da383, type: 3}
     - {fileID: 183312758891173421, guid: 86fdf825a5c3c2b4da15625e11a67273, type: 3}
@@ -7318,7 +7317,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1306954799}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.5, z: 0}
+  m_LocalPosition: {x: 0, y: -2.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
