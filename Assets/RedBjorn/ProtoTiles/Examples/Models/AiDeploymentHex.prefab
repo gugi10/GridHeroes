@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}
       propertyPath: m_LocalPosition.x
@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AiDeploymentHex
       objectReference: {fileID: 0}
+    - target: {fileID: 4471663668592481083, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4607e7c5bc1498b459ad9fbccef2350a, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -82,3 +86,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: 1
+  defaultMaterial: {fileID: 2100000, guid: 4607e7c5bc1498b459ad9fbccef2350a, type: 2}
+  highlightMaterial: {fileID: 2100000, guid: 6bdfa17cf42d2d44ba0920d663f03402, type: 2}
+  mesh: {fileID: 8357541232552608485}
+--- !u!23 &8357541232552608485 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4471663668592481083, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}
+  m_PrefabInstance: {fileID: 5617529231123878366}
+  m_PrefabAsset: {fileID: 0}

@@ -30,6 +30,7 @@ public class Deployment : MonoBehaviour
     public void Init(MapController map, List<HeroListWrapper> heroes, Action<List<HeroController>> finishDeploymentCallback)
     {
         deploymentHeroes = new List<HeroController>(heroes[0].HeroPrefabs);
+        map.EnableHighlightDeployment(true);
         this.finishDeploymentCallback = finishDeploymentCallback;
         this.map = map;
         this.heroes = heroes;
@@ -64,6 +65,7 @@ public class Deployment : MonoBehaviour
         if (spawnedHeroes == heroes[0].HeroPrefabs.Count)
         {
             SpawnAiHeroes();
+            map.EnableHighlightDeployment(false);
             finishDeploymentCallback.Invoke(instantiatedHeroes);
             return;
         }

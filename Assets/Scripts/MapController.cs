@@ -8,7 +8,7 @@ using RedBjorn.ProtoTiles.Example;
 [RequireComponent(typeof(MapView))]
 public class MapController : MonoBehaviour
 {
-    public List<DeploayableTile> deployableTiles;
+    public List<DeploayableTile> DeployableTiles { get; private set; }
 
     [SerializeField] private MapSettings MapSettings;
     
@@ -17,7 +17,7 @@ public class MapController : MonoBehaviour
 
     private void Awake()
     {
-        deployableTiles = GetComponentsInChildren<DeploayableTile>().ToList();
+        DeployableTiles = GetComponentsInChildren<DeploayableTile>().ToList();
     }
 
     private void OnValidate()
@@ -64,5 +64,13 @@ public class MapController : MonoBehaviour
     {
         var clickPos = MyInput.GroundPosition(GetMapEntity().Settings.Plane());
         return GetMapEntity().Tile(clickPos);
+    }
+
+    public void EnableHighlightDeployment(bool value)
+    {
+       foreach(var tile in DeployableTiles)
+        {
+            tile.Highlight(value);
+        }
     }
 }
