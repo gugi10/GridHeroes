@@ -164,7 +164,7 @@ MonoBehaviour:
     particles: {fileID: 3684823341308646237}
   basicAttack:
     animationName: Attack01
-    particles: {fileID: 0}
+    particles: {fileID: 2708598583397607910, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
   animator: {fileID: 1225501658633658135}
   heroController: {fileID: 183312758891173421}
 --- !u!1001 &2566287085734849432
