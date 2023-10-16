@@ -67,14 +67,13 @@ public class UnitAnimations : MonoBehaviour
         var particleSystem = specialAbilities.FirstOrDefault(x => x.animationName.Equals(animationString)).particles;
         if (particleSystem != null)
         {
-            particleSystem.gameObject.SetActive(true);
-            particleSystem.Play();
+            Instantiate(particleSystem);
         }
     }
 
     public void PlayParticlesForBasicAttack()
     {
-        basicAttack.particles?.Play();
+        Instantiate(basicAttack.particles);
     }
 
     public void ParseUnitAction(HeroAction action)
