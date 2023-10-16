@@ -105,6 +105,7 @@ public class UnitAnimations : MonoBehaviour
     public void PlayAttack()
     {
         animator.Play(attackHash);
+        PlayParticlesForBasicAttack();
     }
 
     public void PlayVictory()
