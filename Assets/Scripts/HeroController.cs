@@ -43,7 +43,7 @@ public class HeroController : MonoBehaviour
 
     private void Awake()
     {
-        currentStats = originalStats;
+        currentStats = new HeroStatisticSheet(originalStats);
         RemainingActions = currentStats.ActionLimit;
 
         area = Instantiate(walkableAreaPrefab, Vector3.zero, Quaternion.identity, transform);
