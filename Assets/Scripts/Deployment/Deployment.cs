@@ -29,6 +29,7 @@ public class Deployment : MonoBehaviour
 
     public void Init(MapController map, List<HeroListWrapper> heroes, Action<List<HeroController>> finishDeploymentCallback)
     {
+        CleanUp();
         deploymentHeroes = new List<HeroController>(heroes[0].HeroPrefabs);
         map.EnableHighlightDeployment(true);
         this.finishDeploymentCallback = finishDeploymentCallback;
@@ -37,6 +38,15 @@ public class Deployment : MonoBehaviour
         heroSelection.Init(heroes[0].HeroPrefabs, SetSelectedHero);
     }
 
+    private void CleanUp()
+    {
+        foreach(HeroController hero in instantiatedHeroes)
+        {
+            Destroy(hero.gameObject);
+        }
+        spawnedHeroes = 0;
+        selectedHero = null;
+    }
     private void SetSelectedHero(HeroController hero)
     {
         selectedHero = hero;
