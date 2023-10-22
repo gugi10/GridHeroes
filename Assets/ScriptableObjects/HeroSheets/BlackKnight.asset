@@ -15,5 +15,5 @@ MonoBehaviour:
   Move: 6
   WeaponRange: 1
   WeaponDamage: 2
-  Health: 5
+  Health: 15
   ActionLimit: 2

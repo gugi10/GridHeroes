@@ -4,17 +4,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[RequireComponent(typeof(UnitAnimations))]
 public class PushAbility : AbilityBase
 {
     private Properties properties = new() { damage = 0, range = 1 };
     private HeroController source;
     private MapEntity map;
+    private UnitAnimations unitAnimation;
+
     public struct Properties
     {
         public int range;
         public int damage;
     }
+
+    private void Awake()
+    {
+        unitAnimation = GetComponent<UnitAnimations>();
+    }
+
     public override void DoSpecialAbility(HeroController source, MapEntity map)
     {
         this.source = source;
@@ -55,14 +63,12 @@ public class PushAbility : AbilityBase
                 Vector3Int newPos = new Vector3Int((chosenTile.occupyingHero.currentTile.TilePos.x - source.currentTile.TilePos.x) + chosenTile.occupyingHero.currentTile.TilePos.x,
                     (chosenTile.occupyingHero.currentTile.TilePos.y - source.currentTile.TilePos.y)+ chosenTile.occupyingHero.currentTile.TilePos.y,
                     (chosenTile.occupyingHero.currentTile.TilePos.z - source.currentTile.TilePos.z)+ chosenTile.occupyingHero.currentTile.TilePos.z);
-                Debug.Log($"source tile pos:{source.currentTile.TilePos} target tile pos{chosenTile.occupyingHero.currentTile.TilePos} push tile pos{newPos}");
                 var newTile = map.Tile(newPos);
                 if(newTile != null)
                     chosenTile.occupyingHero.Move(newTile);
                 source?.onSpecialAbilityFinished();
             }
-            //TODO:Play particle effect
-
+            unitAnimation.PlaySpecialAbillity(animationId);
         }
     }
 }
