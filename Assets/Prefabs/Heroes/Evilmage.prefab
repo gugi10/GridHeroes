@@ -75,7 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70ca8e27a2e5dfc448fcb9e6b629dba5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 1206498299807332549, guid: af6c1e3f046eecd4d81330aeb285600f, type: 3}
+  projectilePrefab: {fileID: 1206498299807332549, guid: 2abe7e8f137fb91488c8cdf382012c7d, type: 3}
   explosionPrefab: {fileID: 8231481934661152533, guid: 34cb05bc5eae6a349b9d5d3e34d0c843, type: 3}
   root: {fileID: 4683178542549946549}
 --- !u!1 &8621807893517674650
@@ -160,7 +160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   specialAbilities:
   - animationName: Attack02
-    particles: {fileID: 1206498299807332549, guid: af6c1e3f046eecd4d81330aeb285600f, type: 3}
+    particles: {fileID: 1206498299807332549, guid: 2abe7e8f137fb91488c8cdf382012c7d, type: 3}
   basicAttack:
     animationName: Attack01
     particles: {fileID: 2708598583397607910, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
