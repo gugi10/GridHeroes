@@ -11,6 +11,7 @@ public enum AbilityKind
 {
     Bolt,
     Whirlwind,
+    PushStrike,
 }
 public interface ISpecialAbility
 {

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0506185f312ba54db79258113e6e9d0, type: 3}
-  m_Name: HeroData
+  m_Name: BlackKnight
   m_EditorClassIdentifier: 
-  Move: 4
+  Move: 6
   WeaponRange: 1
-  WeaponDamage: 1
-  Health: 1
+  WeaponDamage: 2
+  Health: 15
   ActionLimit: 2
