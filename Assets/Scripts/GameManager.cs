@@ -10,20 +10,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Deployment deployment;
     [SerializeField] private MapController map;
     [SerializeField] List<HeroListWrapper> heroes = new();
+    int sceneIndex;
+    int maxScenes = 1;
 
     private void Start()
     {
-        deployment.Init(map, heroes, OnDeploymentFinished);
-    }
-
-    private void OnEnable()
-    {
-        turnSequenceController.onGameFinished += ResetLevel;
-    }
-
-    private void OnDisable()
-    {
-        turnSequenceController.onGameFinished -= ResetLevel;
+        ResetLevel(false);
     }
 
     private void OnDeploymentFinished(List<HeroController> spawnedHeroes)
@@ -33,8 +25,10 @@ public class GameManager : MonoBehaviour
 
     private void ResetLevel(bool playerWon)
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         deployment.Init(map, heroes, OnDeploymentFinished);
-
+        if (sceneIndex >= maxScenes)
+        {
+            sceneIndex = 0;
+        }
     }
 }
