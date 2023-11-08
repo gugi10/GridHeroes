@@ -55,7 +55,7 @@ public class AIAgent : MonoBehaviour, IPlayer
                             break;
                         }
 
-                        ability.DoSpecialAbility(randomAiHero, map.GetMapEntity());
+                        //ability.DoSpecialAbility(randomAiHero, map.GetMapEntity());
                         ability.PerformAbility(map.GetMapEntity().Tile(foundEnemies.First().currentTile.TilePos));
                         return;
                     }
@@ -65,7 +65,7 @@ public class AIAgent : MonoBehaviour, IPlayer
                         var foundEnemy = FindEnemyInRange(randomAiHero, properties.range);
                         if (foundEnemy)
                         {
-                            ability.DoSpecialAbility(randomAiHero, map.GetMapEntity());
+                            //ability.DoSpecialAbility(randomAiHero, map.GetMapEntity());
                             ability.PerformAbility(map.GetMapEntity().Tile(foundEnemy.currentTile.TilePos));
                             return;
                         }
@@ -188,13 +188,14 @@ public class AIAgent : MonoBehaviour, IPlayer
     }
 }
 
-enum TaskKind
+public enum TaskKind
 {
     AttackEnemy = 1,
-    MoveForward = 2,
+    UseAbility = 2,
+    MoveForward = 3,
 }
 
-struct Task
+public struct Task
 {
     public readonly TaskKind kind;
 
@@ -204,7 +205,7 @@ struct Task
     }
 }
 
-class PossibleTask
+public class PossibleTask
 {
     public Task task;
     public HeroController objective;
@@ -261,7 +262,7 @@ public class AIAgent2 : MonoBehaviour, IPlayer
             return;
 
 
-        Task[] tasks = { new Task(TaskKind.AttackEnemy), new Task(TaskKind.MoveForward) };
+        Task[] tasks = { new Task(TaskKind.AttackEnemy), new Task(TaskKind.UseAbility), new Task(TaskKind.MoveForward) };
         PossibleTask[] possibleTasks = tasks.SelectMany(task =>
         {
             return this.playerHeroes.Select(playerHero =>
@@ -279,17 +280,27 @@ public class AIAgent2 : MonoBehaviour, IPlayer
                 if (possibleTask.task.kind == TaskKind.AttackEnemy)
                 {
                     if (IsEnemyInRange(aiHero, possibleTask.objective, aiHero.GetHeroStats().Item1.WeaponRange)
-                            && TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)
-                            && TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Attack))
+                            && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)
+                            ||  TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Attack)))
                     {
                         possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.task.kind), possibleTask, aiHero)).ToArray();
                     }
                 }
 
+                if (possibleTask.task.kind == TaskKind.UseAbility && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)))
+                {
+                    if (aiHero.specialAbilities[0].CanBeUsedOnTarget(map.GetMapEntity().Tile(possibleTask.objective.currentTile.TilePos)))
+                    {
+                        // TODO: SCORE
+                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.task.kind), possibleTask, aiHero)).ToArray();
+                    }
+
+                }
+
                 if (possibleTask.task.kind == TaskKind.MoveForward)
                 {
                     if (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)
-                            && TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Move))
+                            || TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Move))
                     {
                         possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.task.kind), possibleTask, aiHero)).ToArray();
                     }
@@ -299,7 +310,7 @@ public class AIAgent2 : MonoBehaviour, IPlayer
 
         var sortedPossibleAssignments = possibleAssignments.OrderByDescending(assignment => assignment.score).ToArray();
 
-        var chosenAssignment = sortedPossibleAssignments.First();
+        var chosenAssignment = sortedPossibleAssignments.FirstOrDefault();
         if (chosenAssignment == null)
         {
             Debug.Log("No kurwa null");
@@ -309,6 +320,13 @@ public class AIAgent2 : MonoBehaviour, IPlayer
         {
             var targetTile = map.GetMapEntity().Tile(chosenAssignment.possibleTask.objective.currentTile.TilePos);
             chosenAssignment.assignee.Attack(targetTile);
+            return; 
+        }
+
+        if (chosenAssignment.possibleTask.task.kind == TaskKind.UseAbility)
+        {
+            var targetTile = map.GetMapEntity().Tile(chosenAssignment.possibleTask.objective.currentTile.TilePos);
+            chosenAssignment.assignee.specialAbilities[0].PerformAbility(targetTile);
             return;
         }
 

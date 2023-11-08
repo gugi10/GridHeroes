@@ -23,5 +23,7 @@ public interface ISpecialAbility
 
     public void PerformAbility(TileEntity chosenTile);
 
+    public bool CanBeUsedOnTarget(TileEntity chosenTile);
+
     public AbilitySpec GetAbilitySpec();
 }

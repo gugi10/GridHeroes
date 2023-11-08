@@ -45,16 +45,19 @@ public class WhirlwindAbility : AbilityBase
     {
         HashSet<TileEntity> surroundingTiles = map.WalkableTiles(source.currentTile.TilePos, properties.range);
 
+        unitAnimations.PlaySpecialAbillity(animationId);
         foreach (var tile in surroundingTiles)
         {
             if (tile.IsOccupied && tile?.occupyingHero.ControllingPlayerId != source.ControllingPlayerId && tile?.occupyingHero != source)
             {
-                unitAnimations.PlaySpecialAbillity(animationId);
                 tile.occupyingHero.DealDamage(properties.damage);
             }
         }
         source?.onSpecialAbilityFinished();
     }
 
-
+    public override bool CanBeUsedOnTarget(TileEntity chosenTile)
+    {
+        return false;
+    }
 }
