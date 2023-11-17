@@ -25,5 +25,7 @@ public interface ISpecialAbility
 
     public bool CanBeUsedOnTarget(TileEntity chosenTile);
 
+    public ScoreModifiers ScoreForTarget(HeroController target);
+
     public AbilitySpec GetAbilitySpec();
 }

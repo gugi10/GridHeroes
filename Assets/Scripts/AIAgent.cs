@@ -1,9 +1,11 @@
 using RedBjorn.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class AIAgent : MonoBehaviour, IPlayer
 {
@@ -152,7 +154,7 @@ public class AIAgent : MonoBehaviour, IPlayer
         // Second check if there is any enemy that is within range of attack, the more enemies are closer the better score
         if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
         {
-            var heroesInRangeOfAttack = aiHeroes.Select(aiHero => { return (aiHero, FindEnemiesInRange(aiHero, aiHero.GetHeroStats().Item2.WeaponRange).Count); }).OrderByDescending(pair => pair.Item2).ToList();
+            var heroesInRangeOfAttack = aiHeroes.Select(aiHero => { return (aiHero, FindEnemiesInRange(aiHero, aiHero.GetHeroStats().current.WeaponRange).Count); }).OrderByDescending(pair => pair.Item2).ToList();
             if (heroesInRangeOfAttack.Any(pair => pair.Item2 > 0))
             {
                 return heroesInRangeOfAttack;
@@ -219,11 +221,11 @@ public class PossibleTask
 
 class PossibleAssignment
 {
-    public int score;
+    public double score;
     public PossibleTask possibleTask;
     public HeroController assignee;
 
-    public PossibleAssignment(int score, PossibleTask possibleTask, HeroController assignee)
+    public PossibleAssignment(double score, PossibleTask possibleTask, HeroController assignee)
     {
         this.score = score;
         this.possibleTask = possibleTask;
@@ -279,7 +281,7 @@ public class AIAgent2 : MonoBehaviour, IPlayer
             {
                 if (possibleTask.task.kind == TaskKind.AttackEnemy)
                 {
-                    if (IsEnemyInRange(aiHero, possibleTask.objective, aiHero.GetHeroStats().Item1.WeaponRange)
+                    if (IsEnemyInRange(aiHero, possibleTask.objective, aiHero.GetHeroStats().current.WeaponRange)
                             && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)
                             ||  TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Attack)))
                     {
@@ -289,10 +291,13 @@ public class AIAgent2 : MonoBehaviour, IPlayer
 
                 if (possibleTask.task.kind == TaskKind.UseAbility && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)))
                 {
-                    if (aiHero.specialAbilities[0].CanBeUsedOnTarget(map.GetMapEntity().Tile(possibleTask.objective.currentTile.TilePos)))
+                    var targetTile = map.GetMapEntity().Tile(possibleTask.objective.currentTile.TilePos);
+                    if (aiHero.specialAbilities[0].CanBeUsedOnTarget(targetTile))
                     {
                         // TODO: SCORE
-                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.task.kind), possibleTask, aiHero)).ToArray();
+                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment(
+                            Score(tasks.Length, possibleTask.task.kind, aiHero.specialAbilities[0].ScoreForTarget(possibleTask.objective)), possibleTask, aiHero)
+                        ).ToArray();
                     }
 
                 }
@@ -334,12 +339,12 @@ public class AIAgent2 : MonoBehaviour, IPlayer
         {
             var aiHero = chosenAssignment.assignee;
             //trzeba przeliczyc pathy dla kazdego wealkable tile'a i odfiltrowac te ktore sa w zasiegu iczy nic nie blokuje.
-            var walkableTiles = map.GetMapEntity().WalkableTiles(aiHero.currentTile.TilePos, aiHero.GetHeroStats().Item1.Move).Where(x => !x.IsOccupied).ToList();
+            var walkableTiles = map.GetMapEntity().WalkableTiles(aiHero.currentTile.TilePos, aiHero.GetHeroStats().current.Move).Where(x => !x.IsOccupied).ToList();
             var randomWalkableTileIdx = Random.Range(0, walkableTiles.Count);
             var selectedRandomTile = walkableTiles[randomWalkableTileIdx].Data.TilePos;
             Debug.Log($"selected Tile {selectedRandomTile} for {aiHero.gameObject.name}");
             var path = map.GetMapEntity().PathTiles
-                (aiHero.transform.position, map.GetMapEntity().WorldPosition(walkableTiles[randomWalkableTileIdx].Data.TilePos), aiHero.GetHeroStats().Item1.Move);
+                (aiHero.transform.position, map.GetMapEntity().WorldPosition(walkableTiles[randomWalkableTileIdx].Data.TilePos), aiHero.GetHeroStats().current.Move);
             string pathstring = "";
 
             foreach (var tiles in path)
@@ -396,7 +401,7 @@ public class AIAgent2 : MonoBehaviour, IPlayer
         // Second check if there is any enemy that is within range of attack, the more enemies are closer the better score
         if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
         {
-            var heroesInRangeOfAttack = aiHeroes.Select(aiHero => { return (aiHero, FindEnemiesInRange(aiHero, aiHero.GetHeroStats().Item2.WeaponRange).Count); }).OrderByDescending(pair => pair.Item2).ToList();
+            var heroesInRangeOfAttack = aiHeroes.Select(aiHero => { return (aiHero, FindEnemiesInRange(aiHero, aiHero.GetHeroStats().current.WeaponRange).Count); }).OrderByDescending(pair => pair.Item2).ToList();
             if (heroesInRangeOfAttack.Any(pair => pair.Item2 > 0))
             {
                 return heroesInRangeOfAttack;
@@ -429,5 +434,10 @@ public class AIAgent2 : MonoBehaviour, IPlayer
                 }
         }
         return 0;
+    }
+
+    private double Score(int taskCount, TaskKind taskKind, ScoreModifiers modifiers)
+    {
+        return (taskCount - (int)taskKind) + modifiers.enemiesKilled * 0.5 + modifiers.inflictedDamage * 0.1;
     }
 }

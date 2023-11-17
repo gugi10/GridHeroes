@@ -82,6 +82,19 @@ public class FireboltAbility : AbilityBase
         return true;
     }
 
+    public override ScoreModifiers ScoreForTarget(HeroController target)
+    {
+        ScoreModifiers modifiers = new ScoreModifiers {};
+
+        if(target.GetHeroStats().current.Health <= this.properties.damage)
+        {
+            modifiers.enemiesKilled = 1;
+        }
+        modifiers.inflictedDamage = target.GetHeroStats().current.Health;
+
+        return modifiers;
+    }
+
 
     private void OnHit(TileEntity chosenTile)
     {

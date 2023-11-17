@@ -60,4 +60,28 @@ public class WhirlwindAbility : AbilityBase
     {
         return false;
     }
+
+    public override ScoreModifiers ScoreForTarget(HeroController target)
+    {
+        ScoreModifiers modifiers = new() { };
+
+        HashSet<TileEntity> surroundingTiles = map.WalkableTiles(source.currentTile.TilePos, properties.range);
+
+
+
+        foreach (var tile in surroundingTiles)
+        {
+            if (tile.IsOccupied && tile?.occupyingHero.ControllingPlayerId != source.ControllingPlayerId && tile?.occupyingHero != source)
+            {
+                if (target.GetHeroStats().current.Health <= this.properties.damage)
+                {
+                    modifiers.enemiesKilled += 1;
+                }
+                modifiers.inflictedDamage += target.GetHeroStats().current.Health;
+            }
+        }
+
+        return modifiers;
+    }
+
 }
