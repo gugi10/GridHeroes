@@ -27,8 +27,8 @@ public class HeroUIView : MonoBehaviour
     private void ShowSelectedHeroUI(HeroController hero)
     {
         var heroStats = hero.GetHeroStats();
-        var current = heroStats.Item1;
-        var baseStats = heroStats.Item2;
+        var current = heroStats.current;
+        var baseStats = heroStats.@base;
         var heroCurrentMovement = current.Move != baseStats.Move ? $"{current.Move}({baseStats.Move})" : $"{baseStats.Move}";
         info.text = $"HP: {current.Health}/{baseStats.Health}  AP: {hero.RemainingActions}/{baseStats.ActionLimit}  " +
             $"Move:  {heroCurrentMovement}  Range: {current.WeaponRange}";

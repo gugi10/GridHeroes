@@ -72,7 +72,7 @@ public class AIAgent : MonoBehaviour, IPlayer
         if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack) 
             || TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Special))
         {
-            var foundEnemy = FindEnemyInRange(randomAiHero, randomAiHero.GetHeroStats().Item1.WeaponRange);
+            var foundEnemy = FindEnemyInRange(randomAiHero, randomAiHero.GetHeroStats().current.WeaponRange);
             if (foundEnemy)
             {
                 if (TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Attack))
@@ -88,12 +88,12 @@ public class AIAgent : MonoBehaviour, IPlayer
             || TurnSequenceController.Instance.GetPlayerRemainingActions(Id).Contains(HeroAction.Special))
         {
             //trzeba przeliczyc pathy dla kazdego wealkable tile'a i odfiltrowac te ktore sa w zasiegu iczy nic nie blokuje.
-            var walkableTiles = map.GetMapEntity().WalkableTiles(randomAiHero.currentTile.TilePos, randomAiHero.GetHeroStats().Item1.Move).Where(x => !x.IsOccupied).ToList();
+            var walkableTiles = map.GetMapEntity().WalkableTiles(randomAiHero.currentTile.TilePos, randomAiHero.GetHeroStats().current.Move).Where(x => !x.IsOccupied).ToList();
             var randomWalkableTileIdx = Random.Range(0, walkableTiles.Count);
             var selectedRandomTile = walkableTiles[randomWalkableTileIdx].Data.TilePos;
             Debug.Log($"selected Tile {selectedRandomTile} for {randomAiHero.gameObject.name}");
             var path = map.GetMapEntity().PathTiles
-                (randomAiHero.transform.position, map.GetMapEntity().WorldPosition(walkableTiles[randomWalkableTileIdx].Data.TilePos), randomAiHero.GetHeroStats().Item1.Move);
+                (randomAiHero.transform.position, map.GetMapEntity().WorldPosition(walkableTiles[randomWalkableTileIdx].Data.TilePos), randomAiHero.GetHeroStats().current.Move);
             string pathstring = "";
 
             foreach (var tiles in path)

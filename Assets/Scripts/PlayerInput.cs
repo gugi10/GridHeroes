@@ -199,7 +199,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
             var tile = map.GetMapEntity().Tile(MyInput.GroundPosition(map.GetMapEntity().Settings.Plane()));
             if (tile != null && tile.Vacant && !tile.IsOccupied)
             {
-                var path = map.GetMapEntity().PathPoints(selectedHero.transform.position, map.GetMapEntity().WorldPosition(tile.Position), (float)selectedHero?.GetHeroStats().Item1.Move);
+                var path = map.GetMapEntity().PathPoints(selectedHero.transform.position, map.GetMapEntity().WorldPosition(tile.Position), (float)selectedHero?.GetHeroStats().current.Move);
                 this.path.Show(path, map.GetMapEntity());
                 this.path.ActiveState();
             }
@@ -217,7 +217,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
         {
             this.path.IsEnabled = false;
             PathHide();
-            var path = map.GetMapEntity().PathTiles(selectedHero.transform.position, clickPos, (float)selectedHero?.GetHeroStats().Item1.Move);
+            var path = map.GetMapEntity().PathTiles(selectedHero.transform.position, clickPos, (float)selectedHero?.GetHeroStats().current.Move);
             this.path.IsEnabled = true;
             if (selectedHero.MoveByPath(path))
             {

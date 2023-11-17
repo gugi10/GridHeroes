@@ -14,6 +14,24 @@ public enum HeroState
     Dead
 }
 
+public struct HeroStats
+{
+    public HeroStatisticSheet @base;
+    public HeroStatisticSheet current;
+
+    public HeroStats(HeroStatisticSheet original, HeroStatisticSheet current)
+    {
+        this.@base = original;
+        this.current = current;
+    }
+
+    public HeroStats(HeroStatisticSheet stats)
+    {
+        this.@base = stats;
+        this.current = stats;
+    }
+}
+
 public class HeroController : MonoBehaviour
 {
     public int ControllingPlayerId;
@@ -244,9 +262,9 @@ public class HeroController : MonoBehaviour
         RemainingActions = currentStats.ActionLimit;
     }
 
-    public Tuple<HeroStatisticSheet, HeroStatisticSheet> GetHeroStats()
+    public HeroStats GetHeroStats()
     {
-        return new Tuple<HeroStatisticSheet, HeroStatisticSheet>(currentStats, originalStats);
+        return new HeroStats(originalStats, currentStats);
     }
 
     public void LookAt(Vector3 target)
