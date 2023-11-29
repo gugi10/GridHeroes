@@ -3,6 +3,7 @@ using RedBjorn.ProtoTiles.Example;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 //TODO: zostawiam jako pomysl, mielibysmy jakas forme obserwatora stanu bohatera. Robilibysmy subskrypcje obserwujace zmiany stanu bohatera i na podstawie tej zmiany stanu wykonywali odpowiednie akcje
@@ -79,21 +80,43 @@ public class HeroController : MonoBehaviour
         this.onDie += onDie;
     }
 
+    public bool CanMakeTask(PossibleTask task)
+    {
+        switch (task.task.kind)
+        {
+            case TaskKind.UseAbility:
+                switch (specialAbilities[0].GetAbilitySpec().kind)
+                {
+                    case AbilityKind.Whirlwind:
+                    case AbilityKind.PushStrike:
+                    case AbilityKind.Bolt:
+                        return true;
+                }
+                return false;
+            case TaskKind.MoveForward:
+            case TaskKind.AttackEnemy:
+                return true;
+        }
+        return false;
+    }
+
     public void SetupHero(MapEntity map, TileData startingTile)
     {
         currentTile = startingTile;
         this.map = map;
         var tile = map.Tile(currentTile.TilePos);
         transform.position = map.WorldPosition(tile);
+
         heroHighLight.Show(map.WalkableBorder(transform.position, 0), map);
-
         heroHighLight.transform.position = Vector3.zero;
-
         if (ControllingPlayerId % 2 == 0)
             heroHighLight.ActiveState();
         else
             heroHighLight.InactiveState();
+        
         tile.OccupyTile(this);
+
+        specialAbilities[0].DoSpecialAbility(this, map);
     }
 
     /*public bool PerformAction(TileEntity targetTile)
@@ -124,7 +147,7 @@ public class HeroController : MonoBehaviour
     {
         onSpecialAbilityStarted?.Invoke(specialAbilities[id]);
         //onSpecialAbility.Invoke(specialAbilities[id].GetSkillAnimation());
-        specialAbilities[id].DoSpecialAbility(this, map);
+        //specialAbilities[id].DoSpecialAbility(this, map);
     }
 
     public bool Move(TileEntity targetTile)

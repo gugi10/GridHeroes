@@ -23,7 +23,7 @@ public class FireboltAbility : AbilityBase
     {
         public int range;
         public int damage;
-    } 
+    }
 
     public override void DoSpecialAbility(HeroController source, MapEntity map)
     {
@@ -54,21 +54,47 @@ public class FireboltAbility : AbilityBase
         if (chosenTile == null)
             return;
 
-        if (chosenTile.IsOccupied)
+        if (CanBeUsedOnTarget(chosenTile))
         {
-            if (TileUtilities.AreTilesInRange(source.currentTile.TilePos, chosenTile.Position, properties.range) &&
-                chosenTile.occupyingHero != source && chosenTile.occupyingHero.ControllingPlayerId != source.ControllingPlayerId)
-            {
-
-                source.LookAt(map.WorldPosition(chosenTile));
-                unitAnimations.PlaySpecialAbillity(animationId);
-                projectileAnimation.PlayProjectile(map.WorldPosition(chosenTile.Data.TilePos), 0.8f, CreateOnHit(chosenTile));
-                 
-            }
-            //TODO:Play particle effect
-
+            source.LookAt(map.WorldPosition(chosenTile));
+            unitAnimations.PlaySpecialAbillity(animationId);
+            projectileAnimation.PlayProjectile(map.WorldPosition(chosenTile.Data.TilePos), 0.8f, CreateOnHit(chosenTile));
         }
     }
+
+    public override bool CanBeUsedOnTarget(TileEntity chosenTile)
+    {
+        if (!chosenTile.IsOccupied)
+        {
+            return false;
+        }
+
+        if (!TileUtilities.AreTilesInRange(source.currentTile.TilePos, chosenTile.Position, properties.range))
+        {
+            return false;
+        }
+
+        if (chosenTile.occupyingHero == source || chosenTile.occupyingHero.ControllingPlayerId == source.ControllingPlayerId)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public override ScoreModifiers ScoreForTarget(HeroController target)
+    {
+        ScoreModifiers modifiers = new ScoreModifiers {};
+
+        if(target.GetHeroStats().current.Health <= this.properties.damage)
+        {
+            modifiers.enemiesKilled = 1;
+        }
+        modifiers.inflictedDamage = target.GetHeroStats().current.Health;
+
+        return modifiers;
+    }
+
 
     private void OnHit(TileEntity chosenTile)
     {

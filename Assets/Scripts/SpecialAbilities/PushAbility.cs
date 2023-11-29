@@ -71,4 +71,38 @@ public class PushAbility : AbilityBase
             unitAnimation.PlaySpecialAbillity(animationId);
         }
     }
+
+
+    public override bool CanBeUsedOnTarget(TileEntity chosenTile)
+    {
+        if (!chosenTile.IsOccupied)
+        {
+            return false;
+        }
+
+        if (!TileUtilities.AreTilesInRange(source.currentTile.TilePos, chosenTile.Position, properties.range))
+        {
+            return false;
+        }
+
+        if (chosenTile.occupyingHero == source || chosenTile.occupyingHero.ControllingPlayerId == source.ControllingPlayerId)
+        {
+            return false;
+        }
+
+        return true;
+    }
+    public override ScoreModifiers ScoreForTarget(HeroController target)
+    {
+        ScoreModifiers modifiers = new ScoreModifiers { };
+
+        if (target.GetHeroStats().current.Health <= this.properties.damage)
+        {
+            modifiers.enemiesKilled = 1;
+        }
+        modifiers.inflictedDamage = target.GetHeroStats().current.Health;
+        // TODO: CONSIDER PUSH FOR MODIFIERS
+
+        return modifiers;
+    }
 }

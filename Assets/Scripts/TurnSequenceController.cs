@@ -65,7 +65,7 @@ public class TurnSequenceController : MonoBehaviour
         players.Add(player);
         
         playersRemainingActions.Add(GenerateActionList());
-        var ai = new GameObject().AddComponent<AIAgent>();
+        var ai = new GameObject().AddComponent<AIAgent2>();
         ai.gameObject.name = $"AI";
         ai.Init(mapController, heroControllerInstances, 1);
         players.Add(ai);

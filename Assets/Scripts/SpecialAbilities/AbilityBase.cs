@@ -34,4 +34,14 @@ public abstract class AbilityBase : MonoBehaviour, ISpecialAbility
     {
         throw new System.NotImplementedException();
     }
+
+    public virtual bool CanBeUsedOnTarget(TileEntity chosenTile)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public virtual ScoreModifiers ScoreForTarget(HeroController target)
+    {
+        throw new System.NotImplementedException();
+    }
 }
