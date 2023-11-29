@@ -7,21 +7,15 @@ public class SceneSelectionScreen : ScreenBase
 {
     public override ScreenIdentifiers Identifier() => ScreenIdentifiers.LevelSelect;
 
-    [SerializeField] SceneLoader.SceneEnum scene = SceneLoader.SceneEnum.Map01;
-    [SerializeField] Button loadMapButton;
+    [SerializeField] private MapSlot mapPrefab;
+    [SerializeField] private MapsConfig mapsConfigObj;
 
-    private void OnEnable()
+    private void Awake()
     {
-        loadMapButton.onClick.AddListener(LoadScene);
-    }
-
-    private void OnDisable()
-    {
-        loadMapButton.onClick.RemoveListener(LoadScene);
-    }
-
-    private void LoadScene()
-    {
-        SceneLoader.LoadScene(SceneLoader.SceneEnum.Map01);
+        foreach(var map in mapsConfigObj.GetMapConfigs())
+        {
+            var spawnedMap = Instantiate(mapPrefab, transform);
+            spawnedMap.Initialize(map);
+        }
     }
 }

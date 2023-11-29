@@ -10,9 +10,11 @@ public static class SceneLoader
     public enum SceneEnum
     {
         Hub,
+        LoadingScene,
         Map01,
-        LoadingScene
+        Map02,
     }
+
     public static Action loadingCallback;
 
     public static void LoadScene(SceneEnum scene)
