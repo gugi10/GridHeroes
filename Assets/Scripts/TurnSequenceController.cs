@@ -23,7 +23,7 @@ public class TurnSequenceController : MonoBehaviour
 
     public Action<List<List<HeroAction>>> onRoundStart;
     public Action<List<List<HeroAction>>> onTurnFinished;
-    public Action<bool> onGameFinished;
+    public Action<LevelFinishedResults> onGameFinished;
     public Action<HeroController> onHeroSelected;
     public Action onHeroUnselected;
 
@@ -87,12 +87,17 @@ public class TurnSequenceController : MonoBehaviour
         // finish round before switching active player because it generates new actions.    
         // If we don't do it first the AI will try to make an action while its action table
         // will be empty which will cause out of bound exception.
-        List<HeroController> remaingHeroes = heroControllerInstances.Where(val => val.gameObject.activeSelf).ToList();
-        bool playerWon = remaingHeroes.All(hero => hero.ControllingPlayerId == 0 && hero.ControllingPlayerId != 1);
-        bool aiWon = remaingHeroes.All(hero => hero.ControllingPlayerId != 0 && hero.ControllingPlayerId == 1);
-        if (playerWon || aiWon)
+        List<HeroController> remainingHeroes = heroControllerInstances.Where(val => val.gameObject.activeSelf).ToList();
+        bool playerWon = remainingHeroes.All(hero => hero.ControllingPlayerId == 0);
+        bool aiWon = remainingHeroes.All(hero => hero.ControllingPlayerId == 1);
+        if (playerWon)
         {
-            onGameFinished?.Invoke(playerWon);
+            onGameFinished?.Invoke(new LevelFinishedResults { winner = 0} );
+            return;
+        }
+        if (aiWon)
+        {
+            onGameFinished?.Invoke(new LevelFinishedResults { winner = 1 });
             return;
         }
 
@@ -168,4 +173,14 @@ public class TurnSequenceController : MonoBehaviour
 public class HeroListWrapper
 {
     public List<HeroController> HeroPrefabs;
+}
+
+public struct LevelFinishedResults
+{
+    public int winner;
+
+    public bool HasPlayerWon()
+    {
+        return winner == 0;
+    }
 }

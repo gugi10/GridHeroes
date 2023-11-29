@@ -21,10 +21,17 @@ public class GameManager : MonoBehaviour
     private void OnDeploymentFinished(List<HeroController> spawnedHeroes)
     {
         turnSequenceController.Init(spawnedHeroes);
+        turnSequenceController.onGameFinished = OnGameFinished;
+    }
+
+    private void OnGameFinished(LevelFinishedResults results)
+    {
+        SceneLoader.LoadScene(SceneLoader.SceneEnum.Hub);
     }
 
     private void ResetLevel(bool playerWon)
     {
+        
         deployment.Init(map, heroes, OnDeploymentFinished);
         if (sceneIndex >= maxScenes)
         {

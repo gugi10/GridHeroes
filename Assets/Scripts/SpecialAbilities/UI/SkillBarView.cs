@@ -6,14 +6,9 @@ public class SkillBarView : MonoBehaviour
 {
     [SerializeField] SkillView skillPrefab;
     List<SkillView> instantiatedSkills = new();
-    private void OnEnable()
+    private void Awake()
     {
         TurnSequenceController.Instance.onHeroSelected += ShowHeroSkills;
-    }
-  
-    private void OnDisable()
-    {
-        TurnSequenceController.Instance.onHeroSelected -= ShowHeroSkills;
     }
 
     //TODO: NEED TESTING. wanted to avoid instantiating and destroying ability objects, however it might be overengineer and not working. :)
