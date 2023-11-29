@@ -23,6 +23,7 @@ public class TurnSequenceController : MonoBehaviour
 
     public Action<List<List<HeroAction>>> onRoundStart;
     public Action<List<List<HeroAction>>> onTurnFinished;
+    public Action<bool> onGameFinished;
     public Action<HeroController> onHeroSelected;
     public Action onHeroUnselected;
 
@@ -35,7 +36,6 @@ public class TurnSequenceController : MonoBehaviour
     private List<List<HeroAction>> playersRemainingActions = new();
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Update()
@@ -63,7 +63,7 @@ public class TurnSequenceController : MonoBehaviour
         player.gameObject.name = $"Player_0";
         player.Init(mapController, heroControllerInstances, 0);
         players.Add(player);
-
+        
         playersRemainingActions.Add(GenerateActionList());
         var ai = new GameObject().AddComponent<AIAgent>();
         ai.gameObject.name = $"AI";
@@ -87,6 +87,15 @@ public class TurnSequenceController : MonoBehaviour
         // finish round before switching active player because it generates new actions.    
         // If we don't do it first the AI will try to make an action while its action table
         // will be empty which will cause out of bound exception.
+        List<HeroController> remaingHeroes = heroControllerInstances.Where(val => val.gameObject.activeSelf).ToList();
+        bool playerWon = remaingHeroes.All(hero => hero.ControllingPlayerId == 0 && hero.ControllingPlayerId != 1);
+        bool aiWon = remaingHeroes.All(hero => hero.ControllingPlayerId != 0 && hero.ControllingPlayerId == 1);
+        if (playerWon || aiWon)
+        {
+            onGameFinished?.Invoke(playerWon);
+            return;
+        }
+
         if (playersRemainingActions[ActivePlayer].Contains(heroAction))
             playersRemainingActions[ActivePlayer].Remove(heroAction);
         else if(heroAction != HeroAction.Special)
@@ -153,7 +162,6 @@ public class TurnSequenceController : MonoBehaviour
     {
         onHeroUnselected?.Invoke();
     }
-
 }
 
 [System.Serializable]
