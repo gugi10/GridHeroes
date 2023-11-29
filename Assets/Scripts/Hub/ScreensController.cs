@@ -17,8 +17,16 @@ public abstract class ScreenBase : MonoBehaviour
 public class ScreensController : Singleton<ScreensController>
 {
     [SerializeField] List<ScreenBase> screens;
+    [SerializeField] ScreenBase startingScreen;
     List<ScreenBase> spawnedScreens = new();
     private ScreenBase currentScreen;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        OpenScreen(startingScreen.Identifier());
+    }
+
     public void OpenScreen(ScreenIdentifiers id)
     {
         var screenToOpen = screens.FirstOrDefault(screen => screen.Identifier() == id);

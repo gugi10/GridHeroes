@@ -2093,6 +2093,7 @@ MonoBehaviour:
   screens:
   - {fileID: 5629428249186099871, guid: faa74a3795512f843b273fa3e0f4b3f1, type: 3}
   - {fileID: 8691727579986290328, guid: 76b6db3f40a88744ca646c213bd84b81, type: 3}
+  startingScreen: {fileID: 8691727579986290328, guid: 76b6db3f40a88744ca646c213bd84b81, type: 3}
 --- !u!1001 &1697618193
 PrefabInstance:
   m_ObjectHideFlags: 0
