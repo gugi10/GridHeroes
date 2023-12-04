@@ -37,6 +37,7 @@ public class HeroController : MonoBehaviour
 {
     public int ControllingPlayerId;
     public TileData currentTile { get; private set; }
+    public TileEntity currentTileEntity { get; private set; }
     public Action<HeroController> onHeroSelected;
     public Action<HeroAction> onActionEvent { get; set; }
     public Action<HeroController> onDie { get; set; }
@@ -102,8 +103,10 @@ public class HeroController : MonoBehaviour
 
     public void SetupHero(MapEntity map, TileData startingTile)
     {
-        currentTile = startingTile;
         this.map = map;
+        currentTile = startingTile;
+        currentTileEntity = map.Tile(startingTile.TilePos);
+        
         var tile = map.Tile(currentTile.TilePos);
         transform.position = map.WorldPosition(tile);
 
@@ -164,6 +167,8 @@ public class HeroController : MonoBehaviour
             {
                 map.Tile(currentTile.TilePos).FreeTile();
                 currentTile = targetTile.Data;
+                currentTileEntity = map.Tile(currentTile.TilePos);
+                currentTileEntity.OccupyTile(this);
                 OnMoveStart?.Invoke();
                 movingCoroutine = StartCoroutine(Fly(targetTile));
                 //transform.position = map.WorldPosition(targetTile);
@@ -195,6 +200,8 @@ public class HeroController : MonoBehaviour
             StopCoroutine(movingCoroutine);
         map.Tile(currentTile.TilePos).FreeTile();
         currentTile = path[path.Count - 1].Data;
+        currentTileEntity = map.Tile(currentTile.TilePos);
+        currentTileEntity.OccupyTile(this);
         OnMoveStart?.Invoke();
         movingCoroutine = StartCoroutine(Move(path));
         return true;

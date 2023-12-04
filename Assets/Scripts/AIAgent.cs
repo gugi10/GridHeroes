@@ -1,3 +1,4 @@
+using RedBjorn.ProtoTiles;
 using RedBjorn.Utils;
 using System;
 using System.Collections;
@@ -210,9 +211,9 @@ public struct Task
 public class PossibleTask
 {
     public Task task;
-    public HeroController objective;
+    public TileEntity objective;
 
-    public PossibleTask(Task task, HeroController objective)
+    public PossibleTask(Task task, TileEntity objective)
     {
         this.task = task;
         this.objective = objective;
@@ -269,7 +270,7 @@ public class AIAgent2 : MonoBehaviour, IPlayer
         {
             return this.playerHeroes.Select(playerHero =>
             {
-                return new PossibleTask(task, playerHero);
+                return new PossibleTask(task, playerHero.currentTileEntity);
             }).ToArray();
         }).ToArray();
 
@@ -281,7 +282,8 @@ public class AIAgent2 : MonoBehaviour, IPlayer
             {
                 if (possibleTask.task.kind == TaskKind.AttackEnemy)
                 {
-                    if (IsEnemyInRange(aiHero, possibleTask.objective, aiHero.GetHeroStats().current.WeaponRange)
+                    if (possibleTask.objective.IsOccupied &&
+                        IsEnemyTileInRange(aiHero, possibleTask.objective.Data, aiHero.GetHeroStats().current.WeaponRange)                        
                             && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)
                             ||  TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Attack)))
                     {
@@ -291,12 +293,12 @@ public class AIAgent2 : MonoBehaviour, IPlayer
 
                 if (possibleTask.task.kind == TaskKind.UseAbility && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)))
                 {
-                    var targetTile = map.GetMapEntity().Tile(possibleTask.objective.currentTile.TilePos);
-                    if (aiHero.specialAbilities[0].CanBeUsedOnTarget(targetTile))
+                    var objectiveTileEntity = possibleTask.objective;
+                    if (aiHero.specialAbilities[0].CanBeUsedOnTarget(objectiveTileEntity))
                     {
                         // TODO: SCORE
                         possibleAssignments = possibleAssignments.Append(new PossibleAssignment(
-                            Score(tasks.Length, possibleTask.task.kind, aiHero.specialAbilities[0].ScoreForTarget(possibleTask.objective)), possibleTask, aiHero)
+                            Score(tasks.Length, possibleTask.task.kind, aiHero.specialAbilities[0].ScoreForTarget(possibleTask.objective.occupyingHero)), possibleTask, aiHero)
                         ).ToArray();
                     }
 
@@ -323,15 +325,15 @@ public class AIAgent2 : MonoBehaviour, IPlayer
 
         if (chosenAssignment.possibleTask.task.kind == TaskKind.AttackEnemy)
         {
-            var targetTile = map.GetMapEntity().Tile(chosenAssignment.possibleTask.objective.currentTile.TilePos);
-            chosenAssignment.assignee.Attack(targetTile);
+            var targetTileEntity = chosenAssignment.possibleTask.objective;
+            chosenAssignment.assignee.Attack(targetTileEntity);
             return; 
         }
 
         if (chosenAssignment.possibleTask.task.kind == TaskKind.UseAbility)
         {
-            var targetTile = map.GetMapEntity().Tile(chosenAssignment.possibleTask.objective.currentTile.TilePos);
-            chosenAssignment.assignee.specialAbilities[0].PerformAbility(targetTile);
+            var targetTileEntity = chosenAssignment.possibleTask.objective;
+            chosenAssignment.assignee.specialAbilities[0].PerformAbility(targetTileEntity);
             return;
         }
 
@@ -359,6 +361,11 @@ public class AIAgent2 : MonoBehaviour, IPlayer
         }
 
         TurnSequenceController.Instance.FinishTurn(TurnSequenceController.Instance.GetPlayerRemainingActions(Id)[0]);
+    }
+
+    private bool IsEnemyTileInRange(HeroController aiHero, TileData tileData, int range)
+    {
+        return TileUtilities.AreTilesInRange(aiHero.currentTile.TilePos, tileData.TilePos, range);
     }
 
     private bool IsEnemyInRange(HeroController aiHero, HeroController playerHero, int range)
