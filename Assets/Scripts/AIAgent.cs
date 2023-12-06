@@ -129,7 +129,7 @@ public class AIAgent : MonoBehaviour, IPlayer
                         (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)
                             || TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Move)))
                     {
-                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.task.kind), possibleTask, aiHero)).ToArray();
+                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment(ScoreMovement(tasks.Length, possibleTask, aiHero), possibleTask, aiHero)).ToArray();
                     }
                 }
             }
@@ -163,12 +163,12 @@ public class AIAgent : MonoBehaviour, IPlayer
         {
             var aiHero = chosenAssignment.assignee;
             //trzeba przeliczyc pathy dla kazdego wealkable tile'a i odfiltrowac te ktore sa w zasiegu iczy nic nie blokuje.
-            var walkableTiles = map.GetMapEntity().WalkableTiles(aiHero.currentTile.TilePos, aiHero.GetHeroStats().current.Move).Where(x => !x.IsOccupied).ToList();
-            var randomWalkableTileIdx = Random.Range(0, walkableTiles.Count);
-            var selectedRandomTile = walkableTiles[randomWalkableTileIdx].Data.TilePos;
-            Debug.Log($"selected Tile {selectedRandomTile} for {aiHero.gameObject.name}");
+            //var walkableTiles = map.GetMapEntity().WalkableTiles(aiHero.currentTile.TilePos, aiHero.GetHeroStats().current.Move).Where(x => !x.IsOccupied).ToList();
+            //var randomWalkableTileIdx = Random.Range(0, walkableTiles.Count);
+            //var selectedRandomTile = walkableTiles[randomWalkableTileIdx].Data.TilePos;
+            //Debug.Log($"selected Tile {selectedRandomTile} for {aiHero.gameObject.name}");
             var path = map.GetMapEntity().PathTiles
-                (aiHero.transform.position, map.GetMapEntity().WorldPosition(walkableTiles[randomWalkableTileIdx].Data.TilePos), aiHero.GetHeroStats().current.Move);
+                (aiHero.transform.position, map.GetMapEntity().WorldPosition(chosenAssignment.possibleTask.objective.Position), aiHero.GetHeroStats().current.Move);
             string pathstring = "";
 
             foreach (var tiles in path)
@@ -270,5 +270,15 @@ public class AIAgent : MonoBehaviour, IPlayer
     private double Score(int taskCount, TaskKind taskKind, ScoreModifiers modifiers)
     {
         return (taskCount - (int)taskKind) + modifiers.enemiesKilled * 0.5 + modifiers.inflictedDamage * 0.1;
+    }
+
+    private double ScoreMovement(int taskCount, PossibleTask task, HeroController aiHero)
+    {
+        TileEntity objectiveTile = task.objective;
+        List<TileEntity> tilePositionsInWeaponRange = map.GetMapEntity().Area(objectiveTile.Position, aiHero.GetHeroStats().current.WeaponRange)
+            .Select(position => map.GetMapEntity().Tile(position)).Where(tile => tile != null).ToList();
+        int enemiesInRange = tilePositionsInWeaponRange.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == 0).Count();
+
+        return (taskCount - (int)task.task.kind) + (enemiesInRange * 0.2);
     }
 }
