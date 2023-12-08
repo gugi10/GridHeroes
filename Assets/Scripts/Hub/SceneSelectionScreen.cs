@@ -9,13 +9,30 @@ public class SceneSelectionScreen : ScreenBase
 
     [SerializeField] private MapSlot mapPrefab;
     [SerializeField] private MapsConfig mapsConfigObj;
+    [SerializeField] private Transform mapsParent;
+    [SerializeField] private Button heroSelectionScreen;
 
     private void Awake()
     {
         foreach(var map in mapsConfigObj.GetMapConfigs())
         {
-            var spawnedMap = Instantiate(mapPrefab, transform);
+            var spawnedMap = Instantiate(mapPrefab, mapsParent);
             spawnedMap.Initialize(map);
         }
+    }
+
+    private void OnEnable()
+    {
+        heroSelectionScreen.onClick.AddListener(OpenHeroSelection);
+    }
+
+    private void OnDisable()
+    {
+        heroSelectionScreen.onClick.RemoveListener(OpenHeroSelection);
+    }
+
+    private void OpenHeroSelection()
+    {
+        ScreensController.Instance.OpenScreen(ScreenIdentifiers.HeroSelect);
     }
 }

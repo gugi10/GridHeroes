@@ -2,20 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameSession : MonoBehaviour
+public class GameSession : Singleton<GameSession>
 {
+    [SerializeField] HeroesConfig heroesConfig;
     private List<IService> services = new();
 
-    private void Awake()
+    protected override void Awake()
     {
-        DontDestroyOnLoad(this);
-        services.Add(new HeroService());
-        SceneLoader.LoadScene(SceneLoader.SceneEnum.Hub);
-    }
+        base.Awake();
 
-    private void Start()
-    {
-        //Show popup at the end of the game to do is required to make the screensController load when the hub finishes loading
+        DontDestroyOnLoad(this);
+        services.Add(new HeroService(heroesConfig.heroPrefabs));
+        SceneLoader.LoadScene(SceneLoader.SceneEnum.Hub);
     }
 
     public T GetService<T>()

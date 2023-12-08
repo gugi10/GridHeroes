@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
 
     private void ResetLevel(bool playerWon)
     {
-        
+        heroes[0].HeroPrefabs = GameSession.Instance.GetService<HeroService>().GetPlayerLineUp();
         deployment.Init(map, heroes, OnDeploymentFinished);
         if (sceneIndex >= maxScenes)
         {
