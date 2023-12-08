@@ -21,6 +21,6 @@ public static class SceneLoader
     {
         current = scene;
         loadingCallback = () => SceneManager.LoadScene(scene.ToString());
-        SceneManager.LoadSceneAsync(SceneEnum.LoadingScene.ToString());
+        SceneManager.LoadScene(SceneEnum.LoadingScene.ToString());
     }
 }

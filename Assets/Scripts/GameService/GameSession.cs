@@ -13,6 +13,11 @@ public class GameSession : MonoBehaviour
         SceneLoader.LoadScene(SceneLoader.SceneEnum.Hub);
     }
 
+    private void Start()
+    {
+        //Show popup at the end of the game to do is required to make the screensController load when the hub finishes loading
+    }
+
     public T GetService<T>()
         where T : class, IService
     {

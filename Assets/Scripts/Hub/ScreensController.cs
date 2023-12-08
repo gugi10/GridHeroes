@@ -6,7 +6,8 @@ using System.Linq;
 public enum ScreenIdentifiers
 {
     LevelSelect,
-    HeroSelect
+    HeroSelect,
+    VictoryScreen
 }
 
 public abstract class ScreenBase : MonoBehaviour
@@ -24,7 +25,7 @@ public class ScreensController : Singleton<ScreensController>
     protected override void Awake()
     {
         base.Awake();
-        OpenScreen(startingScreen.Identifier());
+        DontDestroyOnLoad(this);
     }
 
     public void OpenScreen(ScreenIdentifiers id)
