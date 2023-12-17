@@ -6,6 +6,7 @@ using System.Linq;
 public class SelectedHeroesSection : MonoBehaviour
 {
     [SerializeField] private int maxHeroes = 10;
+    [SerializeField] private HeroToSelect heroToSelectPrefab;
     private List<HeroToSelect> selectedHeroes = new List<HeroToSelect>();
     private HeroService heroService;
 
@@ -15,23 +16,19 @@ public class SelectedHeroesSection : MonoBehaviour
 
         foreach (HeroController hero in heroService.GetPlayerLineUp())
         {
-            var heroFromLineUp = new HeroToSelect();
-            heroFromLineUp.Init(hero);
-            AddHero(heroFromLineUp);
+            SpawnHero(hero);
         }
     }
 
-    public void AddHero(HeroToSelect heroToSelect)
+    public void AddNewHero(HeroController heroToSelect)
     {
         if(maxHeroes <= selectedHeroes.Count())
         {
             Debug.Log($"Added maximum amount of heroes");
             return;
         }
-        var heroToAdd = Instantiate(heroToSelect, transform);
-        heroToAdd.SetCallback(RemoveHero);
-        selectedHeroes.Add(heroToAdd);
-        heroService.AddHeroToLineUp(heroToSelect.RepresentedHeroController);
+        var heroToAdd = SpawnHero(heroToSelect);
+        heroService.AddHeroToLineUp(heroToAdd.RepresentedHeroController);
     }
 
     public void RemoveHero(HeroToSelect heroToSelect)
@@ -47,5 +44,14 @@ public class SelectedHeroesSection : MonoBehaviour
     public int GetSelectedHeroesCount()
     {
         return selectedHeroes.Count();
+    }
+
+    private HeroToSelect SpawnHero(HeroController heroToSelect)
+    {
+        var heroToAdd = Instantiate(heroToSelectPrefab, transform);
+        heroToAdd.Init(heroToSelect);
+        heroToAdd.SetCallback(RemoveHero);
+        selectedHeroes.Add(heroToAdd);
+        return heroToAdd;
     }
 }

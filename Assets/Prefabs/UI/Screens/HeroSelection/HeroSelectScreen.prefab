@@ -340,6 +340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHeroes: 10
+  heroToSelectPrefab: {fileID: 8513583453432658857, guid: e712cf31bea73d04996b4690c70d980e, type: 3}
 --- !u!1 &6424498844888812870
 GameObject:
   m_ObjectHideFlags: 0

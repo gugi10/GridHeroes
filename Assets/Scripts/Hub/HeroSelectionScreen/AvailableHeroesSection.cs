@@ -28,6 +28,6 @@ public class AvailableHeroesSection : MonoBehaviour
     
     private void OnHeroSelected(HeroToSelect selectedHero)
     {
-        selectedHeroesSection.AddHero(selectedHero);
+        selectedHeroesSection.AddNewHero(selectedHero.RepresentedHeroController);
     }
 }
