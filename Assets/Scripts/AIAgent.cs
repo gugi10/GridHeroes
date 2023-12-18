@@ -1,5 +1,6 @@
 using RedBjorn.ProtoTiles;
 using RedBjorn.Utils;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -67,14 +68,23 @@ public class AIAgent : MonoBehaviour, IPlayer
     }
     public void SetActiveState(bool flag)
     {
-        var aiHeroes = allHeroes.FindAll(hero => hero.ControllingPlayerId == Id);
-
         if (!flag)
         {
             return;
         }
 
+        StartCoroutine(DelayedAiAction());
+    }
 
+    private IEnumerator DelayedAiAction()
+    {
+        yield return new WaitForSeconds(1f);
+        AiAction();
+    }
+
+    private void AiAction()
+    {
+        var aiHeroes = allHeroes.FindAll(hero => hero.ControllingPlayerId == Id);
         if (aiHeroes.Count <= 0)
             return;
 
@@ -103,7 +113,7 @@ public class AIAgent : MonoBehaviour, IPlayer
                             && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)
                             || TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Attack)))
                     {
-                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.task.kind), possibleTask, 
+                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.task.kind), possibleTask,
                             aiHero)).ToArray();
                     }
                 }
@@ -143,6 +153,7 @@ public class AIAgent : MonoBehaviour, IPlayer
             Debug.Log("It is possible that there are no possible actions to do (we have only attacks byt nobody to attack is in range).");
             TurnSequenceController.Instance.FinishTurn(TurnSequenceController.Instance.GetPlayerRemainingActions(Id)[0]);
             return;
+
         }
 
         if (chosenAssignment.possibleTask.task.kind == TaskKind.AttackEnemy)
@@ -150,6 +161,7 @@ public class AIAgent : MonoBehaviour, IPlayer
             var targetTileEntity = chosenAssignment.possibleTask.objective;
             chosenAssignment.assignee.Attack(targetTileEntity);
             return;
+
         }
 
         if (chosenAssignment.possibleTask.task.kind == TaskKind.UseAbility)
@@ -157,6 +169,7 @@ public class AIAgent : MonoBehaviour, IPlayer
             var targetTileEntity = chosenAssignment.possibleTask.objective;
             chosenAssignment.assignee.specialAbilities[0].PerformAbility(targetTileEntity);
             return;
+
         }
 
         if (chosenAssignment.possibleTask.task.kind == TaskKind.MoveForward)
@@ -180,6 +193,7 @@ public class AIAgent : MonoBehaviour, IPlayer
                 aiHero.MoveByPath(path);
             //randomAiHero.Move(walkableTiles[randomWalkableTileIdx]);
             return;
+
         }
 
 

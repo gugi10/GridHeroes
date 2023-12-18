@@ -107,14 +107,8 @@ public class TurnSequenceController : MonoBehaviour
         else if(heroAction != HeroAction.Special)
             playersRemainingActions[ActivePlayer].Remove(HeroAction.Special);
 
-        
 
-        StartCoroutine(DelayedTurnFinish());
-    }
 
-    private IEnumerator DelayedTurnFinish()
-    {
-        yield return new WaitForSeconds(1);
         if (playersRemainingActions.All(x => x.Count() == 0))
         {
             FinishRound();
