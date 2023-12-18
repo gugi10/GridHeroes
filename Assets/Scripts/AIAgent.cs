@@ -57,17 +57,17 @@ public class AIAgent : MonoBehaviour, IPlayer
     private List<HeroController> aiHeroes = new List<HeroController>();
     private List<HeroController> playerHeroes = new List<HeroController>();
 
-    public void Init(MapController map, List<HeroController> allHeroes, int playerId)
+    public void Init(MapController map, List<HeroController> allHeroes, int id)
     {
+        Id = id;
         this.map = map;
         this.allHeroes = allHeroes;
-        this.aiHeroes = allHeroes.FindAll(hero => hero.ControllingPlayerId != Id);
-        this.playerHeroes = allHeroes.FindAll(hero => hero.ControllingPlayerId == Id);
-        Id = playerId;
+        this.aiHeroes = allHeroes.FindAll(hero => hero.ControllingPlayerId == Id);
+        this.playerHeroes = allHeroes.FindAll(hero => hero.ControllingPlayerId != Id);
     }
     public void SetActiveState(bool flag)
     {
-
+        var aiHeroes = allHeroes.FindAll(hero => hero.ControllingPlayerId == Id);
 
         if (!flag)
         {
@@ -77,7 +77,6 @@ public class AIAgent : MonoBehaviour, IPlayer
 
         if (aiHeroes.Count <= 0)
             return;
-
 
         Task[] tasks = { new Task(TaskKind.AttackEnemy), new Task(TaskKind.UseAbility), new Task(TaskKind.MoveForward) };
         List<TileEntity> allTileEntites = map.GetMapEntity().Tiles.ToList().Select(pair => pair.Value).ToList();
@@ -94,7 +93,7 @@ public class AIAgent : MonoBehaviour, IPlayer
         PossibleAssignment[] possibleAssignments = { };
         foreach (var possibleTask in possibleTasks)
         {
-            foreach (var aiHero in this.aiHeroes)
+            foreach (var aiHero in aiHeroes)
             {
                 if (possibleTask.task.kind == TaskKind.AttackEnemy)
                 {
@@ -104,7 +103,8 @@ public class AIAgent : MonoBehaviour, IPlayer
                             && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)
                             || TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Attack)))
                     {
-                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.task.kind), possibleTask, aiHero)).ToArray();
+                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.task.kind), possibleTask, 
+                            aiHero)).ToArray();
                     }
                 }
 

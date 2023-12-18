@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System;
+using System.Collections;
 
 public class TurnSequenceController : MonoBehaviour
 {
@@ -106,7 +107,14 @@ public class TurnSequenceController : MonoBehaviour
         else if(heroAction != HeroAction.Special)
             playersRemainingActions[ActivePlayer].Remove(HeroAction.Special);
 
-        Debug.Log($"{playersRemainingActions[0]}, {playersRemainingActions[1]}");
+        
+
+        StartCoroutine(DelayedTurnFinish());
+    }
+
+    private IEnumerator DelayedTurnFinish()
+    {
+        yield return new WaitForSeconds(1);
         if (playersRemainingActions.All(x => x.Count() == 0))
         {
             FinishRound();
