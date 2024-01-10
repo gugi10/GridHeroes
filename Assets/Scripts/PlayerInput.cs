@@ -112,7 +112,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
         TileEntity tile = map.GetTile();
         if (tile == null)
             return;
-
+        //Select hero
         if (tile.IsOccupied && selectedHero == null)
         {
             foreach (var hero in heroes)
@@ -126,14 +126,14 @@ public class PlayerInput : MonoBehaviour, IPlayer
             }
             return;
         }
-
+        //Unselect hero
         if (tile.IsOccupied && selectedHero != null && tile.occupyingHero == selectedHero)
         {
             selectedHero.Unselect();
             selectedHero = null;
             return;
         }
-
+        //Attack or move
         if (selectedHero != null && selectedHero.ControllingPlayerId == Id)
         {
             if (IsTargetingEnemy(tile) && (HasAction(HeroAction.Attack) || HasAction(HeroAction.Special)))
@@ -145,6 +145,10 @@ public class PlayerInput : MonoBehaviour, IPlayer
             }
             else if (!tile.IsOccupied && (HasAction(HeroAction.Move) || HasAction(HeroAction.Special)))
             {
+                if (!TileUtilities.AreTilesInRange(selectedHero.currentTile.TilePos, tile.Position, selectedHero.GetHeroStats().current.Move))
+                {
+                    return;
+                }
                 if (MyInput.GetOnWorldUp(map.GetMapEntity().Settings.Plane()))
                 {
                     HandleMovePath();
@@ -209,6 +213,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
             }
         }
     }
+
     void HandleMovePath()
     {
         var clickPos = MyInput.GroundPosition(map.GetMapEntity().Settings.Plane());
