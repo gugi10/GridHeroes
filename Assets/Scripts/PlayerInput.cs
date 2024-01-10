@@ -129,8 +129,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
         //Unselect hero
         if (tile.IsOccupied && selectedHero != null && tile.occupyingHero == selectedHero)
         {
-            selectedHero.Unselect();
-            selectedHero = null;
+            UnselectHero();
             return;
         }
         //Attack or move
@@ -145,10 +144,12 @@ public class PlayerInput : MonoBehaviour, IPlayer
             }
             else if (!tile.IsOccupied && (HasAction(HeroAction.Move) || HasAction(HeroAction.Special)))
             {
+                //Return if tile is too far
                 if (!TileUtilities.AreTilesInRange(selectedHero.currentTile.TilePos, tile.Position, selectedHero.GetHeroStats().current.Move))
                 {
                     return;
                 }
+
                 if (MyInput.GetOnWorldUp(map.GetMapEntity().Settings.Plane()))
                 {
                     HandleMovePath();
@@ -191,7 +192,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     void PathUpdate()
     {
-        if (selectedHero == null)
+        if (selectedHero == null || selectedHero.ControllingPlayerId != Id)
         {
             if (path.gameObject.activeSelf)
                 PathHide();
