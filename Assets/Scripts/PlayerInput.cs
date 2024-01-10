@@ -38,11 +38,6 @@ public class PlayerInput : MonoBehaviour, IPlayer
         TurnSequenceController.Instance.onTurnFinished -= SetPlayerActions;
     }
 
-    private void Start()
-    {
-
-    }
-
     public void Init(MapController map, List<HeroController> ownedHeroes, int playerId)
     {
         this.map = map;
@@ -75,6 +70,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     private void SetPlayerActions(List<List<HeroAction>> actions)
     {
+        UnselectHero();
         playerActions = new List<List<HeroAction>>(actions);
     }
 
@@ -163,6 +159,9 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     private void UnselectHero()
     {
+        if (selectedHero == null)
+            return;
+
         selectedHero.Unselect();
         selectedHero = null;
     }
@@ -184,6 +183,8 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     void PathHide()
     {
+            Debug.Log($"Hide path");
+
         if (path)
         {
             path.Hide();
@@ -192,7 +193,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     void PathUpdate()
     {
-        if (selectedHero == null || selectedHero.ControllingPlayerId != Id)
+        if (selectedHero == null || selectedHero.ControllingPlayerId != Id || selectedHero.GetHeroStats().current.Health <= 0)
         {
             if (path.gameObject.activeSelf)
                 PathHide();
@@ -201,6 +202,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
         if (path && path.IsEnabled)
         {
+            Debug.Log($"Show path");
             var tile = map.GetMapEntity().Tile(MyInput.GroundPosition(map.GetMapEntity().Settings.Plane()));
             if (tile != null && tile.Vacant && !tile.IsOccupied)
             {
