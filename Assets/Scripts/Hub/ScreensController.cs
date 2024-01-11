@@ -6,8 +6,12 @@ using System.Linq;
 public enum ScreenIdentifiers
 {
     LevelSelect,
-    HeroSelect,
-    VictoryScreen
+    HeroSelect
+}
+
+public enum PopupIdentifiers
+{
+    EndGamePopup
 }
 
 public abstract class ScreenBase : MonoBehaviour
@@ -15,12 +19,22 @@ public abstract class ScreenBase : MonoBehaviour
     public abstract ScreenIdentifiers Identifier();
 }
 
+public abstract class PopupBase : MonoBehaviour
+{
+    public abstract PopupIdentifiers Identifier();
+
+    public abstract void OnEnter(object data);
+}
+
 public class ScreensController : Singleton<ScreensController>
 {
     [SerializeField] List<ScreenBase> screens;
+    [SerializeField] List<PopupBase> popups;
     [SerializeField] ScreenBase startingScreen;
     List<ScreenBase> spawnedScreens = new();
+    List<PopupBase> spawnedPopups = new();
     private ScreenBase currentScreen;
+    private PopupBase activePopup;
 
     protected override void Awake()
     {
@@ -64,6 +78,43 @@ public class ScreensController : Singleton<ScreensController>
         SpawnScreen(screenToOpen);
     }
 
+    //TODO: Popups should behave as queue, not important rn
+    public void OpenPopup(PopupIdentifiers id, object payload = null)
+    {
+        var popupToOpen = popups.FirstOrDefault(popup => popup.Identifier() == id);
+
+        if (popupToOpen == null)
+        {
+            Debug.LogError($"No Popup with such ID {id}");
+            return;
+        }
+
+        if (activePopup == null)
+        {
+            SpawnPopup(popupToOpen);
+            return;
+        }
+
+        if (activePopup.Identifier() == id)
+        {
+            Debug.Log($"Popup {id} is currently opeend");
+            return;
+        }
+
+        var foundPopup = spawnedPopups.FirstOrDefault(x => x.Identifier() == id);
+
+        if (foundPopup)
+        {
+            foundPopup.gameObject.SetActive(true);
+            activePopup.gameObject.SetActive(false);
+            activePopup = foundPopup;
+            return;
+        }
+
+        currentScreen.gameObject.SetActive(false);
+        SpawnPopup(popupToOpen, payload);
+    }
+
     private void SpawnScreen(ScreenBase screenToSpawn)
     {
         var spawnedScreen = Instantiate(screenToSpawn);
@@ -71,11 +122,11 @@ public class ScreensController : Singleton<ScreensController>
         currentScreen = spawnedScreen;
     }
 
-    private void Update()
+    private void SpawnPopup(PopupBase popupToSpawn, object payload = null)
     {
-        if (Input.GetKeyDown(KeyCode.A))
-            OpenScreen(ScreenIdentifiers.LevelSelect);
-        if (Input.GetKeyDown(KeyCode.B))
-            OpenScreen(ScreenIdentifiers.HeroSelect);
+        var spawnedPopup = Instantiate(popupToSpawn);
+        spawnedPopup.OnEnter(payload);
+        spawnedPopups.Add(spawnedPopup);
+        activePopup = spawnedPopup;
     }
 }

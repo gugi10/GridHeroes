@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     private void OnGameFinished(LevelFinishedResults results)
     {
-        SceneLoader.LoadScene(SceneLoader.SceneEnum.Hub);
+        ScreensController.Instance.OpenPopup(PopupIdentifiers.EndGamePopup, new VictoryPopup.Payload(results.HasPlayerWon()));
     }
 
     private void ResetLevel(bool playerWon)

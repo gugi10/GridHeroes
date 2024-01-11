@@ -183,8 +183,6 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     void PathHide()
     {
-            Debug.Log($"Hide path");
-
         if (path)
         {
             path.Hide();
