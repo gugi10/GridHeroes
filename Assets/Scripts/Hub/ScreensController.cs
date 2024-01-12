@@ -125,6 +125,7 @@ public class ScreensController : Singleton<ScreensController>
     private void SpawnPopup(PopupBase popupToSpawn, object payload = null)
     {
         var spawnedPopup = Instantiate(popupToSpawn);
+        spawnedPopup.GetComponent<Canvas>().sortingOrder = 3;
         spawnedPopup.OnEnter(payload);
         spawnedPopups.Add(spawnedPopup);
         activePopup = spawnedPopup;
