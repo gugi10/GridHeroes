@@ -66,9 +66,17 @@ public class TurnSequenceController : MonoBehaviour
         players.Add(player);
         
         playersRemainingActions.Add(GenerateActionList());
+        //TODO: reconsider using assembly definitions inside of such scripts, it makes readability more difficultt
+#if !MOCK_DATA
         var ai = new GameObject().AddComponent<AIAgent>();
         ai.gameObject.name = $"AI";
         ai.Init(mapController, heroControllerInstances, 1);
+#else
+        var ai = Instantiate(playerInputPrefab);
+        ai.gameObject.name = $"Player_0";
+        ai.Init(mapController, heroControllerInstances, 0);
+#endif
+
         players.Add(ai);
 
         onRoundStart?.Invoke(playersRemainingActions);

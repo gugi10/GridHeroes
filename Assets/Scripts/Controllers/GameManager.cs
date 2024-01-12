@@ -9,8 +9,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TurnSequenceController turnSequenceController;
     [SerializeField] private Deployment deployment;
     [SerializeField] private MapController map;
+#if MOCK_DATA
     [SerializeField] List<HeroListWrapper> heroes = new();
-    int maxScenes = 1;
+#else
+    List<HeroListWrapper> heroes = new();
+#endif 
 
     private void Start()
     {
@@ -30,7 +33,9 @@ public class GameManager : MonoBehaviour
 
     private void ResetLevel(bool playerWon)
     {
+#if !MOCK_DATA
         heroes[0].HeroPrefabs = GameSession.Instance.GetService<HeroService>().GetPlayerLineUp();
+#endif
         deployment.Init(map, heroes, OnDeploymentFinished);
     }
 }
