@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Deployment deployment;
     [SerializeField] private MapController map;
     [SerializeField] List<HeroListWrapper> heroes = new();
-    int sceneIndex;
     int maxScenes = 1;
 
     private void Start()
@@ -33,9 +32,5 @@ public class GameManager : MonoBehaviour
     {
         heroes[0].HeroPrefabs = GameSession.Instance.GetService<HeroService>().GetPlayerLineUp();
         deployment.Init(map, heroes, OnDeploymentFinished);
-        if (sceneIndex >= maxScenes)
-        {
-            sceneIndex = 0;
-        }
     }
 }
