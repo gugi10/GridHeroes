@@ -4279,9 +4279,10 @@ MonoBehaviour:
   map: {fileID: 1306954802}
   heroes:
   - HeroPrefabs:
-    - {fileID: 6390770937447195161, guid: 6a5d01e5db674b7408e9f8613a4da383, type: 3}
+    - {fileID: 183312758891173421, guid: 86fdf825a5c3c2b4da15625e11a67273, type: 3}
+    - {fileID: 183312758891173421, guid: 86fdf825a5c3c2b4da15625e11a67273, type: 3}
   - HeroPrefabs:
-    - {fileID: 6390770937447195161, guid: 6a5d01e5db674b7408e9f8613a4da383, type: 3}
+    - {fileID: 183312758891173421, guid: 86fdf825a5c3c2b4da15625e11a67273, type: 3}
     - {fileID: 183312758891173421, guid: 86fdf825a5c3c2b4da15625e11a67273, type: 3}
 --- !u!4 &810260930
 Transform:
@@ -5932,6 +5933,7 @@ MonoBehaviour:
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
   m_UseScreenCoordOverride: 0
   m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}

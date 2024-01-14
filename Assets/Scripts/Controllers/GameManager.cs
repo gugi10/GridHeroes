@@ -9,11 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TurnSequenceController turnSequenceController;
     [SerializeField] private Deployment deployment;
     [SerializeField] private MapController map;
-#if MOCK_DATA
     [SerializeField] List<HeroListWrapper> heroes = new();
-#else
-    List<HeroListWrapper> heroes = new();
-#endif 
 
     private void Start()
     {
