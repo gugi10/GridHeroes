@@ -276,10 +276,40 @@ public class AIAgent : MonoBehaviour, IPlayer
     private double ScoreMovement(int taskCount, PossibleTask task, HeroController aiHero)
     {
         TileEntity objectiveTile = task.objective;
+
+
+
         List<TileEntity> tilePositionsInWeaponRange = map.GetMapEntity().Area(objectiveTile.Position, aiHero.GetHeroStats().current.WeaponRange)
             .Select(position => map.GetMapEntity().Tile(position)).Where(tile => tile != null).ToList();
-        int enemiesInRange = tilePositionsInWeaponRange.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == 0).Count();
+        int enemiesInWeaponRange = tilePositionsInWeaponRange.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == 0).Count();
 
-        return (taskCount - (int)task.task.kind) + (enemiesInRange * 0.2);
+        List<TileEntity> tilePositionsInSpecialAbilityRange = map.GetMapEntity().Area(objectiveTile.Position, aiHero.specialAbilities[0].GetAbilitySpec().properties.range)
+    .Select(position => map.GetMapEntity().Tile(position)).Where(tile => tile != null).ToList();
+        int enemiesInSpecialAbilityRange = tilePositionsInWeaponRange.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == 0).Count();
+
+        List<TileEntity> adjacentTilePositions = map.GetMapEntity().Area(objectiveTile.Position, 1)
+            .Select(position => map.GetMapEntity().Tile(position)).Where(tile => tile != null).ToList();
+        int adjacentEnemies = adjacentTilePositions.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == 0).Count();
+
+        bool heroHasRangeWeapon = aiHero.GetHeroStats().current.WeaponRange > 1;
+        bool heroHasRangSpecialAbility = aiHero.specialAbilities[0].GetAbilitySpec().properties.range > 1;
+        bool heroIsRangeHero = heroHasRangeWeapon || heroHasRangSpecialAbility;
+
+        float bonusScore = 0.0f;
+        if (heroIsRangeHero)
+        {
+            bonusScore -= adjacentEnemies * 0.2f;
+            bonusScore += enemiesInWeaponRange * 0.1f;
+            if (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)) {
+                bonusScore += enemiesInSpecialAbilityRange * 0.1f;
+            }
+        }
+        else
+        {
+            bonusScore += enemiesInWeaponRange * 0.2f;
+        }
+
+
+        return (taskCount - (int)task.task.kind) + (bonusScore);
     }
 }
