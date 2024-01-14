@@ -24,6 +24,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
     private List<List<HeroAction>> playerActions;
     private bool abilityInputIsProcessing;
     private ISpecialAbility processedAbility;
+    private bool playerIsActive;
 
 
     private void OnEnable()
@@ -76,6 +77,11 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     void Update()
     {
+        if (!playerIsActive)
+        {
+            return;
+        }
+
         if (abilityInputIsProcessing)
         {
             if(Input.GetKeyDown(KeyCode.Escape))
@@ -162,6 +168,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
         if (selectedHero == null)
             return;
 
+        PathHide();
         selectedHero.Unselect();
         selectedHero = null;
     }
@@ -178,7 +185,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     public void SetActiveState(bool flag)
     {
-        this.enabled = flag;
+        this.playerIsActive = flag;
     }
 
     void PathHide()
