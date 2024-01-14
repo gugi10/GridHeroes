@@ -264,21 +264,8 @@ public class AIAgent : MonoBehaviour, IPlayer
         var ability = hero.specialAbilities[0];
         var abilitySpec = ability.GetAbilitySpec();
 
-        switch (abilitySpec.kind)
-        {
-            case AbilityKind.Whirlwind:
-                {
-                    var properties = (WhirlwindAbility.Properties)abilitySpec.properties;
-
-                    return properties.range;
-                }
-            case AbilityKind.Bolt:
-                {
-                    var properties = (FireboltAbility.Properties)abilitySpec.properties;
-                    return properties.range;
-                }
-        }
-        return 0;
+        var properties = abilitySpec.properties;
+        return properties.range;
     }
 
     private double Score(int taskCount, TaskKind taskKind, ScoreModifiers modifiers)

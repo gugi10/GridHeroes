@@ -7,16 +7,10 @@ using UnityEngine;
 [RequireComponent(typeof(UnitAnimations))]
 public class PushAbility : AbilityBase
 {
-    private Properties properties = new() { damage = 0, range = 1 };
+    private BasicProperties properties = new() { damage = 0, range = 1 };
     private HeroController source;
     private MapEntity map;
     private UnitAnimations unitAnimation;
-
-    public struct Properties
-    {
-        public int range;
-        public int damage;
-    }
 
     private void Awake()
     {

@@ -7,17 +7,11 @@ using static FireboltAbility;
 [RequireComponent(typeof(UnitAnimations))]
 public class WhirlwindAbility : AbilityBase
 {
-    private Properties properties = new() { damage = 1, range = 1 };
+    private BasicProperties properties = new() { damage = 1, range = 1 };
 
     HeroController source;
     MapEntity map;
     UnitAnimations unitAnimations;
-    public struct Properties
-    {
-        public int range;
-        public int damage;
-    }
-
 
     private void Awake()
     {

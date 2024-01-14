@@ -8,19 +8,13 @@ public class FireboltAbility : AbilityBase
 {
     [SerializeField] ProjectileAnimation projectileAnimation;
     UnitAnimations unitAnimations;
-    private Properties properties = new() { damage = 1, range = 3 };
+    private BasicProperties properties = new() { damage = 1, range = 3 };
     private HeroController source;
     private MapEntity map;
 
     private void Awake()
     {
         unitAnimations = GetComponent<UnitAnimations>();
-    }
-
-    public struct Properties
-    {
-        public int range;
-        public int damage;
     }
 
     public override void DoSpecialAbility(HeroController source, MapEntity map)

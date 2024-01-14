@@ -4,7 +4,7 @@ using UnityEngine;
 public struct AbilitySpec
 {
     public AbilityKind kind;
-    public object properties;
+    public BasicProperties properties;
 }
 
 public enum AbilityKind
@@ -13,6 +13,13 @@ public enum AbilityKind
     Whirlwind,
     PushStrike,
 }
+
+public struct BasicProperties
+{
+    public int range;
+    public int damage;
+}
+
 public interface ISpecialAbility
 {
     public void DoSpecialAbility(HeroController source, MapEntity map);
