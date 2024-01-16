@@ -61,12 +61,15 @@ public class PlayerInput : MonoBehaviour, IPlayer
     {
         abilityInputIsProcessing = true;
         processedAbility = ability;
+        processedAbility.HighlightAffectedTiles(map);
     }
 
     private void StopSpecialAbility()
     {
         abilityInputIsProcessing = false;
+        processedAbility.DisableHiglight(map);
         processedAbility = null;
+
     }
 
     private void SetPlayerActions(List<List<HeroAction>> actions)
@@ -86,6 +89,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
         {
             if(Input.GetKeyDown(KeyCode.Escape))
             {
+                processedAbility.DisableHiglight(map);
                 abilityInputIsProcessing = false;
                 return;
             }    

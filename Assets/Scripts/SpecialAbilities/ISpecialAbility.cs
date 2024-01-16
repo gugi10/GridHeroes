@@ -35,4 +35,8 @@ public interface ISpecialAbility
     public ScoreModifiers ScoreForTarget(HeroController target);
 
     public AbilitySpec GetAbilitySpec();
+
+    public void HighlightAffectedTiles(MapController map);
+
+    public void DisableHiglight(MapController map);
 }

@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}
       propertyPath: m_LocalScale.y
@@ -71,6 +71,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8828370404307265657}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2925624764408059833}
   m_SourcePrefab: {fileID: 100100000, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}
 --- !u!1 &4698398742109105295 stripped
 GameObject:
@@ -93,6 +96,20 @@ MonoBehaviour:
   defaultMaterial: {fileID: 2100000, guid: 4607e7c5bc1498b459ad9fbccef2350a, type: 2}
   highlightMaterial: {fileID: 2100000, guid: b203d19962d8dde49888dab0863f2d28, type: 2}
   mesh: {fileID: 8357541232552608485}
+--- !u!114 &2925624764408059833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4698398742109105295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 340e3de4d4adf0a43bf24c015182de4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 8357541232552608485}
+  affectedColor: {r: 1, g: 0.80982494, b: 0, a: 1}
 --- !u!23 &8357541232552608485 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4471663668592481083, guid: c519c60884e76634d8b5b3f491cd2f01, type: 3}

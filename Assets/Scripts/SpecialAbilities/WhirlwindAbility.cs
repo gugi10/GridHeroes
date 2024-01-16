@@ -2,7 +2,7 @@ using RedBjorn.ProtoTiles;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static FireboltAbility;
+using System.Linq;
 
 [RequireComponent(typeof(UnitAnimations))]
 public class WhirlwindAbility : AbilityBase
@@ -10,18 +10,20 @@ public class WhirlwindAbility : AbilityBase
     private BasicProperties properties = new() { damage = 1, range = 1 };
 
     HeroController source;
-    MapEntity map;
+    MapEntity mapEntity;
     UnitAnimations unitAnimations;
+    AffectedTilesHiglight highlight;
 
     private void Awake()
     {
         unitAnimations = GetComponent<UnitAnimations>();
+        highlight = new AffectedTilesHiglight();
     }
 
     public override void DoSpecialAbility(HeroController source, MapEntity map)
     {
         this.source = source;
-        this.map = map;
+        this.mapEntity = map;
     }
 
     public override void ProcessInput()
@@ -37,7 +39,7 @@ public class WhirlwindAbility : AbilityBase
 
     public override void PerformAbility(TileEntity chosenTile)
     {
-        HashSet<TileEntity> surroundingTiles = map.WalkableTiles(source.currentTile.TilePos, properties.range);
+        HashSet<TileEntity> surroundingTiles = mapEntity.WalkableTiles(source.currentTile.TilePos, properties.range);
 
         unitAnimations.PlaySpecialAbillity(animationId);
         foreach (var tile in surroundingTiles)
@@ -59,7 +61,7 @@ public class WhirlwindAbility : AbilityBase
     {
         ScoreModifiers modifiers = new() { };
 
-        HashSet<TileEntity> surroundingTiles = map.WalkableTiles(source.currentTile.TilePos, properties.range);
+        HashSet<TileEntity> surroundingTiles = mapEntity.WalkableTiles(source.currentTile.TilePos, properties.range);
 
 
 
@@ -78,4 +80,13 @@ public class WhirlwindAbility : AbilityBase
         return modifiers;
     }
 
+    public override void HighlightAffectedTiles(MapController mapController)
+    {
+        highlight.HighlighTile(mapEntity.WalkableTiles(source.currentTile.TilePos, properties.range), mapController);
+    }
+
+    public override void DisableHiglight(MapController map)
+    {
+        highlight.DisableHiglight(map);
+    }
 }

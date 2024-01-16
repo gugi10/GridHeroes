@@ -8,7 +8,20 @@ using RedBjorn.ProtoTiles.Example;
 [RequireComponent(typeof(MapView))]
 public class MapController : MonoBehaviour
 {
+    public struct TileRepresentation
+    {
+        public AccessibleTile representation;
+        public TileEntity entity;
+
+        public TileRepresentation(AccessibleTile representation, TileEntity entity)
+        {
+            this.representation = representation;
+            this.entity = entity;
+        }
+    }
+
     public List<DeploayableTile> DeployableTiles { get; private set; }
+    public List<TileRepresentation> AccessibleTiles { get; private set; } = new List<TileRepresentation>();
 
     [SerializeField] private MapSettings MapSettings;
     
@@ -18,6 +31,12 @@ public class MapController : MonoBehaviour
     private void Awake()
     {
         DeployableTiles = GetComponentsInChildren<DeploayableTile>().ToList();
+        var accessibleTiles = GetComponentsInChildren<AccessibleTile>().ToList();
+        foreach(AccessibleTile tile in accessibleTiles)
+        {
+            var entity = GetMapEntity().Tile(tile.transform.position);
+            AccessibleTiles.Add(new TileRepresentation(tile, entity));
+        }
     }
 
     private void OnValidate()

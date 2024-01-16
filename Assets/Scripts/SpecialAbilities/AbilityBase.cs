@@ -44,4 +44,14 @@ public abstract class AbilityBase : MonoBehaviour, ISpecialAbility
     {
         throw new System.NotImplementedException();
     }
+
+    public virtual void HighlightAffectedTiles(MapController map)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public virtual void DisableHiglight(MapController map)
+    {
+        throw new System.NotImplementedException();
+    }
 }
