@@ -235,7 +235,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b51004b44c5c44611948421fb5631413, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heroesConfig: {fileID: 11400000, guid: 74f3c0ba6d1bc1a49aab9b58a02e1bdd, type: 2}
+  configs:
+  - {fileID: 11400000, guid: 74f3c0ba6d1bc1a49aab9b58a02e1bdd, type: 2}
 --- !u!1 &1692780700
 GameObject:
   m_ObjectHideFlags: 0
