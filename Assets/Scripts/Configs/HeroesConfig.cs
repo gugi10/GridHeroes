@@ -4,7 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "HeroConfigs", menuName = "ScriptableObjects/HeroConfigs", order = 1)]
 
-public class HeroesConfig : ScriptableObject
+public class HeroesConfig : BaseConfig
 {
     public List<HeroController> heroPrefabs;
 }

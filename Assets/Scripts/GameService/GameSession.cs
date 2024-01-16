@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameSession : Singleton<GameSession>
 {
-    [SerializeField] HeroesConfig heroesConfig;
+    [SerializeField] List<BaseConfig> configs;
     private List<IService> services = new();
 
     protected override void Awake()
@@ -12,7 +12,7 @@ public class GameSession : Singleton<GameSession>
         base.Awake();
 
         DontDestroyOnLoad(this);
-        services.Add(new HeroService(heroesConfig.heroPrefabs));
+        services.Add(new HeroService(GetConfig<HeroesConfig>().heroPrefabs));
         SceneLoader.LoadScene(SceneLoader.SceneEnum.Hub);
     }
 
@@ -24,5 +24,15 @@ public class GameSession : Singleton<GameSession>
             Debug.LogError($"Service: {typeof(T)} is not defined");
 
         return service;
+    }
+
+    public T GetConfig<T>()
+        where T : BaseConfig
+    {
+        var config = configs.Find(x => x is T) as T;
+        if (config == null)
+            Debug.LogError($"Service: {typeof(T)} is not defined");
+
+        return config;
     }
 }
