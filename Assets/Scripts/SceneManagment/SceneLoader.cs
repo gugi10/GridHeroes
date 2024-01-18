@@ -7,6 +7,7 @@ using System;
 public static class SceneLoader
 {
     private static SceneEnum current = SceneEnum.Hub;
+    private static string currentMapString = $"Hub";
     public enum SceneEnum
     {
         Hub,
@@ -22,5 +23,12 @@ public static class SceneLoader
         current = scene;
         loadingCallback = () => SceneManager.LoadScene(scene.ToString());
         SceneManager.LoadScene(SceneEnum.LoadingScene.ToString());
+    }
+
+    public static void LoadScene(string scene)
+    {
+        currentMapString = scene;
+        loadingCallback = () => SceneManager.LoadScene(scene);
+        SceneManager.LoadScene("LoadingScene");
     }
 }

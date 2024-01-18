@@ -12,7 +12,10 @@ public class GameSession : Singleton<GameSession>
         base.Awake();
 
         DontDestroyOnLoad(this);
-        services.Add(new HeroService(GetConfig<HeroesConfig>().heroPrefabs));
+        services = new List<IService>(){
+            new HeroService(GetConfig<HeroesConfig>().heroPrefabs),
+            new MapService(GetConfig<MapsConfig>())
+            };
         SceneLoader.LoadScene(SceneLoader.SceneEnum.Hub);
     }
 

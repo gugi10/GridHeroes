@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f319ea939b07ef499f2482dd0f2dabc, type: 3}
   m_Name: MapConfigs
   m_EditorClassIdentifier: 
-  mapConfigs:
-  - image: {fileID: 21300000, guid: c3eb5d972716d4795bebd8821fde2bde, type: 3}
-    mapName: Map01
-    sceneId: 2
-  - image: {fileID: 21300000, guid: c3eb5d972716d4795bebd8821fde2bde, type: 3}
-    mapName: Map02
-    sceneId: 3
+  biomConfigs:
+  - maps:
+    - image: {fileID: 21300000, guid: c3eb5d972716d4795bebd8821fde2bde, type: 3}
+      mapName: Map01
+      sceneId: 2
+    - image: {fileID: 21300000, guid: c3eb5d972716d4795bebd8821fde2bde, type: 3}
+      mapName: Map02
+      sceneId: 3
+    name: Biom

@@ -10,7 +10,8 @@ public class MapSlot : MonoBehaviour
     [SerializeField] Image image;
     [SerializeField] Button openMap;
 
-    SceneLoader.SceneEnum sceneId;
+    private string sceneId;
+    private string biomName;
 
     private void OnEnable()
     {
@@ -22,15 +23,17 @@ public class MapSlot : MonoBehaviour
         openMap.onClick.RemoveListener(LoadMap);
     }
 
-    public void Initialize(MapConfig mapConfig)
+    public void Initialize(MapData mapData)
     {
-        sceneId = mapConfig.GetSceneId();
+        var mapConfig = GameSession.Instance.GetConfig<MapsConfig>().GetMapsFromBiom(0).Find(val => val.GetMapName() == mapData.MapName);
+        sceneId = mapData.MapName;
         image.sprite = mapConfig.GetImage();
         text.text = mapConfig.GetMapName();
     }
 
     private void LoadMap()
     {
-        SceneLoader.LoadScene(sceneId);
+        GameSession.Instance.GetService<MapService>().LoadMap(sceneId);
+        //SceneLoader.LoadScene(sceneId);
     }
 }

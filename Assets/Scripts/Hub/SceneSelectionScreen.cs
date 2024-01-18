@@ -12,9 +12,10 @@ public class SceneSelectionScreen : ScreenBase
     [SerializeField] private Transform mapsParent;
     [SerializeField] private Button heroSelectionScreen;
 
-    private void Awake()
+    private void Start()
     {
-        foreach(var map in mapsConfigObj.GetMapConfigs())
+        //TODO: Later implement more than one biom spawn
+        foreach(var map in GameSession.Instance.GetService<MapService>().GetMapsFromBiom(0))
         {
             var spawnedMap = Instantiate(mapPrefab, mapsParent);
             spawnedMap.Initialize(map);
