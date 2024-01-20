@@ -1,13 +1,16 @@
+using System.Collections.Generic;
 using RedBjorn.ProtoTiles;
 using RedBjorn.ProtoTiles.Example;
+using SpecialAbilities;
 using UnityEngine;
 
 
 [RequireComponent(typeof(UnitAnimations))]
-public class FireboltAbility : AbilityBase
+public class FireboltAbility : AbilityBase, ITargetable
 {
     [SerializeField] ProjectileAnimation projectileAnimation;
-    UnitAnimations unitAnimations;
+    public AffectedTilesHiglight AffectedTile { get; set; }
+    private UnitAnimations unitAnimations;
     private BasicProperties properties = new() { damage = 1, range = 3 };
     private HeroController source;
     private MapEntity map;
@@ -15,6 +18,7 @@ public class FireboltAbility : AbilityBase
     private void Awake()
     {
         unitAnimations = GetComponent<UnitAnimations>();
+        AffectedTile = new AffectedTilesHiglight();
     }
 
     public override void DoSpecialAbility(HeroController source, MapEntity map)
@@ -87,6 +91,15 @@ public class FireboltAbility : AbilityBase
         return modifiers;
     }
 
+    public void HiglightTargetedTile(TileEntity tile, MapController map)
+    {
+        AffectedTile.HighlightTile(tile, map);   
+    }
+
+    public void DisableHiglight(MapController map)
+    {
+        AffectedTile.DisableHiglight(map);
+    }
 
     private void OnHit(TileEntity chosenTile)
     {
@@ -98,5 +111,4 @@ public class FireboltAbility : AbilityBase
     {
         return () => { OnHit(chosenTile); };
     }
-
 }

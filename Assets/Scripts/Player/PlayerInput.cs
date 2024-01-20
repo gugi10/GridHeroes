@@ -3,6 +3,7 @@ using RedBjorn.ProtoTiles.Example;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using SpecialAbilities;
 using UnityEditor.Playables;
 
 public interface IPlayer
@@ -25,6 +26,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
     private bool abilityInputIsProcessing;
     private ISpecialAbility processedAbility;
     private bool playerIsActive;
+    private TileEntity previousTile;
 
 
     private void OnEnable()
@@ -92,8 +94,18 @@ public class PlayerInput : MonoBehaviour, IPlayer
                 processedAbility.DisableHiglight(map);
                 abilityInputIsProcessing = false;
                 return;
-            }    
+            }
 
+            if (processedAbility is ITargetable targetable)
+            {
+                var tile = map.GetMapEntity().Tile(MyInput.GroundPosition(map.GetMapEntity().Settings.Plane()));
+                if (previousTile != tile)
+                {
+                    previousTile = tile;
+                    targetable.DisableHiglight(map);
+                    targetable.HiglightTargetedTile(tile, map);
+                }
+            }
             processedAbility.ProcessInput();
             return;
         }

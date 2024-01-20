@@ -82,7 +82,7 @@ public class WhirlwindAbility : AbilityBase
 
     public override void HighlightAffectedTiles(MapController mapController)
     {
-        highlight.HighlighTile(mapEntity.WalkableTiles(source.currentTile.TilePos, properties.range), mapController);
+        highlight.HighlightTile(mapEntity.WalkableTiles(source.currentTile.TilePos, properties.range), mapController);
     }
 
     public override void DisableHiglight(MapController map)
