@@ -103,6 +103,7 @@ public class HeroController : MonoBehaviour
 
     public void SetupHero(MapEntity map, TileData startingTile)
     {
+        rotationNode.localEulerAngles = new Vector3(0, ControllingPlayerId == 0 ? 90 : -90, 0);
         this.map = map;
         currentTile = startingTile;
         currentTileEntity = map.Tile(startingTile.TilePos);
