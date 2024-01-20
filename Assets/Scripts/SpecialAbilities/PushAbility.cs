@@ -2,11 +2,13 @@ using RedBjorn.ProtoTiles;
 using RedBjorn.ProtoTiles.Example;
 using System.Collections;
 using System.Collections.Generic;
+using SpecialAbilities;
 using UnityEngine;
 
 [RequireComponent(typeof(UnitAnimations))]
-public class PushAbility : AbilityBase
+public class PushAbility : AbilityBase, ITargetable
 {
+    public AffectedTilesHiglight AffectedTile { get; set; }
     private BasicProperties properties = new() { damage = 0, range = 1 };
     private HeroController source;
     private MapEntity map;
@@ -85,6 +87,18 @@ public class PushAbility : AbilityBase
         }
 
         return true;
+    }
+
+
+    public void HighlightTargetedTile(TileEntity tile, MapController map)
+    {
+        if(TileUtilities.AreTilesInRange(source.currentTile.TilePos, tile.Position, properties.range))
+            AffectedTile.HighlightTile(tile, map);   
+    }
+
+    public void DisableHighlight(MapController map)
+    {
+        AffectedTile.DisableHiglight(map);
     }
     public override ScoreModifiers ScoreForTarget(HeroController target)
     {

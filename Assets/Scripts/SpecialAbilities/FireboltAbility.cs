@@ -91,14 +91,14 @@ public class FireboltAbility : AbilityBase, ITargetable
         return modifiers;
     }
 
-    //TODO: To consider
-    public void HiglightTargetedTile(TileEntity tile, MapController map)
+    //TODO: To consider some common code for all targatbles
+    public void HighlightTargetedTile(TileEntity tile, MapController map)
     {
         if(TileUtilities.AreTilesInRange(source.currentTile.TilePos, tile.Position, properties.range))
             AffectedTile.HighlightTile(tile, map);   
     }
 
-    public void DisableHiglight(MapController map)
+    public void DisableHighlight(MapController map)
     {
         AffectedTile.DisableHiglight(map);
     }

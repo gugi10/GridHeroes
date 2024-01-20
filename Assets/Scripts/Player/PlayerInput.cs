@@ -102,8 +102,8 @@ public class PlayerInput : MonoBehaviour, IPlayer
                 if (previousTile != tile)
                 {
                     previousTile = tile;
-                    targetable.DisableHiglight(map);
-                    targetable.HiglightTargetedTile(tile, map);
+                    targetable.DisableHighlight(map);
+                    targetable.HighlightTargetedTile(tile, map);
                 }
             }
             processedAbility.ProcessInput();
