@@ -67,7 +67,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
     private void StopSpecialAbility()
     {
         abilityInputIsProcessing = false;
-        processedAbility.DisableHiglight(map);
+        processedAbility?.DisableHiglight(map);
         processedAbility = null;
 
     }

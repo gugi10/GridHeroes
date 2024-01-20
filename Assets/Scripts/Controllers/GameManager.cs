@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
 
     private void OnGameFinished(LevelFinishedResults results)
     {
+        GameSession.Instance.GetService<MapService>().CompleteCurrentMap();
         ScreensController.Instance.OpenPopup(PopupIdentifiers.EndGamePopup, new VictoryPopup.Payload(results.HasPlayerWon()));
     }
 
