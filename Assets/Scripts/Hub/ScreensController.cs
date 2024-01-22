@@ -91,7 +91,7 @@ public class ScreensController : Singleton<ScreensController>
 
         if (activePopup == null)
         {
-            SpawnPopup(popupToOpen);
+            SpawnPopup(popupToOpen, payload);
             return;
         }
 
