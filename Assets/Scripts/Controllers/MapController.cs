@@ -69,7 +69,7 @@ public class MapController : MonoBehaviour
             var index = indexArray[randomTileIndex];
             indexArray.RemoveAt(randomTileIndex);
             var tile = mapSettingsTemp[index];
-            hero.SetColor(new Color(1f, 1f, hero.ControllingPlayerId * 1f));
+            hero.SetColor(new Color(1f, 1f, (float)hero.ControllingPlayerId * 1f));
             hero.SetupHero(GetMapEntity(), tile);
         }
     }

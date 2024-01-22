@@ -29,7 +29,7 @@ public class PlayerActionsView : MonoBehaviour
             .Aggregate(("",1), (acc, actions) =>  ((acc.Item1 + $"Player_{acc.Item2}:\n" + actions), acc.Item2 + 1)).Item1;*/
         spawnedElements?.ForEach(obj => Destroy(obj));
 
-        for(int i = 0; i<allActions.Count; i++)
+        for (int i = 0; i < allActions.Count; i++)
         {
             var header = Instantiate(playerHeaderPrefab, transform);
             header.text = $"Player_{i + 1}";
@@ -38,7 +38,7 @@ public class PlayerActionsView : MonoBehaviour
             allActions[i].ForEach(action =>
             {
                 var spawnedAction = Instantiate(playerAction, transform);
-                spawnedAction.Init(i, action);
+                spawnedAction.Init((PlayerId)i, action);
                 spawnedElements.Add(spawnedAction.gameObject);
             });
         }

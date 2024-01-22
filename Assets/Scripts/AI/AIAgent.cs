@@ -52,13 +52,13 @@ class PossibleAssignment
 
 public class AIAgent : MonoBehaviour, IPlayer
 {
-    public int Id { get; set; }
+    public PlayerId Id { get; set; }
     private MapController map;
     private List<HeroController> allHeroes = new List<HeroController>();
     private List<HeroController> aiHeroes = new List<HeroController>();
     private List<HeroController> playerHeroes = new List<HeroController>();
 
-    public void Init(MapController map, List<HeroController> allHeroes, int id)
+    public void Init(MapController map, List<HeroController> allHeroes, PlayerId id)
     {
         Id = id;
         this.map = map;

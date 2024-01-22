@@ -107,7 +107,7 @@ public class Deployment : MonoBehaviour
             var randomIndex = UnityEngine.Random.Range(0, availableTiles.Count);
             var heroInstance = Instantiate(hero,
                 map.GetMapEntity().WorldPosition(availableTiles[randomIndex]), Quaternion.identity);
-            heroInstance.ControllingPlayerId = 1;
+            heroInstance.ControllingPlayerId = PlayerId.AI;
             heroInstance.SetupHero(map.GetMapEntity(), availableTiles[randomIndex].Data);
             instantiatedHeroes.Add(heroInstance);
         });

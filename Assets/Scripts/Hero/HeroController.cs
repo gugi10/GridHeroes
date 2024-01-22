@@ -35,7 +35,7 @@ public struct HeroStats
 
 public class HeroController : MonoBehaviour
 {
-    public int ControllingPlayerId;
+    public PlayerId ControllingPlayerId;
     public TileData currentTile { get; private set; }
     public TileEntity currentTileEntity { get; private set; }
     public Action<HeroController> onHeroSelected;
@@ -113,7 +113,7 @@ public class HeroController : MonoBehaviour
 
         heroHighLight.Show(map.WalkableBorder(transform.position, 0), map);
         heroHighLight.transform.position = Vector3.zero;
-        if (ControllingPlayerId % 2 == 0)
+        if (ControllingPlayerId == PlayerId.Human)
             heroHighLight.ActiveState();
         else
             heroHighLight.InactiveState();
@@ -256,7 +256,7 @@ public class HeroController : MonoBehaviour
                 && Mathf.Abs(targetTile.y - sourceTile.y) <= range && Mathf.Abs(targetTile.z - sourceTile.z) <= range);
     }
 
-    public HeroController SelectHero(int playerId)
+    public HeroController SelectHero(PlayerId playerId)
     {
         area.gameObject.SetActive(true);
         area.transform.position = Vector3.zero;

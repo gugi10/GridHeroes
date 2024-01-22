@@ -2,21 +2,19 @@ using RedBjorn.ProtoTiles;
 using RedBjorn.ProtoTiles.Example;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using SpecialAbilities;
-using UnityEditor.Playables;
 
 public interface IPlayer
 {
-    public void Init(MapController map, List<HeroController> allHeroes, int playerId);
+    public void Init(MapController map, List<HeroController> allHeroes, PlayerId playerId);
     public void SetActiveState(bool flag);
-    public int Id { get; set; }
+    public PlayerId Id { get; set; }
 
 }
 
 public class PlayerInput : MonoBehaviour, IPlayer
 {
-    public int Id { get; set; }
+    public PlayerId Id { get; set; }
     [SerializeField] PathDrawer PathPrefab;
     private PathDrawer path;
     private MapController map;
@@ -41,7 +39,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
         TurnSequenceController.Instance.onTurnFinished -= SetPlayerActions;
     }
 
-    public void Init(MapController map, List<HeroController> ownedHeroes, int playerId)
+    public void Init(MapController map, List<HeroController> ownedHeroes, PlayerId playerId)
     {
         this.map = map;
         heroes = ownedHeroes;
@@ -196,7 +194,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     private bool HasAction(HeroAction action)
     {
-        return playerActions[selectedHero.ControllingPlayerId].Contains(action);
+        return playerActions[(int)selectedHero.ControllingPlayerId].Contains(action);
     }
 
     public void SetActiveState(bool flag)

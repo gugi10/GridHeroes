@@ -9,7 +9,7 @@ public class PlayerActionView : MonoBehaviour
     [SerializeField] TextMeshProUGUI heroActionText;
     [SerializeField] Button button;
     private HeroAction action;
-    private int playerId;
+    private PlayerId playerId;
 
     public void OnEnable()
     {
@@ -21,7 +21,7 @@ public class PlayerActionView : MonoBehaviour
         button.onClick.RemoveListener(ActionPass);
     }
 
-    public void Init(int playerId, HeroAction action)
+    public void Init(PlayerId playerId, HeroAction action)
     {
         button.interactable = playerId == TurnSequenceController.Instance.ActivePlayer;
         this.playerId = playerId;
