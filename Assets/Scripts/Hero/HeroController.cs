@@ -6,15 +6,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-//TODO: zostawiam jako pomysl, mielibysmy jakas forme obserwatora stanu bohatera. Robilibysmy subskrypcje obserwujace zmiany stanu bohatera i na podstawie tej zmiany stanu wykonywali odpowiednie akcje
-// pomysl na rozwiazanie problemu z przetwarzaniem input dla ability
-public enum HeroState
-{
-    Idle,
-    SpecialAbility,
-    Dead
-}
-
 public struct HeroStats
 {
     public HeroStatisticSheet @base;
@@ -33,8 +24,16 @@ public struct HeroStats
     }
 }
 
+public enum HeroId
+{
+    EvilMage,
+    Crab,
+    BlackKnight
+}
+
 public class HeroController : MonoBehaviour
 {
+    public HeroId HeroId;
     public PlayerId ControllingPlayerId;
     public TileData currentTile { get; private set; }
     public TileEntity currentTileEntity { get; private set; }
@@ -244,6 +243,11 @@ public class HeroController : MonoBehaviour
         currentStats.Health -= damage;
         if(currentStats.Health <= 0)
         {
+            if(ControllingPlayerId == PlayerId.AI)
+                if(GameSession.Instance.GetService<HeroService>().UnlockHero(HeroId))
+                {
+                    Debug.Log($"Just unlocked {HeroId}");
+                }
             map.Tile(currentTile.TilePos).FreeTile();
             onDie?.Invoke(this);
             StartCoroutine(RemoveModel());
