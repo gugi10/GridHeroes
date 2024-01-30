@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Services;
+using UnityEngine.Serialization;
 
 public class HeroService : IService
 {
@@ -37,6 +40,7 @@ public class HeroService : IService
             return false;
         availableHeroes.Add(heroToUnlock);
         justUnlockedHeroes.Add(heroToUnlock);
+        GameSession.Instance.GetService<SaveService>().SaveAllData();
         return true;
     }
 
@@ -52,4 +56,39 @@ public class HeroService : IService
     {
         return playerLineUp;
     }
+
+    public HeroSaveModel GetHeroToSaveModel()
+    {
+        var heroIdStrings = new List<string>();
+        availableHeroes.ForEach(val => heroIdStrings.Add(val.ToString()));
+        return new HeroSaveModel(heroIdStrings);
+    }
+
+    public void LoadHeroSaveData(HeroSaveModel heroSaveModel)
+    {
+        foreach (var heroIdToParse in heroSaveModel.heroIds)
+        {
+            if (Enum.TryParse(heroIdToParse, out HeroId parsedId))
+            {
+                if(!availableHeroes.Contains(parsedId))
+                    availableHeroes.Add(parsedId);
+            }
+            else
+            {
+                Debug.LogError($"Couldn't parse {heroIdToParse}");
+            }
+        }
+    }
 }
+
+[Serializable]
+public class HeroSaveModel
+{
+    public HeroSaveModel(List<string> heroIds)
+    {
+        this.heroIds = heroIds;
+    }
+
+    public List<string> heroIds;
+}
+

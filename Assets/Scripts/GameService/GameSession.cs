@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Services;
 using UnityEngine;
 
 public class GameSession : Singleton<GameSession>
@@ -14,8 +15,10 @@ public class GameSession : Singleton<GameSession>
         DontDestroyOnLoad(this);
         services = new List<IService>(){
             new HeroService(GetConfig<HeroesConfig>()),
-            new MapService(GetConfig<MapsConfig>())
+            new MapService(GetConfig<MapsConfig>()),
+            new SaveService()
             };
+        GetService<SaveService>().LoadDataAndUpdateservices();
         SceneLoader.LoadScene(SceneLoader.SceneEnum.Hub);
     }
 

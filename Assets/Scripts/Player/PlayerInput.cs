@@ -35,6 +35,9 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     private void OnDisable()
     {
+        if (TurnSequenceController.Instance == null)
+            return;
+        
         TurnSequenceController.Instance.onRoundStart -= SetPlayerActions;
         TurnSequenceController.Instance.onTurnFinished -= SetPlayerActions;
     }
