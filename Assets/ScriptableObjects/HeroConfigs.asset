@@ -16,3 +16,4 @@ MonoBehaviour:
   - {fileID: 7767804335213319116, guid: 6e0a1335de864904faa635a84db0c685, type: 3}
   - {fileID: 6390770937447195161, guid: 6a5d01e5db674b7408e9f8613a4da383, type: 3}
   - {fileID: 183312758891173421, guid: 86fdf825a5c3c2b4da15625e11a67273, type: 3}
+  startingHeroes: 00000000

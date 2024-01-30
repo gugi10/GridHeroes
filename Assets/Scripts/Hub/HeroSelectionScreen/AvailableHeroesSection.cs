@@ -15,9 +15,9 @@ public class AvailableHeroesSection : MonoBehaviour
         Init(heroService.availableHeroes);
     }
 
-    private void Init(List<HeroController> availableHeroes)
+    private void Init(List<HeroId> availableHeroes)
     {
-        foreach(HeroController hero in availableHeroes)
+        foreach(var hero in availableHeroes)
         {
             var spawnedHero = Instantiate(representedHeroPrefab, transform);
             spawnedHero.Init(hero);

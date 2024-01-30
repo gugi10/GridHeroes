@@ -10,9 +10,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Deployment deployment;
     [SerializeField] private MapController map;
     [SerializeField] List<HeroListWrapper> heroes = new();
+    private HeroService _heroService;
 
     private void Start()
     {
+        _heroService = GameSession.Instance.GetService<HeroService>();
+
         ResetLevel(false);
     }
 
@@ -31,7 +34,11 @@ public class GameManager : MonoBehaviour
     private void ResetLevel(bool playerWon)
     {
 #if !MOCK_DATA
-        heroes[0].HeroPrefabs = GameSession.Instance.GetService<HeroService>().GetPlayerLineUp();
+        heroes[0].HeroPrefabs = new List<HeroController>();
+        foreach (var heroId in _heroService.GetPlayerLineUp())
+        {
+            heroes[0].HeroPrefabs.Add(_heroService.GetHeroPrefab(heroId));
+        }
 #endif
         deployment.Init(map, heroes, OnDeploymentFinished);
     }

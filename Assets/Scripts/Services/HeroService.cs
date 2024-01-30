@@ -6,7 +6,7 @@ using System.Linq;
 public class HeroService : IService
 {
     public List<HeroId> availableHeroes { get; private set; }
-    private List<HeroController> playerLineUp = new List<HeroController>();
+    private List<HeroId> playerLineUp = new List<HeroId>();
     private HeroesConfig heroesConfig;
 
     public HeroService(HeroesConfig heroesConfig)
@@ -15,12 +15,12 @@ public class HeroService : IService
         this.availableHeroes = heroesConfig.startingHeroes;
     }
 
-    public void AddHeroToLineUp(HeroController hero)
+    public void AddHeroToLineUp(HeroId hero)
     {
         playerLineUp.Add(hero);
     }
 
-    public void RemoveHeroFromLineUp(HeroController hero)
+    public void RemoveHeroFromLineUp(HeroId hero)
     {
         playerLineUp.Remove(hero);
     }
@@ -38,7 +38,7 @@ public class HeroService : IService
         return true;
     }
 
-    public List<HeroController> GetPlayerLineUp()
+    public List<HeroId> GetPlayerLineUp()
     {
         return playerLineUp;
     }

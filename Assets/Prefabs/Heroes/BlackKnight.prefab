@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfe5a14d9b377104a86e3af14f91b1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HeroId: 2
   ControllingPlayerId: 0
   originalStats: {fileID: 11400000, guid: 187421e0281878b40afe04587066dba4, type: 2}
   rotationNode: {fileID: 707138469384910809}

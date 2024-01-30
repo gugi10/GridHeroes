@@ -7,12 +7,19 @@ using TMPro;
 
 public class HeroToSelect : MonoBehaviour
 {
-    public HeroController RepresentedHeroController { get; private set; }
+    public HeroId RepresentedHeroController { get; private set; }
     [SerializeField] private Button selectHero;
     [SerializeField] private TextMeshProUGUI heroName;
-    public void Init(HeroController representedHero)
+    private HeroService _heroService;
+    
+    private void Awake()
     {
-        heroName.text = representedHero.name;
+        _heroService = GameSession.Instance.GetService<HeroService>();
+    }
+
+    public void Init(HeroId representedHero)
+    {
+        heroName.text = _heroService.GetHeroPrefab(representedHero).name;
         RepresentedHeroController = representedHero;
     }
 
