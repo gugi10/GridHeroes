@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MapService : IService
 {
@@ -13,19 +14,22 @@ public class MapService : IService
         //config powinien sluzyc tylko do odczytywania przypisanych scen,ikon
 
         List<MapData> maps = new List<MapData>();
-        foreach(var biom in mapsConfig.GetBiomConfigs())
+        var bioms = mapsConfig.GetBiomConfigs();
+        for (int i = 0; i < bioms.Count; i ++)
         {
-            foreach(var map in biom.GetMaps())
+            for (int j = 0; j <  bioms[i].GetMaps().Count; j++)
             {
-                maps.Add(new MapData(map.GetMapName(), false, false));
+                var mapToAdd = bioms[i].GetMaps()[j];
+                maps.Add(new MapData(mapToAdd.GetMapName(), false, false, j, i));
             }
-            playerBioms.Add(new BiomData(new List<MapData>(maps), biom.GetName(), false));
-            maps.Clear();
+
+            playerBioms.Add(new BiomData(maps, bioms[i].GetName(), false, false));
         }
+        
 
         //Unlock first biom and first level
-        playerBioms[0] = new BiomData(playerBioms[0].MapData, playerBioms[0].BiomName, true);
-        playerBioms[0].MapData[0] = new MapData(playerBioms[0].MapData[0].MapName, true, false);
+        playerBioms[0].IsUnlocked = true;
+        playerBioms[0].MapData[0].IsUnlocked = true;
     }
 
     public List<MapData> GetMapsFromBiom(int id)
@@ -41,8 +45,24 @@ public class MapService : IService
             return;
         }
 
-        currentMap = new MapData(currentMap.MapName, true, true);
-
+        currentMap.IsCompleted = true;
+        if (currentMap.Id + 1 >= playerBioms[currentMap.BiomId].MapData.Count)
+        {
+            //Biom completed
+            playerBioms[currentMap.BiomId].IsCompleted = true;
+            if (currentMap.BiomId + 1 >= playerBioms.Count)
+            {
+                //Game finished easy
+                return;
+            }
+            
+            //unlock new biom
+            playerBioms[currentMap.BiomId + 1].MapData[0].IsUnlocked = true;
+            playerBioms[currentMap.BiomId + 1].IsUnlocked = true;
+            return;
+        }
+        //unlock next map
+        playerBioms[currentMap.BiomId].MapData[currentMap.Id + 1].IsUnlocked = true;
     }
 
     //TODO: Later use bionName to find proper one
@@ -63,14 +83,18 @@ public class MapService : IService
 public class MapData
 {
     public string MapName { get; private set; }
-    public bool IsUnlocked { get; private set; }
-    public bool IsCompleted { get; private set; }
+    public bool IsUnlocked;
+    public bool IsCompleted;
+    public int Id { get; private set; }
+    public int BiomId { get; private set; }
 
-    public MapData(string mapName, bool isUnlocked, bool isCompleted)
+    public MapData(string mapName, bool isUnlocked, bool isCompleted, int id, int biomId)
     {
         MapName = mapName;
         IsUnlocked = isUnlocked;
         IsCompleted = isCompleted;
+        Id = id;
+        BiomId = biomId;
     }
 }
 
@@ -78,13 +102,15 @@ public class MapData
 public class BiomData
 {
     public List<MapData> MapData { get; private set; }
-    public bool IsUnlocked { get; private set; }
     public string BiomName { get; private set; }
-    public BiomData(List<MapData> mapData, string biomName, bool isUnlocked)
+    public bool IsUnlocked; 
+    public bool IsCompleted;
+    public BiomData(List<MapData> mapData, string biomName, bool isUnlocked, bool isCompleted)
     {
         MapData = mapData;
         IsUnlocked = isUnlocked;
         BiomName = biomName;
+        IsCompleted = isCompleted;
     }
 }
 
