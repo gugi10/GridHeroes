@@ -7,4 +7,5 @@ using UnityEngine;
 public class HeroesConfig : BaseConfig
 {
     public List<HeroController> heroPrefabs;
+    public List<HeroId> startingHeroes;
 }

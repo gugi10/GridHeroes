@@ -13,7 +13,7 @@ public class GameSession : Singleton<GameSession>
 
         DontDestroyOnLoad(this);
         services = new List<IService>(){
-            new HeroService(GetConfig<HeroesConfig>().heroPrefabs),
+            new HeroService(GetConfig<HeroesConfig>()),
             new MapService(GetConfig<MapsConfig>())
             };
         SceneLoader.LoadScene(SceneLoader.SceneEnum.Hub);

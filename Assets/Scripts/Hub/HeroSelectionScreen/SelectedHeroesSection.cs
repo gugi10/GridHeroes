@@ -14,13 +14,13 @@ public class SelectedHeroesSection : MonoBehaviour
     {
         heroService = GameSession.Instance.GetService<HeroService>();
 
-        foreach (HeroController hero in heroService.GetPlayerLineUp())
+        foreach (HeroId hero in heroService.GetPlayerLineUp())
         {
             SpawnHero(hero);
         }
     }
 
-    public void AddNewHero(HeroController heroToSelect)
+    public void AddNewHero(HeroId heroToSelect)
     {
         if(maxHeroes <= selectedHeroes.Count())
         {
@@ -46,7 +46,7 @@ public class SelectedHeroesSection : MonoBehaviour
         return selectedHeroes.Count();
     }
 
-    private HeroToSelect SpawnHero(HeroController heroToSelect)
+    private HeroToSelect SpawnHero(HeroId heroToSelect)
     {
         var heroToAdd = Instantiate(heroToSelectPrefab, transform);
         heroToAdd.Init(heroToSelect);
