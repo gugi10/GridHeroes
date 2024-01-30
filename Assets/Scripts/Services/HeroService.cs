@@ -8,11 +8,12 @@ public class HeroService : IService
     public List<HeroId> availableHeroes { get; private set; }
     private List<HeroId> playerLineUp = new List<HeroId>();
     private HeroesConfig heroesConfig;
+    private List<HeroId> justUnlockedHeroes = new List<HeroId>();
 
     public HeroService(HeroesConfig heroesConfig)
     {
         this.heroesConfig = heroesConfig;
-        this.availableHeroes = heroesConfig.startingHeroes;
+        this.availableHeroes = new List<HeroId>(heroesConfig.startingHeroes);
     }
 
     public void AddHeroToLineUp(HeroId hero)
@@ -35,7 +36,16 @@ public class HeroService : IService
         if (availableHeroes.Contains(heroToUnlock))
             return false;
         availableHeroes.Add(heroToUnlock);
+        justUnlockedHeroes.Add(heroToUnlock);
         return true;
+    }
+
+    public List<HeroId> GetHeroesToClaim()
+    {
+        var toReturn = new List<HeroId>(justUnlockedHeroes);
+        justUnlockedHeroes.Clear();
+        justUnlockedHeroes = new List<HeroId>();
+        return toReturn;
     }
 
     public List<HeroId> GetPlayerLineUp()
