@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0506185f312ba54db79258113e6e9d0, type: 3}
   m_Name: BlackKnight
   m_EditorClassIdentifier: 
-  Move: 6
+  Move: 1
   WeaponRange: 1
-  WeaponDamage: 2
-  Health: 15
+  WeaponDamage: 3
+  Health: 8
   ActionLimit: 2

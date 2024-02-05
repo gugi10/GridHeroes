@@ -23,13 +23,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1359240329434882352}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.359, y: 0.084, z: 0.317}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1225501658626404501}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8367511809795796758
 GameObject:
@@ -55,13 +55,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8367511809795796758}
+  serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8083174996887454460}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!114 &5214969761074798948
 MonoBehaviour:
@@ -104,6 +104,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8621807893517674650}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -112,7 +113,6 @@ Transform:
   - {fileID: 1225501658626404585}
   - {fileID: 8596361202248535191}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &183312758891173421
 MonoBehaviour:
@@ -126,8 +126,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfe5a14d9b377104a86e3af14f91b1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HeroId: 0
   ControllingPlayerId: 0
-  originalStats: {fileID: 11400000, guid: 62de22b5096ed9c40bb4b4e8b848e951, type: 2}
+  originalStats: {fileID: 11400000, guid: b7a65bddd377543428513e3daaf64947, type: 2}
   rotationNode: {fileID: 1225501658626404585}
   highLightPrefab: {fileID: 114964435729023602, guid: fe2319e9d6e840f409af77b3e7a85259, type: 3}
   walkableAreaPrefab: {fileID: 114964435729023602, guid: f2932ceb5b171a748b80dac97fabb508, type: 3}
