@@ -27,9 +27,11 @@ public class TurnSequenceController : MonoBehaviour
     public Action<List<List<HeroAction>>> onRoundStart;
     public Action<List<List<HeroAction>>> onTurnFinished;
     public Action<LevelFinishedResults> onGameFinished;
+    public Action<int, int> OnScoreUpdated;
     public Action<HeroController> onHeroSelected;
     public Action onHeroUnselected;
 
+    public Tuple<int, int> Score;
     //List<HeroListWrapper> units = new();
     private readonly int NUMBER_OF_PLAYERS = Enum.GetNames(typeof(PlayerId)).Length;
     private const int MAX_ACTIONS = 5;
@@ -39,6 +41,7 @@ public class TurnSequenceController : MonoBehaviour
     private List<List<HeroAction>> playersRemainingActions = new();
     private void Awake()
     {
+        Score = new Tuple<int, int>(0,0);
     }
 
     private void Update()
@@ -102,6 +105,8 @@ public class TurnSequenceController : MonoBehaviour
         // If we don't do it first the AI will try to make an action while its action table
         // will be empty which will cause out of bound exception.
         List<HeroController> remainingHeroes = heroControllerInstances.Where(val => val.gameObject.activeSelf).ToList();
+        
+        //Check if heroes of one players are dead
         bool playerWon = remainingHeroes.All(hero => hero.ControllingPlayerId == PlayerId.Human);
         bool aiWon = remainingHeroes.All(hero => hero.ControllingPlayerId == PlayerId.AI);
         if (playerWon)
@@ -138,6 +143,24 @@ public class TurnSequenceController : MonoBehaviour
 
     private void FinishRound()
     {
+        var playerScore = mapController.GetObjectivesControlledByPlayers()
+            .Count(val => val.entity.occupyingHero.ControllingPlayerId == PlayerId.Human);
+        var aiScore = mapController.GetObjectivesControlledByPlayers()
+            .Count(val => val.entity.occupyingHero.ControllingPlayerId == PlayerId.AI);
+        Score = new Tuple<int, int>(Score.Item1 + playerScore, Score.Item2 + aiScore);
+        OnScoreUpdated?.Invoke(Score.Item1, Score.Item2);
+        bool playerWon = Score.Item1 >= 6;
+        bool aiWon = Score.Item1 >= 6;
+        if (playerWon)
+        {
+            onGameFinished?.Invoke(new LevelFinishedResults { winner = 0} );
+            return;
+        }
+        if (aiWon)
+        {
+            onGameFinished?.Invoke(new LevelFinishedResults { winner = 1 });
+            return;
+        }
         playersRemainingActions = playersRemainingActions.Select(_ => GenerateActionList()).ToList();
         heroControllerInstances.ForEach(hero => hero.ResetActions());
         onRoundStart?.Invoke(playersRemainingActions);

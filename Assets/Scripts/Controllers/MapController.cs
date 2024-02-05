@@ -39,6 +39,12 @@ public class MapController : MonoBehaviour
         }
     }
 
+    [ContextMenu("TestObjCount")]
+    public List<TileRepresentation> GetObjectivesControlledByPlayers()
+    {
+        return AccessibleTiles.
+            Where(val => val.representation is ObjectiveTile && val.entity.occupyingHero != null).ToList();
+    }
     private void OnValidate()
     {
         if(MapSettings == null)
