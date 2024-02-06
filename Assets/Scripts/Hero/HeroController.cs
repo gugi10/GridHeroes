@@ -48,6 +48,7 @@ public class HeroController : MonoBehaviour
     public ISpecialAbility[] specialAbilities { get; private set; }
 
     [SerializeField] private HeroStatisticSheet originalStats;
+    [SerializeField] private MovementPreference movementPreference;
     [SerializeField] private Transform rotationNode;
     [SerializeField] private AreaOutline highLightPrefab;
     [SerializeField] private AreaOutline walkableAreaPrefab;
@@ -258,6 +259,11 @@ public class HeroController : MonoBehaviour
     {
         return (Mathf.Abs(targetTile.x - sourceTile.x) <= range
                 && Mathf.Abs(targetTile.y - sourceTile.y) <= range && Mathf.Abs(targetTile.z - sourceTile.z) <= range);
+    }
+
+    public MovementPreference GetMovementPreference()
+    {
+        return movementPreference;
     }
 
     public HeroController SelectHero(PlayerId playerId)

@@ -26,7 +26,6 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6140188930884873941}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 727.24615, y: 566.72974, z: -13.438449}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -34,6 +33,7 @@ Transform:
   m_Children:
   - {fileID: 707138469384910809}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7767804335213319116
 MonoBehaviour:
@@ -50,6 +50,7 @@ MonoBehaviour:
   HeroId: 2
   ControllingPlayerId: 0
   originalStats: {fileID: 11400000, guid: 187421e0281878b40afe04587066dba4, type: 2}
+  movementPreference: {fileID: 11400000, guid: 63d7077010cf608488018adfc144c706, type: 2}
   rotationNode: {fileID: 707138469384910809}
   highLightPrefab: {fileID: 114964435729023602, guid: fe2319e9d6e840f409af77b3e7a85259, type: 3}
   walkableAreaPrefab: {fileID: 114964435729023602, guid: f2932ceb5b171a748b80dac97fabb508, type: 3}

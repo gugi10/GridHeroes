@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public enum TaskKind
 {
@@ -123,9 +122,8 @@ public class AIAgent : MonoBehaviour, IPlayer
                     var objectiveTileEntity = possibleTask.objective;
                     if (aiHero.specialAbilities[0].CanBeUsedOnTarget(objectiveTileEntity))
                     {
-                        // TODO: SCORE
                         possibleAssignments = possibleAssignments.Append(new PossibleAssignment(
-                            Score(tasks.Length, possibleTask.task.kind, aiHero.specialAbilities[0].ScoreForTarget(possibleTask.objective.occupyingHero)), possibleTask, aiHero)
+                            ScoreAbility(tasks.Length, possibleTask.task.kind, aiHero.specialAbilities[0].ScoreForTarget(possibleTask.objective.occupyingHero)), possibleTask, aiHero)
                         ).ToArray();
                     }
 
@@ -135,7 +133,10 @@ public class AIAgent : MonoBehaviour, IPlayer
                 {
                     if (!possibleTask.objective.IsOccupied &&
                         possibleTask.objective.Vacant &&
-                        IsTileInRange(aiHero, possibleTask.objective.Data, aiHero.GetHeroStats().current.Move) &&
+                        // TODO:
+                        // without this check AI scores movement also for tiles that are currently not reachable, so it means it will move along a path to a destination even
+                        // if it would reach it not in a single activation. Is this what we want?
+                        // IsTileInRange(aiHero, possibleTask.objective.Data, aiHero.GetHeroStats().current.Move) &&
                         (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)
                             || TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Move)))
                     {
@@ -144,10 +145,12 @@ public class AIAgent : MonoBehaviour, IPlayer
                 }
             }
         }
-
-        var sortedPossibleAssignments = possibleAssignments.OrderByDescending(assignment => assignment.score).ToArray();
-
-        var chosenAssignment = sortedPossibleAssignments.FirstOrDefault();
+        if (possibleAssignments.Length == 0) // We cant do anything so we need to pass
+        {
+            TurnSequenceController.Instance.FinishTurn(TurnSequenceController.Instance.GetPlayerRemainingActions(Id)[0]);
+            return;
+        }
+        var chosenAssignment = ChooseBestPossibleAssignment(possibleAssignments);
         if (chosenAssignment == null)
         {
             Debug.Log("It is possible that there are no possible actions to do (we have only attacks byt nobody to attack is in range).");
@@ -197,7 +200,7 @@ public class AIAgent : MonoBehaviour, IPlayer
         }
 
 
-        // We should get here ever but just in case lets pass here
+        // We should not get here ever but just in case lets pass here
         TurnSequenceController.Instance.FinishTurn(TurnSequenceController.Instance.GetPlayerRemainingActions(Id)[0]);
     }
 
@@ -226,10 +229,6 @@ public class AIAgent : MonoBehaviour, IPlayer
         return enemiesInRange;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
     private List<(HeroController, int)> ScoreAiHeroes()
     {
 
@@ -268,7 +267,7 @@ public class AIAgent : MonoBehaviour, IPlayer
         return properties.range;
     }
 
-    private double Score(int taskCount, TaskKind taskKind, ScoreModifiers modifiers)
+    private double ScoreAbility(int taskCount, TaskKind taskKind, ScoreModifiers modifiers)
     {
         return (taskCount - (int)taskKind) + modifiers.enemiesKilled * 0.5 + modifiers.inflictedDamage * 0.1;
     }
@@ -277,31 +276,46 @@ public class AIAgent : MonoBehaviour, IPlayer
     {
         TileEntity objectiveTile = task.objective;
 
+        List<TileEntity> tilesInWeaponRange = FindTilesInRangeFromTile(objectiveTile, aiHero.GetHeroStats().current.WeaponRange);
+        int enemiesInWeaponRange = tilesInWeaponRange.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == PlayerId.Human).Count();
 
+        List<TileEntity> tilesInSpecialAbilityRange = FindTilesInRangeFromTile(objectiveTile, aiHero.specialAbilities[0].GetAbilitySpec().properties.range);
+        int enemiesInSpecialAbilityRange = tilesInSpecialAbilityRange.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == PlayerId.Human).Count();
 
-        List<TileEntity> tilePositionsInWeaponRange = map.GetMapEntity().Area(objectiveTile.Position, aiHero.GetHeroStats().current.WeaponRange)
-            .Select(position => map.GetMapEntity().Tile(position)).Where(tile => tile != null).ToList();
-        int enemiesInWeaponRange = tilePositionsInWeaponRange.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == 0).Count();
-
-        List<TileEntity> tilePositionsInSpecialAbilityRange = map.GetMapEntity().Area(objectiveTile.Position, aiHero.specialAbilities[0].GetAbilitySpec().properties.range)
-    .Select(position => map.GetMapEntity().Tile(position)).Where(tile => tile != null).ToList();
-        int enemiesInSpecialAbilityRange = tilePositionsInWeaponRange.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == 0).Count();
-
-        List<TileEntity> adjacentTilePositions = map.GetMapEntity().Area(objectiveTile.Position, 1)
-            .Select(position => map.GetMapEntity().Tile(position)).Where(tile => tile != null).ToList();
-        int adjacentEnemies = adjacentTilePositions.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == 0).Count();
+        List<TileEntity> adjacentTiles = FindAdjacentTiles(objectiveTile);
+        int adjacentEnemiesCount = adjacentTiles.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == PlayerId.Human).Count();
 
         bool heroHasRangeWeapon = aiHero.GetHeroStats().current.WeaponRange > 1;
         bool heroHasRangSpecialAbility = aiHero.specialAbilities[0].GetAbilitySpec().properties.range > 1;
-        bool heroIsRangeHero = heroHasRangeWeapon || heroHasRangSpecialAbility;
+        bool heroIsRangeHero = heroHasRangSpecialAbility;
+
 
         float bonusScore = 0.0f;
+        MovementPreference preference = aiHero.GetMovementPreference();
+        if (adjacentEnemiesCount == 0)
+        {
+
+        }
+        else if (adjacentEnemiesCount == 1)
+        {
+            bonusScore += (preference.AdjecentEnemyModifier * adjacentEnemiesCount);
+        }
+        else if (preference.MultipleAdjacentEnemyPreference)
+        {
+            bonusScore += (preference.AdjecentEnemyModifier * adjacentEnemiesCount);
+        }
+        else
+        {
+            bonusScore += (preference.AdjecentEnemyModifier + (-preference.AdjecentEnemyModifier) * (adjacentEnemiesCount - 1));
+        }
+
+
+
         if (heroIsRangeHero)
         {
-            bonusScore -= adjacentEnemies * 0.2f;
-            bonusScore += enemiesInWeaponRange * 0.1f;
-            if (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)) {
-                bonusScore += enemiesInSpecialAbilityRange * 0.1f;
+            if (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special))
+            {
+                bonusScore += enemiesInSpecialAbilityRange * 0.2f;
             }
         }
         else
@@ -309,7 +323,40 @@ public class AIAgent : MonoBehaviour, IPlayer
             bonusScore += enemiesInWeaponRange * 0.2f;
         }
 
+        if (bonusScore == 0)
+        {
+
+        }
 
         return (taskCount - (int)task.task.kind) + (bonusScore);
     }
+
+
+    private List<TileEntity> FindTilesInRangeFromTile(TileEntity objectiveTile, int range)
+    {
+        List<TileEntity> tilesInRange = map.GetMapEntity().Area(objectiveTile.Position, range)
+            .Select(position => map.GetMapEntity().Tile(position)).Where(tile => tile != null).ToList();
+        return tilesInRange;
+
+    }
+    private List<TileEntity> FindAdjacentTiles(TileEntity objectiveTile)
+    {
+        List<TileEntity> adjacentTilePositions = map.GetMapEntity().Area(objectiveTile.Position, 1)
+            .Select(position => map.GetMapEntity().Tile(position)).Where(tile => tile != null).ToList();
+        return adjacentTilePositions;
+
+    }
+
+    private PossibleAssignment ChooseBestPossibleAssignment(PossibleAssignment[] possibleAssignments)
+    {
+        var sortedPossibleAssignments = possibleAssignments.OrderByDescending(assignment => assignment.score).ToArray();
+
+        var bestScore = sortedPossibleAssignments[0].score;
+        var bestPossibleAssignments = sortedPossibleAssignments.Where(assignment => assignment.score == bestScore).ToList();
+
+        var rnd = new System.Random();
+        bestPossibleAssignments.Shuffle(rnd);
+        return bestPossibleAssignments[0];
+    }
+
 }

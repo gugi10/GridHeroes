@@ -126,8 +126,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfe5a14d9b377104a86e3af14f91b1c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HeroId: 0
   ControllingPlayerId: 0
   originalStats: {fileID: 11400000, guid: 62de22b5096ed9c40bb4b4e8b848e951, type: 2}
+  movementPreference: {fileID: 11400000, guid: 3c2581bfad60648498059533c7c001eb, type: 2}
   rotationNode: {fileID: 1225501658626404585}
   highLightPrefab: {fileID: 114964435729023602, guid: fe2319e9d6e840f409af77b3e7a85259, type: 3}
   walkableAreaPrefab: {fileID: 114964435729023602, guid: f2932ceb5b171a748b80dac97fabb508, type: 3}
