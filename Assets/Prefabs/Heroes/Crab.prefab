@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeroId: 1
   ControllingPlayerId: 0
-  originalStats: {fileID: 11400000, guid: 84f85130928e144bb89cf40f3196ae08, type: 2}
+  originalStats: {fileID: 11400000, guid: 62de22b5096ed9c40bb4b4e8b848e951, type: 2}
   rotationNode: {fileID: 2397066353274874460}
   highLightPrefab: {fileID: 114964435729023602, guid: fe2319e9d6e840f409af77b3e7a85259, type: 3}
   walkableAreaPrefab: {fileID: 114964435729023602, guid: f2932ceb5b171a748b80dac97fabb508, type: 3}
