@@ -22,7 +22,7 @@ public struct BasicProperties
 
 public interface ISpecialAbility
 {
-    public void DoSpecialAbility(HeroController source, MapEntity map);
+    public void InitSpecialAbility(HeroController source, MapEntity map);
 
     public Sprite GetSkillIcon();
 
@@ -36,7 +36,7 @@ public interface ISpecialAbility
 
     public AbilitySpec GetAbilitySpec();
 
-    public void HighlightAffectedTiles(MapController map);
+    public void HighlightAffectedTiles(TileEntity tile, MapController map);
 
-    public void DisableHiglight(MapController map);
+    public void DisableHighlight(MapController map);
 }

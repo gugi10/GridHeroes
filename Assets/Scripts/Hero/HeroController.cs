@@ -120,7 +120,7 @@ public class HeroController : MonoBehaviour
         
         tile.OccupyTile(this);
 
-        specialAbilities[0].DoSpecialAbility(this, map);
+        specialAbilities[0].InitSpecialAbility(this, map);
     }
 
     /*public bool PerformAction(TileEntity targetTile)

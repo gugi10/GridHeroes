@@ -64,13 +64,13 @@ public class PlayerInput : MonoBehaviour, IPlayer
     {
         abilityInputIsProcessing = true;
         processedAbility = ability;
-        processedAbility.HighlightAffectedTiles(map);
+        processedAbility.HighlightAffectedTiles(null, map);
     }
 
     private void StopSpecialAbility()
     {
         abilityInputIsProcessing = false;
-        processedAbility?.DisableHiglight(map);
+        processedAbility?.DisableHighlight(map);
         processedAbility = null;
 
     }
@@ -92,19 +92,19 @@ public class PlayerInput : MonoBehaviour, IPlayer
         {
             if(Input.GetKeyDown(KeyCode.Escape))
             {
-                processedAbility.DisableHiglight(map);
+                processedAbility.DisableHighlight(map);
                 abilityInputIsProcessing = false;
                 return;
             }
 
-            if (processedAbility is ITargetable targetable)
+            if (processedAbility is TargetableAbility targetable)
             {
                 var tile = map.GetMapEntity().Tile(MyInput.GroundPosition(map.GetMapEntity().Settings.Plane()));
                 if (previousTile != tile)
                 {
                     previousTile = tile;
                     targetable.DisableHighlight(map);
-                    targetable.HighlightTargetedTile(tile, map);
+                    targetable.HighlightAffectedTiles(tile, map);
                 }
             }
             processedAbility.ProcessInput();

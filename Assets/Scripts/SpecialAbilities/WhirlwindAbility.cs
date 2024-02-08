@@ -3,27 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using SpecialAbilities;
 
 [RequireComponent(typeof(UnitAnimations))]
-public class WhirlwindAbility : AbilityBase
+public class WhirlwindAbility : NovaAbility
 {
-    private BasicProperties properties = new() { damage = 1, range = 1 };
+    private new readonly BasicProperties properties = new() { damage = 1, range = 1 };
+    private UnitAnimations unitAnimations;
 
-    HeroController source;
-    MapEntity mapEntity;
-    UnitAnimations unitAnimations;
-    AffectedTilesHiglight highlight;
-
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         unitAnimations = GetComponent<UnitAnimations>();
-        highlight = new AffectedTilesHiglight();
-    }
-
-    public override void DoSpecialAbility(HeroController source, MapEntity map)
-    {
-        this.source = source;
-        this.mapEntity = map;
     }
 
     public override void ProcessInput()
@@ -39,7 +30,7 @@ public class WhirlwindAbility : AbilityBase
 
     public override void PerformAbility(TileEntity chosenTile)
     {
-        HashSet<TileEntity> surroundingTiles = mapEntity.WalkableTiles(source.currentTile.TilePos, properties.range);
+        HashSet<TileEntity> surroundingTiles = _mapEntity.WalkableTiles(source.currentTile.TilePos, properties.range);
 
         unitAnimations.PlaySpecialAbillity(animationId);
         foreach (var tile in surroundingTiles)
@@ -52,31 +43,11 @@ public class WhirlwindAbility : AbilityBase
         source?.onSpecialAbilityFinished();
     }
 
-    public override bool CanBeUsedOnTarget(TileEntity chosenTile)
-    {
-        if (!chosenTile.IsOccupied)
-        {
-            return false;
-        }
-
-        if (!TileUtilities.AreTilesInRange(source.currentTile.TilePos, chosenTile.Position, properties.range))
-        {
-            return false;
-        }
-
-        if (chosenTile.occupyingHero == source || chosenTile.occupyingHero.ControllingPlayerId == source.ControllingPlayerId)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     public override ScoreModifiers ScoreForTarget(HeroController target)
     {
         ScoreModifiers modifiers = new() { };
 
-        HashSet<TileEntity> surroundingTiles = mapEntity.WalkableTiles(source.currentTile.TilePos, properties.range);
+        HashSet<TileEntity> surroundingTiles = _mapEntity.WalkableTiles(source.currentTile.TilePos, properties.range);
 
 
 
@@ -93,15 +64,5 @@ public class WhirlwindAbility : AbilityBase
         }
 
         return modifiers;
-    }
-
-    public override void HighlightAffectedTiles(MapController mapController)
-    {
-        highlight.HighlightTile(mapEntity.WalkableTiles(source.currentTile.TilePos, properties.range), mapController);
-    }
-
-    public override void DisableHiglight(MapController map)
-    {
-        highlight.DisableHiglight(map);
     }
 }

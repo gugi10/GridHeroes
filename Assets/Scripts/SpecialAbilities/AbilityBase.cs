@@ -9,10 +9,33 @@ public abstract class AbilityBase : MonoBehaviour, ISpecialAbility
 {
     [SerializeField] protected string animationId = "Attack02";
     [SerializeField] protected Sprite icon;
+    protected HeroController source;
+    protected MapEntity _mapEntity;
 
-    public virtual void DoSpecialAbility(HeroController source, MapEntity map)
+    public virtual void InitSpecialAbility(HeroController source, MapEntity map)
     {
-        throw new System.NotImplementedException();
+        this.source = source;
+        _mapEntity = map;
+    }
+    
+    public virtual bool CanBeUsedOnTarget(TileEntity chosenTile)
+    {
+        if (!chosenTile.IsOccupied)
+        {
+            return false;
+        }
+
+        if (!TileUtilities.AreTilesInRange(source.currentTile.TilePos, chosenTile.Position, GetAbilitySpec().properties.range))
+        {
+            return false;
+        }
+
+        if (chosenTile.occupyingHero == source || chosenTile.occupyingHero.ControllingPlayerId == source.ControllingPlayerId)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public virtual Sprite GetSkillIcon()
@@ -20,6 +43,7 @@ public abstract class AbilityBase : MonoBehaviour, ISpecialAbility
         return icon;
     }
 
+    //Below methods should be implemented by each specific ability
     public virtual void ProcessInput()
     {
         throw new System.NotImplementedException();
@@ -34,24 +58,22 @@ public abstract class AbilityBase : MonoBehaviour, ISpecialAbility
     {
         throw new System.NotImplementedException();
     }
-
-    public virtual bool CanBeUsedOnTarget(TileEntity chosenTile)
+    
+    public virtual void HighlightAffectedTiles(TileEntity tile, MapController map)
     {
         throw new System.NotImplementedException();
     }
-
     public virtual ScoreModifiers ScoreForTarget(HeroController target)
     {
         throw new System.NotImplementedException();
     }
 
-    public virtual void HighlightAffectedTiles(MapController map)
+    public virtual void DisableHighlight(MapController map)
     {
         throw new System.NotImplementedException();
     }
 
-    public virtual void DisableHiglight(MapController map)
-    {
-        throw new System.NotImplementedException();
-    }
+    
+
+    
 }
