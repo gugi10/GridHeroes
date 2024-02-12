@@ -28,7 +28,8 @@ public enum HeroId
 {
     EvilMage,
     Crab,
-    BlackKnight
+    BlackKnight,
+    SpiderRanger
 }
 
 public class HeroController : MonoBehaviour
