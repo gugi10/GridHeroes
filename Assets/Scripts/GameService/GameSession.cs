@@ -12,6 +12,7 @@ public class GameSession : Singleton<GameSession>
     {
         base.Awake();
 
+        //Order might matter
         DontDestroyOnLoad(this);
         services = new List<IService>(){
             new HeroService(GetConfig<HeroesConfig>()),
