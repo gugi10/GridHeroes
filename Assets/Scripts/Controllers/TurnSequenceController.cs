@@ -54,11 +54,13 @@ public class TurnSequenceController : MonoBehaviour
 
     public void Init(List<HeroController> heroes)
     {
+        
         heroes.ForEach(hero =>
         {
             //var instance = Instantiate(hero);
             //hero.ControllingPlayerId = i;
-            hero.Init(FinishTurn, () => { FinishTurn(HeroAction.Special); }, this.OnDie);
+            SpecialAbilityFactory factory = new SpecialAbilityFactory(hero, mapController.GetMapEntity());
+            hero.Init(FinishTurn, () => { FinishTurn(HeroAction.Special); }, this.OnDie, factory.BuildSpecialAbility(hero.HeroId));
             hero.onHeroSelected += OnHeroSelectedCallback;
             hero.onHeroUnselected += OnHeroSelectedCallback;
             heroControllerInstances.Add(hero);

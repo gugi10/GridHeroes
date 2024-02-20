@@ -66,7 +66,11 @@ public class HeroService : IService
 
     public void LoadHeroSaveData(HeroSaveModel heroSaveModel)
     {
-        foreach (var heroIdToParse in heroSaveModel.heroIds)
+        if(heroSaveModel is null)
+        {
+            return;
+        }
+        foreach (var heroIdToParse in heroSaveModel?.heroIds)
         {
             if (Enum.TryParse(heroIdToParse, out HeroId parsedId))
             {

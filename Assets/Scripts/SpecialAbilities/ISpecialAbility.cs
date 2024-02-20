@@ -40,3 +40,22 @@ public interface ISpecialAbility
 
     public void DisableHiglight(MapController map);
 }
+
+
+public interface ISpecialAbility2 : IAbilityScore
+{
+
+}
+public class SpecialAbility2 : MonoBehaviour, ISpecialAbility2
+{
+    private IAbilityScore abilityScore;
+    public SpecialAbility2(IAbilityScore abilityScore)
+    {
+        this.abilityScore = abilityScore;
+    }
+
+    public ScoreModifiers ScoreForTarget(HeroController target)
+    {
+        return abilityScore.ScoreForTarget(target);
+    }
+}

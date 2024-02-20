@@ -47,6 +47,7 @@ public class HeroController : MonoBehaviour
     public Action onSpecialAbilityFinished;
     public int RemainingActions { get; private set; }
     public ISpecialAbility[] specialAbilities { get; private set; }
+    public ISpecialAbility2 specialAbility2 { get; private set; }
 
     [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private MovementPreference movementPreference;
@@ -75,8 +76,9 @@ public class HeroController : MonoBehaviour
         specialAbilities = GetComponents<ISpecialAbility>();
     }
 
-    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished, Action<HeroController> onDie)
+    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished, Action<HeroController> onDie, ISpecialAbility2 specialAbility)
     {
+        this.specialAbility2 = specialAbility;
         this.onActionEvent += onActionCallback;
         this.onSpecialAbilityFinished += onSpecialAbilityFinished;
         this.onDie += onDie;

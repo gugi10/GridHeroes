@@ -123,7 +123,7 @@ public class AIAgent : MonoBehaviour, IPlayer
                     if (aiHero.specialAbilities[0].CanBeUsedOnTarget(objectiveTileEntity))
                     {
                         possibleAssignments = possibleAssignments.Append(new PossibleAssignment(
-                            ScoreAbility(tasks.Length, possibleTask.task.kind, aiHero.specialAbilities[0].ScoreForTarget(possibleTask.objective.occupyingHero)), possibleTask, aiHero)
+                            ScoreAbility(tasks.Length, possibleTask.task.kind, aiHero.specialAbility2.ScoreForTarget(possibleTask.objective.occupyingHero)), possibleTask, aiHero)
                         ).ToArray();
                     }
 
