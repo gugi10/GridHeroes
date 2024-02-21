@@ -22,7 +22,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
     private HeroController selectedHero;
     private List<List<HeroAction>> playerActions;
     private bool abilityInputIsProcessing;
-    private ISpecialAbility processedAbility;
+    private ISpecialAbility2 processedAbility;
     private bool playerIsActive;
     private TileEntity previousTile;
 
@@ -60,17 +60,19 @@ public class PlayerInput : MonoBehaviour, IPlayer
         path.Hide();
     }
 
-    private void StartSpecialAbility(ISpecialAbility ability)
+    private void StartSpecialAbility(ISpecialAbility2 ability)
     {
         abilityInputIsProcessing = true;
         processedAbility = ability;
-        processedAbility.HighlightAffectedTiles(map);
+        // TODO: ANIMIATION
+        //processedAbility.HighlightAffectedTiles(map);
     }
 
     private void StopSpecialAbility()
     {
         abilityInputIsProcessing = false;
-        processedAbility?.DisableHiglight(map);
+        // TOTO: HIGLIHHT
+        // processedAbility?.DisableHiglight(map);
         processedAbility = null;
 
     }
@@ -92,7 +94,8 @@ public class PlayerInput : MonoBehaviour, IPlayer
         {
             if(Input.GetKeyDown(KeyCode.Escape))
             {
-                processedAbility.DisableHiglight(map);
+                // TODO: HIGHLIGHT
+                // processedAbility.DisableHiglight(map);
                 abilityInputIsProcessing = false;
                 return;
             }

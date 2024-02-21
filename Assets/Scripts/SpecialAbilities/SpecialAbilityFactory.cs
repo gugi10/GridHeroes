@@ -11,14 +11,38 @@ public class SpecialAbilityFactory
         this.mapEntity = mapEntity;
     }
 
-    public ISpecialAbility2 BuildSpecialAbility(HeroId heroId)
+    public ISpecialAbility2[] BuildSpecialAbility(HeroId heroId)
     {
-        return heroId switch
+        var fireboltProperties = new BasicProperties { damage = 1, range = 3 };
+        var fireboltScore = new FireboltScore(fireboltProperties);
+        var fireboltProcess = new FireboltProcess(mapEntity, source, fireboltProperties);
+
+        var whirlwindProperties = new BasicProperties { damage = 1, range = 1 };
+        var whirlwindScore = new WhirlwindScore(whirlwindProperties, mapEntity, source);
+        var whirlwindProcess = new WhirlwindProcess(mapEntity, source, fireboltProperties);
+
+        var pushProperties = new BasicProperties { damage = 1, range = 1 };
+        var pushScore = new PushScore(pushProperties);
+        var pushProcess = new PushProcess(mapEntity, source, fireboltProperties);
+
+        if (heroId == HeroId.EvilMage || heroId == HeroId.SpiderRanger) {
+            var abilities = new SpecialAbility2[1];
+            abilities[0] = new SpecialAbility2(fireboltScore, fireboltProcess);
+            return abilities;
+        }
+
+        if (heroId == HeroId.Crab)
         {
-            HeroId.EvilMage => new SpecialAbility2(new FireboltScore(new BasicProperties { damage = 1, range = 3})),
-            HeroId.Crab => new SpecialAbility2(new WhirlwindScore(new BasicProperties { damage = 1, range = 1 }, mapEntity, source)),
-            HeroId.BlackKnight => new SpecialAbility2(new PushScore(new BasicProperties { damage = 1, range = 1 })),
-            HeroId.SpiderRanger => new SpecialAbility2(new FireboltScore(new BasicProperties { damage = 1, range = 3 })),
-        };
+            var abilities = new SpecialAbility2[1];
+            abilities[0] = new SpecialAbility2(whirlwindScore, whirlwindProcess);
+            return abilities;
+        }
+
+        // if (heroId == HeroId.BlackKnight)
+        // {
+            var blackKnightAbilities = new SpecialAbility2[1];
+            blackKnightAbilities[0] = new SpecialAbility2(pushScore, pushProcess);
+            return blackKnightAbilities;
+        // }
     }
 }

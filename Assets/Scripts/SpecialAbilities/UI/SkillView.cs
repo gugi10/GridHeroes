@@ -8,7 +8,7 @@ public class SkillView : MonoBehaviour
     [SerializeField] Image icon;
     Button button;
     private HeroController hero;
-    private ISpecialAbility specialAbility;
+    private ISpecialAbility2 specialAbility;
     private int id;
     private bool isInit;
     private void Awake()
@@ -26,12 +26,13 @@ public class SkillView : MonoBehaviour
         button.onClick.RemoveListener(CallAbillity);
     }
 
-    public void Init(HeroController hero, ISpecialAbility specialAbility, int id)
+    public void Init(HeroController hero, ISpecialAbility2 specialAbility, int id)
     {
         this.hero = hero;
         this.specialAbility = specialAbility;
         this.id = id;
-        icon.sprite = specialAbility.GetSkillIcon();
+        // TODO: GET SKILL ICON
+        // icon.sprite = specialAbility.GetSkillIcon();
         isInit = true;
     }
 

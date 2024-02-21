@@ -43,11 +43,11 @@ public class HeroController : MonoBehaviour
     public Action<HeroController> onDie { get; set; }
     public Action OnMoveStart { get; set; }
     public Action onHeroUnselected;
-    public Action<ISpecialAbility> onSpecialAbilityStarted;
+    public Action<ISpecialAbility2> onSpecialAbilityStarted;
     public Action onSpecialAbilityFinished;
     public int RemainingActions { get; private set; }
-    public ISpecialAbility[] specialAbilities { get; private set; }
-    public ISpecialAbility2 specialAbility2 { get; private set; }
+    //public ISpecialAbility[] specialAbilities { get; private set; }
+    public ISpecialAbility2[] specialAbilities2 { get; private set; }
 
     [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private MovementPreference movementPreference;
@@ -73,35 +73,15 @@ public class HeroController : MonoBehaviour
         area.gameObject.SetActive(false);
 
         heroHighLight = Instantiate(highLightPrefab, Vector3.zero, Quaternion.identity, transform);
-        specialAbilities = GetComponents<ISpecialAbility>();
+        //specialAbilities = GetComponents<ISpecialAbility>();
     }
 
-    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished, Action<HeroController> onDie, ISpecialAbility2 specialAbility)
+    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished, Action<HeroController> onDie, ISpecialAbility2[] specialAbilities)
     {
-        this.specialAbility2 = specialAbility;
+        this.specialAbilities2 = specialAbilities;
         this.onActionEvent += onActionCallback;
         this.onSpecialAbilityFinished += onSpecialAbilityFinished;
         this.onDie += onDie;
-    }
-
-    public bool CanMakeTask(PossibleTask task)
-    {
-        switch (task.task.kind)
-        {
-            case TaskKind.UseAbility:
-                switch (specialAbilities[0].GetAbilitySpec().kind)
-                {
-                    case AbilityKind.Whirlwind:
-                    case AbilityKind.PushStrike:
-                    case AbilityKind.Bolt:
-                        return true;
-                }
-                return false;
-            case TaskKind.MoveForward:
-            case TaskKind.AttackEnemy:
-                return true;
-        }
-        return false;
     }
 
     public void SetupHero(MapEntity map, TileData startingTile)
@@ -122,8 +102,6 @@ public class HeroController : MonoBehaviour
             heroHighLight.InactiveState();
         
         tile.OccupyTile(this);
-
-        specialAbilities[0].DoSpecialAbility(this, map);
     }
 
     /*public bool PerformAction(TileEntity targetTile)
@@ -152,7 +130,7 @@ public class HeroController : MonoBehaviour
 
     public void DoSpecialAbility(int id)
     {
-        onSpecialAbilityStarted?.Invoke(specialAbilities[id]);
+        onSpecialAbilityStarted?.Invoke(specialAbilities2[id]);
         //onSpecialAbility.Invoke(specialAbilities[id].GetSkillAnimation());
         //specialAbilities[id].DoSpecialAbility(this, map);
     }

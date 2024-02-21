@@ -42,16 +42,38 @@ public interface ISpecialAbility
 }
 
 
-public interface ISpecialAbility2 : IAbilityScore
+public interface ISpecialAbility2 : IAbilityScore, ISpecialAbilityProcess
 {
 
 }
 public class SpecialAbility2 : MonoBehaviour, ISpecialAbility2
 {
     private IAbilityScore abilityScore;
-    public SpecialAbility2(IAbilityScore abilityScore)
+    private ISpecialAbilityProcess abilityProcess;
+
+    public SpecialAbility2(IAbilityScore abilityScore, ISpecialAbilityProcess abilityProcess)
     {
         this.abilityScore = abilityScore;
+        this.abilityProcess = abilityProcess;
+    }
+    public void ProcessInput()
+    {
+        abilityProcess.ProcessInput();
+    }
+
+    public void PerformAbility(TileEntity chosenTile)
+    {
+        abilityProcess.PerformAbility(chosenTile);
+    }
+
+    public AbilitySpec GetAbilitySpec()
+    {
+        return abilityProcess.GetAbilitySpec();
+    }
+
+    public bool CanBeUsedOnTarget(TileEntity chosenTile)
+    {
+        return abilityProcess.CanBeUsedOnTarget(chosenTile);
     }
 
     public ScoreModifiers ScoreForTarget(HeroController target)
