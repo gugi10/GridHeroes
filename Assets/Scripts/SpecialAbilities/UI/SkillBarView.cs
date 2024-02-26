@@ -14,22 +14,22 @@ public class SkillBarView : MonoBehaviour
     //TODO: NEED TESTING. wanted to avoid instantiating and destroying ability objects, however it might be overengineer and not working. :)
     private void ShowHeroSkills(HeroController hero)
     {
-        for (int i = 0; i < hero.specialAbilities2.Length; i++)
+        for (int i = 0; i < hero.specialAbilities.Length; i++)
         {
             if (instantiatedSkills.Count > i)
             {
-                instantiatedSkills[i].Init(hero, hero.specialAbilities2[i], i);
+                instantiatedSkills[i].Init(hero, hero.specialAbilities[i], i);
                 instantiatedSkills[i].gameObject.SetActive(true);
             }
             else
             {
                 var spawnedSKill = Instantiate(skillPrefab, transform);
-                spawnedSKill.Init(hero, hero.specialAbilities2[i], i);
+                spawnedSKill.Init(hero, hero.specialAbilities[i], i);
                 instantiatedSkills.Add(spawnedSKill);
             }
         }
 
-        for (int i = instantiatedSkills.Count - 1; i > instantiatedSkills.Count - hero.specialAbilities2.Length; i--)
+        for (int i = instantiatedSkills.Count - 1; i > instantiatedSkills.Count - hero.specialAbilities.Length; i--)
         {
             instantiatedSkills[i].gameObject.SetActive(false);
         }

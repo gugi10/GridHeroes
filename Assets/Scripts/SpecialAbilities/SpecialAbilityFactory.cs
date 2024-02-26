@@ -11,37 +11,40 @@ public class SpecialAbilityFactory
         this.mapEntity = mapEntity;
     }
 
-    public ISpecialAbility2[] BuildSpecialAbility(HeroId heroId)
+    public ISpecialAbility[] BuildSpecialAbility(HeroId heroId)
     {
         var fireboltProperties = new BasicProperties { damage = 1, range = 3 };
         var fireboltScore = new FireboltScore(fireboltProperties);
         var fireboltProcess = new FireboltProcess(mapEntity, source, fireboltProperties);
+        var fireboltFx = new SingleTargetFx(new AffectedTilesHiglight { }, null, source, fireboltProperties);
 
         var whirlwindProperties = new BasicProperties { damage = 1, range = 1 };
         var whirlwindScore = new WhirlwindScore(whirlwindProperties, mapEntity, source);
         var whirlwindProcess = new WhirlwindProcess(mapEntity, source, fireboltProperties);
+        var whirlwindFx = new WhirlwindFx(new AffectedTilesHiglight { }, null, source, mapEntity, whirlwindProperties);
 
         var pushProperties = new BasicProperties { damage = 1, range = 1 };
         var pushScore = new PushScore(pushProperties);
         var pushProcess = new PushProcess(mapEntity, source, fireboltProperties);
+        var pushFx = new SingleTargetFx(new AffectedTilesHiglight { }, null, source, pushProperties);
 
         if (heroId == HeroId.EvilMage || heroId == HeroId.SpiderRanger) {
-            var abilities = new SpecialAbility2[1];
-            abilities[0] = new SpecialAbility2(fireboltScore, fireboltProcess);
+            var abilities = new SpecialAbility[1];
+            abilities[0] = new SpecialAbility(fireboltScore, fireboltProcess, fireboltFx);
             return abilities;
         }
 
         if (heroId == HeroId.Crab)
         {
-            var abilities = new SpecialAbility2[1];
-            abilities[0] = new SpecialAbility2(whirlwindScore, whirlwindProcess);
+            var abilities = new SpecialAbility[1];
+            abilities[0] = new SpecialAbility(whirlwindScore, whirlwindProcess, whirlwindFx);
             return abilities;
         }
 
         // if (heroId == HeroId.BlackKnight)
         // {
-            var blackKnightAbilities = new SpecialAbility2[1];
-            blackKnightAbilities[0] = new SpecialAbility2(pushScore, pushProcess);
+            var blackKnightAbilities = new SpecialAbility[1];
+            blackKnightAbilities[0] = new SpecialAbility(pushScore, pushProcess, pushFx);
             return blackKnightAbilities;
         // }
     }

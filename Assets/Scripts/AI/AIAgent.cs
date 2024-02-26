@@ -120,10 +120,10 @@ public class AIAgent : MonoBehaviour, IPlayer
                 if (possibleTask.task.kind == TaskKind.UseAbility && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)))
                 {
                     var objectiveTileEntity = possibleTask.objective;
-                    if (aiHero.specialAbilities2[0].CanBeUsedOnTarget(objectiveTileEntity))
+                    if (aiHero.specialAbilities[0].CanBeUsedOnTarget(objectiveTileEntity))
                     {
                         possibleAssignments = possibleAssignments.Append(new PossibleAssignment(
-                            ScoreAbility(tasks.Length, possibleTask.task.kind, aiHero.specialAbilities2[0].ScoreForTarget(possibleTask.objective.occupyingHero)), possibleTask, aiHero)
+                            ScoreAbility(tasks.Length, possibleTask.task.kind, aiHero.specialAbilities[0].ScoreForTarget(possibleTask.objective.occupyingHero)), possibleTask, aiHero)
                         ).ToArray();
                     }
 
@@ -170,7 +170,7 @@ public class AIAgent : MonoBehaviour, IPlayer
         if (chosenAssignment.possibleTask.task.kind == TaskKind.UseAbility)
         {
             var targetTileEntity = chosenAssignment.possibleTask.objective;
-            chosenAssignment.assignee.specialAbilities2[0].PerformAbility(targetTileEntity);
+            chosenAssignment.assignee.specialAbilities[0].PerformAbility(targetTileEntity);
             return;
 
         }
@@ -260,7 +260,7 @@ public class AIAgent : MonoBehaviour, IPlayer
 
     private int ExtractAbilityRangeFromHero(HeroController hero)
     {
-        var ability = hero.specialAbilities2[0];
+        var ability = hero.specialAbilities[0];
         var abilitySpec = ability.GetAbilitySpec();
 
         var properties = abilitySpec.properties;
@@ -279,14 +279,14 @@ public class AIAgent : MonoBehaviour, IPlayer
         List<TileEntity> tilesInWeaponRange = FindTilesInRangeFromTile(objectiveTile, aiHero.GetHeroStats().current.WeaponRange);
         int enemiesInWeaponRange = tilesInWeaponRange.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == PlayerId.Human).Count();
 
-        List<TileEntity> tilesInSpecialAbilityRange = FindTilesInRangeFromTile(objectiveTile, aiHero.specialAbilities2[0].GetAbilitySpec().properties.range);
+        List<TileEntity> tilesInSpecialAbilityRange = FindTilesInRangeFromTile(objectiveTile, aiHero.specialAbilities[0].GetAbilitySpec().properties.range);
         int enemiesInSpecialAbilityRange = tilesInSpecialAbilityRange.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == PlayerId.Human).Count();
 
         List<TileEntity> adjacentTiles = FindAdjacentTiles(objectiveTile);
         int adjacentEnemiesCount = adjacentTiles.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == PlayerId.Human).Count();
 
         bool heroHasRangeWeapon = aiHero.GetHeroStats().current.WeaponRange > 1;
-        bool heroHasRangSpecialAbility = aiHero.specialAbilities2[0].GetAbilitySpec().properties.range > 1;
+        bool heroHasRangSpecialAbility = aiHero.specialAbilities[0].GetAbilitySpec().properties.range > 1;
         bool heroIsRangeHero = heroHasRangSpecialAbility;
 
 

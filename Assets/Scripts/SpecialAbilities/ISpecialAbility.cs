@@ -20,41 +20,22 @@ public struct BasicProperties
     public int damage;
 }
 
-public interface ISpecialAbility
+
+public interface ISpecialAbility : IAbilityScore, ISpecialAbilityProcess, ISpecialAbilityHighlighter
 {
-    public void DoSpecialAbility(HeroController source, MapEntity map);
-
-    public Sprite GetSkillIcon();
-
-    public void ProcessInput();
-
-    public void PerformAbility(TileEntity chosenTile);
-
-    public bool CanBeUsedOnTarget(TileEntity chosenTile);
-
-    public ScoreModifiers ScoreForTarget(HeroController target);
-
-    public AbilitySpec GetAbilitySpec();
-
-    public void HighlightAffectedTiles(MapController map);
-
-    public void DisableHiglight(MapController map);
 }
 
-
-public interface ISpecialAbility2 : IAbilityScore, ISpecialAbilityProcess
-{
-
-}
-public class SpecialAbility2 : MonoBehaviour, ISpecialAbility2
+public class SpecialAbility : MonoBehaviour, ISpecialAbility
 {
     private IAbilityScore abilityScore;
     private ISpecialAbilityProcess abilityProcess;
+    private ISpecialAbilityHighlighter abilityFx;
 
-    public SpecialAbility2(IAbilityScore abilityScore, ISpecialAbilityProcess abilityProcess)
+    public SpecialAbility(IAbilityScore abilityScore, ISpecialAbilityProcess abilityProcess, ISpecialAbilityHighlighter abilityFx)
     {
         this.abilityScore = abilityScore;
         this.abilityProcess = abilityProcess;
+        this.abilityFx = abilityFx;
     }
     public void ProcessInput()
     {
@@ -79,5 +60,25 @@ public class SpecialAbility2 : MonoBehaviour, ISpecialAbility2
     public ScoreModifiers ScoreForTarget(HeroController target)
     {
         return abilityScore.ScoreForTarget(target);
+    }
+
+    public Sprite GetSkillIcon()
+    {
+        return abilityFx.GetSkillIcon();
+    }
+
+    public AffectedTilesHiglight GetAffectedTiles()
+    {
+        return abilityFx.GetAffectedTiles();
+    }
+
+    public void HighlightTargetedTile(TileEntity tile, MapController map)
+    {
+        abilityFx.HighlightTargetedTile(tile, map);
+    }
+
+    public void DisableHighlight(MapController map)
+    {
+        abilityFx.DisableHighlight(map);
     }
 }

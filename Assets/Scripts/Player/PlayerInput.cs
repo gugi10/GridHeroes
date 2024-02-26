@@ -2,7 +2,6 @@ using RedBjorn.ProtoTiles;
 using RedBjorn.ProtoTiles.Example;
 using System.Collections.Generic;
 using UnityEngine;
-using SpecialAbilities;
 
 public interface IPlayer
 {
@@ -22,7 +21,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
     private HeroController selectedHero;
     private List<List<HeroAction>> playerActions;
     private bool abilityInputIsProcessing;
-    private ISpecialAbility2 processedAbility;
+    private ISpecialAbility processedAbility;
     private bool playerIsActive;
     private TileEntity previousTile;
 
@@ -60,19 +59,17 @@ public class PlayerInput : MonoBehaviour, IPlayer
         path.Hide();
     }
 
-    private void StartSpecialAbility(ISpecialAbility2 ability)
+    private void StartSpecialAbility(ISpecialAbility ability)
     {
         abilityInputIsProcessing = true;
         processedAbility = ability;
-        // TODO: ANIMIATION
-        //processedAbility.HighlightAffectedTiles(map);
     }
 
     private void StopSpecialAbility()
     {
         abilityInputIsProcessing = false;
-        // TOTO: HIGLIHHT
-        // processedAbility?.DisableHiglight(map);
+
+        processedAbility?.DisableHighlight(map);
         processedAbility = null;
 
     }
@@ -95,19 +92,19 @@ public class PlayerInput : MonoBehaviour, IPlayer
             if(Input.GetKeyDown(KeyCode.Escape))
             {
                 // TODO: HIGHLIGHT
-                // processedAbility.DisableHiglight(map);
+                processedAbility.DisableHighlight(map);
                 abilityInputIsProcessing = false;
                 return;
             }
 
-            if (processedAbility is ITargetable targetable)
+            if (processedAbility is not null)
             {
                 var tile = map.GetMapEntity().Tile(MyInput.GroundPosition(map.GetMapEntity().Settings.Plane()));
                 if (previousTile != tile)
                 {
                     previousTile = tile;
-                    targetable.DisableHighlight(map);
-                    targetable.HighlightTargetedTile(tile, map);
+                    processedAbility.DisableHighlight(map);
+                    processedAbility.HighlightTargetedTile(tile, map);
                 }
             }
             processedAbility.ProcessInput();

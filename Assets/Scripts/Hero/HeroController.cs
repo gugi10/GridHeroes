@@ -43,11 +43,10 @@ public class HeroController : MonoBehaviour
     public Action<HeroController> onDie { get; set; }
     public Action OnMoveStart { get; set; }
     public Action onHeroUnselected;
-    public Action<ISpecialAbility2> onSpecialAbilityStarted;
+    public Action<ISpecialAbility> onSpecialAbilityStarted;
     public Action onSpecialAbilityFinished;
     public int RemainingActions { get; private set; }
-    //public ISpecialAbility[] specialAbilities { get; private set; }
-    public ISpecialAbility2[] specialAbilities2 { get; private set; }
+    public ISpecialAbility[] specialAbilities { get; private set; }
 
     [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private MovementPreference movementPreference;
@@ -73,12 +72,11 @@ public class HeroController : MonoBehaviour
         area.gameObject.SetActive(false);
 
         heroHighLight = Instantiate(highLightPrefab, Vector3.zero, Quaternion.identity, transform);
-        //specialAbilities = GetComponents<ISpecialAbility>();
     }
 
-    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished, Action<HeroController> onDie, ISpecialAbility2[] specialAbilities)
+    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished, Action<HeroController> onDie, ISpecialAbility[] specialAbilities)
     {
-        this.specialAbilities2 = specialAbilities;
+        this.specialAbilities = specialAbilities;
         this.onActionEvent += onActionCallback;
         this.onSpecialAbilityFinished += onSpecialAbilityFinished;
         this.onDie += onDie;
@@ -130,9 +128,8 @@ public class HeroController : MonoBehaviour
 
     public void DoSpecialAbility(int id)
     {
-        onSpecialAbilityStarted?.Invoke(specialAbilities2[id]);
+        onSpecialAbilityStarted?.Invoke(specialAbilities[id]);
         //onSpecialAbility.Invoke(specialAbilities[id].GetSkillAnimation());
-        //specialAbilities[id].DoSpecialAbility(this, map);
     }
 
     public bool Move(TileEntity targetTile)
