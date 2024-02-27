@@ -19,6 +19,4 @@ public class HeroStatisticSheet : ScriptableObject
         Health = heroStats.Health;
         ActionLimit = heroStats.ActionLimit;
     }
-
-
 }

@@ -46,7 +46,7 @@ public class HeroController : MonoBehaviour
     public Action<ISpecialAbility> onSpecialAbilityStarted;
     public Action onSpecialAbilityFinished;
     public int RemainingActions { get; private set; }
-    public ISpecialAbility[] specialAbilities { get; private set; }
+    public SpecialAbility[] specialAbilities { get; private set; }
 
     [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private MovementPreference movementPreference;
@@ -74,7 +74,7 @@ public class HeroController : MonoBehaviour
         heroHighLight = Instantiate(highLightPrefab, Vector3.zero, Quaternion.identity, transform);
     }
 
-    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished, Action<HeroController> onDie, ISpecialAbility[] specialAbilities)
+    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished, Action<HeroController> onDie, SpecialAbility[] specialAbilities)
     {
         this.specialAbilities = specialAbilities;
         this.onActionEvent += onActionCallback;
@@ -306,7 +306,7 @@ public class HeroController : MonoBehaviour
         var reached = stepDir.sqrMagnitude < 0.01f;
         while (!reached)
         {
-            transform.position += stepDir * Time.deltaTime * 1f;
+            transform.position += stepDir * (Time.deltaTime * 1f);
             reached = Vector3.Dot(stepDir, (targetPoint - transform.position)) < 0f;
             yield return null;
         }

@@ -1,4 +1,6 @@
+using System;
 using RedBjorn.ProtoTiles;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public struct AbilitySpec
@@ -25,7 +27,7 @@ public interface ISpecialAbility : IAbilityScore, ISpecialAbilityProcess, ISpeci
 {
 }
 
-public class SpecialAbility : MonoBehaviour, ISpecialAbility
+public class SpecialAbility : ISpecialAbility
 {
     private IAbilityScore abilityScore;
     private ISpecialAbilityProcess abilityProcess;
@@ -64,7 +66,9 @@ public class SpecialAbility : MonoBehaviour, ISpecialAbility
 
     public Sprite GetSkillIcon()
     {
-        return abilityFx.GetSkillIcon();
+        //return abilityFx.GetSkillIcon();
+        throw new NotImplementedException();
+        return null;
     }
 
     public AffectedTilesHiglight GetAffectedTiles()

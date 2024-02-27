@@ -11,22 +11,22 @@ public class SpecialAbilityFactory
         this.mapEntity = mapEntity;
     }
 
-    public ISpecialAbility[] BuildSpecialAbility(HeroId heroId)
+    public SpecialAbility[] BuildSpecialAbility(HeroId heroId)
     {
         var fireboltProperties = new BasicProperties { damage = 1, range = 3 };
         var fireboltScore = new FireboltScore(fireboltProperties);
         var fireboltProcess = new FireboltProcess(mapEntity, source, fireboltProperties);
-        var fireboltFx = new SingleTargetFx(new AffectedTilesHiglight { }, null, source, fireboltProperties);
+        var fireboltFx = new SingleTargetTileHighlight(new AffectedTilesHiglight(),  source, fireboltProperties);
 
         var whirlwindProperties = new BasicProperties { damage = 1, range = 1 };
         var whirlwindScore = new WhirlwindScore(whirlwindProperties, mapEntity, source);
         var whirlwindProcess = new WhirlwindProcess(mapEntity, source, fireboltProperties);
-        var whirlwindFx = new WhirlwindFx(new AffectedTilesHiglight { }, null, source, mapEntity, whirlwindProperties);
+        var whirlwindFx = new WhirlwindTileHighlight(new AffectedTilesHiglight(), source, mapEntity, whirlwindProperties);
 
         var pushProperties = new BasicProperties { damage = 1, range = 1 };
         var pushScore = new PushScore(pushProperties);
         var pushProcess = new PushProcess(mapEntity, source, fireboltProperties);
-        var pushFx = new SingleTargetFx(new AffectedTilesHiglight { }, null, source, pushProperties);
+        var pushFx = new SingleTargetTileHighlight(new AffectedTilesHiglight(), source, pushProperties);
 
         if (heroId == HeroId.EvilMage || heroId == HeroId.SpiderRanger) {
             var abilities = new SpecialAbility[1];

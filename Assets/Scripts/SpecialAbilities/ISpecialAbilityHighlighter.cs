@@ -3,28 +3,24 @@ using UnityEngine;
 
 public interface ISpecialAbilityHighlighter
 {
-    public Sprite GetSkillIcon();
     public AffectedTilesHiglight GetAffectedTiles();
     public void HighlightTargetedTile(TileEntity tile, MapController map);
     public void DisableHighlight(MapController map);
 }
 
-class SingleTargetFx : ISpecialAbilityHighlighter
+public class SingleTargetTileHighlight : ISpecialAbilityHighlighter
 {
 
-    private AffectedTilesHiglight affectedTiles;
-    private Sprite skillIcon;
-    private HeroController source;
-    private BasicProperties properties;
-    public SingleTargetFx(AffectedTilesHiglight affectedTiles, Sprite skillIcon, HeroController source, BasicProperties properties)
+    private AffectedTilesHiglight affectedTiles { get; }
+    private HeroController source { get; }
+    private BasicProperties properties { get; }
+    public SingleTargetTileHighlight(AffectedTilesHiglight affectedTiles, HeroController source, BasicProperties properties)
     {
         this.affectedTiles = affectedTiles;
-        this.skillIcon = skillIcon;
         this.source = source;
         this.properties = properties;
     }
 
-    public Sprite GetSkillIcon() { return skillIcon;  }
     public AffectedTilesHiglight GetAffectedTiles() { return affectedTiles; }
     public void HighlightTargetedTile(TileEntity tile, MapController map)
     {
@@ -38,24 +34,21 @@ class SingleTargetFx : ISpecialAbilityHighlighter
 }
 
 
-class WhirlwindFx : ISpecialAbilityHighlighter
+public class WhirlwindTileHighlight : ISpecialAbilityHighlighter
 {
-    private AffectedTilesHiglight affectedTiles;
-    private Sprite skillIcon;
-    private HeroController source;
-    private MapEntity mapEntity;
-    private BasicProperties properties;
+    private AffectedTilesHiglight affectedTiles { get; }
+    private HeroController source { get; }
+    private MapEntity mapEntity { get; }
+    private BasicProperties properties { get; }
 
-    public WhirlwindFx(AffectedTilesHiglight affectedTiles, Sprite skillIcon, HeroController source, MapEntity mapEntity, BasicProperties properties)
+    public WhirlwindTileHighlight(AffectedTilesHiglight affectedTiles, HeroController source, MapEntity mapEntity, BasicProperties properties)
     {
         this.affectedTiles = affectedTiles;
-        this.skillIcon = skillIcon;
         this.source = source;
         this.mapEntity = mapEntity;
         this.properties = properties;
     }
 
-    public Sprite GetSkillIcon() { return skillIcon; }
     public AffectedTilesHiglight GetAffectedTiles() { return affectedTiles; }
     public void HighlightTargetedTile(TileEntity tile, MapController map)
     {
