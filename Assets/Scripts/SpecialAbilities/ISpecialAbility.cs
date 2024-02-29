@@ -1,5 +1,6 @@
 using System;
 using RedBjorn.ProtoTiles;
+using SpecialAbilities;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -31,12 +32,14 @@ public class SpecialAbility : ISpecialAbility
 {
     private IAbilityScore abilityScore;
     private ISpecialAbilityProcess abilityProcess;
-    private ISpecialAbilityHighlighter abilityFx;
-
-    public SpecialAbility(IAbilityScore abilityScore, ISpecialAbilityProcess abilityProcess, ISpecialAbilityHighlighter abilityFx)
+    private ISpecialAbilityHighlighter abilityHighlight;
+    private ISpecialAbilityFX abilityFx;
+    
+    public SpecialAbility(IAbilityScore abilityScore, ISpecialAbilityProcess abilityProcess, ISpecialAbilityHighlighter abilityHighlight, ISpecialAbilityFX abilityFx)
     {
         this.abilityScore = abilityScore;
         this.abilityProcess = abilityProcess;
+        this.abilityHighlight = abilityHighlight;
         this.abilityFx = abilityFx;
     }
     public void ProcessInput()
@@ -73,16 +76,16 @@ public class SpecialAbility : ISpecialAbility
 
     public AffectedTilesHiglight GetAffectedTiles()
     {
-        return abilityFx.GetAffectedTiles();
+        return abilityHighlight.GetAffectedTiles();
     }
 
     public void HighlightTargetedTile(TileEntity tile, MapController map)
     {
-        abilityFx.HighlightTargetedTile(tile, map);
+        abilityHighlight.HighlightTargetedTile(tile, map);
     }
 
     public void DisableHighlight(MapController map)
     {
-        abilityFx.DisableHighlight(map);
+        abilityHighlight.DisableHighlight(map);
     }
 }

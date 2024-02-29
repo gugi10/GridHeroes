@@ -1,4 +1,5 @@
 ﻿using RedBjorn.ProtoTiles;
+using SpecialAbilities;
 
 public class SpecialAbilityFactory
 {
@@ -16,35 +17,36 @@ public class SpecialAbilityFactory
         var fireboltProperties = new BasicProperties { damage = 1, range = 3 };
         var fireboltScore = new FireboltScore(fireboltProperties);
         var fireboltProcess = new FireboltProcess(mapEntity, source, fireboltProperties);
-        var fireboltFx = new SingleTargetTileHighlight(new AffectedTilesHiglight(),  source, fireboltProperties);
+        var fireboltHighlight = new SingleTargetTileHighlight(new AffectedTilesHiglight(),  source, fireboltProperties);
 
         var whirlwindProperties = new BasicProperties { damage = 1, range = 1 };
         var whirlwindScore = new WhirlwindScore(whirlwindProperties, mapEntity, source);
-        var whirlwindProcess = new WhirlwindProcess(mapEntity, source, fireboltProperties);
-        var whirlwindFx = new WhirlwindTileHighlight(new AffectedTilesHiglight(), source, mapEntity, whirlwindProperties);
-
+        var whirlwindFx = new WhirlwindAbilityFX(source);
+        var whirlwindProcess = new WhirlwindProcess(mapEntity, source, fireboltProperties, whirlwindFx);
+        var whirlwindHighlight = new WhirlwindTileHighlight(new AffectedTilesHiglight(), source, mapEntity, whirlwindProperties);
+        
         var pushProperties = new BasicProperties { damage = 1, range = 1 };
         var pushScore = new PushScore(pushProperties);
         var pushProcess = new PushProcess(mapEntity, source, fireboltProperties);
-        var pushFx = new SingleTargetTileHighlight(new AffectedTilesHiglight(), source, pushProperties);
+        var pushHighlight = new SingleTargetTileHighlight(new AffectedTilesHiglight(), source, pushProperties);
 
         if (heroId == HeroId.EvilMage || heroId == HeroId.SpiderRanger) {
             var abilities = new SpecialAbility[1];
-            abilities[0] = new SpecialAbility(fireboltScore, fireboltProcess, fireboltFx);
+            abilities[0] = new SpecialAbility(fireboltScore, fireboltProcess, fireboltHighlight, null);
             return abilities;
         }
 
         if (heroId == HeroId.Crab)
         {
             var abilities = new SpecialAbility[1];
-            abilities[0] = new SpecialAbility(whirlwindScore, whirlwindProcess, whirlwindFx);
+            abilities[0] = new SpecialAbility(whirlwindScore, whirlwindProcess, whirlwindHighlight, whirlwindFx);
             return abilities;
         }
 
         // if (heroId == HeroId.BlackKnight)
         // {
             var blackKnightAbilities = new SpecialAbility[1];
-            blackKnightAbilities[0] = new SpecialAbility(pushScore, pushProcess, pushFx);
+            blackKnightAbilities[0] = new SpecialAbility(pushScore, pushProcess, pushHighlight, null);
             return blackKnightAbilities;
         // }
     }

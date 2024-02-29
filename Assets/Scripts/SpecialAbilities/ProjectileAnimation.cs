@@ -17,9 +17,6 @@ public class ProjectileAnimation : MonoBehaviour
     private ParticleSystem spawnedProjectile;
     private object spawnedProjectiletransform;
 
-    private void Awake()
-    {
-    }
     private void Update()
     {
         if (!isLerping)

@@ -2,6 +2,7 @@
 using RedBjorn.ProtoTiles;
 using UnityEngine;
 using System.Collections.Generic;
+using SpecialAbilities;
 
 public interface ISpecialAbilityProcess
 {
@@ -83,11 +84,15 @@ public class WhirlwindProcess : ISpecialAbilityProcess
     private HeroController source;
     private BasicProperties properties;
 
-    public WhirlwindProcess(MapEntity map, HeroController source, BasicProperties properties)
+    private WhirlwindAbilityFX abilityFx;
+    //To cosinder some other way of handling animation instead of passing it as parameter
+    public WhirlwindProcess(MapEntity map, HeroController source, BasicProperties properties
+        , WhirlwindAbilityFX abilityFx)
     {
         this.map = map;
         this.source = source;
         this.properties = properties;
+        this.abilityFx = abilityFx;
     }
 
     public void ProcessInput()
@@ -100,6 +105,7 @@ public class WhirlwindProcess : ISpecialAbilityProcess
         HashSet<TileEntity> surroundingTiles = map.WalkableTiles(source.currentTile.TilePos, properties.range);
 
         //unitAnimations.PlaySpecialAbillity(animationId);
+        abilityFx.StartAnimation();
         foreach (var tile in surroundingTiles)
         {
             if (tile.IsOccupied && tile?.occupyingHero.ControllingPlayerId != source.ControllingPlayerId && tile?.occupyingHero != source)
