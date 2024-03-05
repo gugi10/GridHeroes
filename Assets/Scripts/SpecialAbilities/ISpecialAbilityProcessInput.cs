@@ -17,12 +17,14 @@ public class FireboltProcess : ISpecialAbilityProcess
     private MapEntity map;
     private HeroController source;
     private BasicProperties properties;
+    private ISpecialAbilityFX specialAbilityFX;
 
-    public FireboltProcess(MapEntity map, HeroController source, BasicProperties properties)
+    public FireboltProcess(MapEntity map, HeroController source, BasicProperties properties, ISpecialAbilityFX specialAbilityFX)
     {
         this.map = map;
         this.source = source;
         this.properties = properties;
+        this.specialAbilityFX = specialAbilityFX;
     }
 
     public void ProcessInput()
@@ -40,13 +42,13 @@ public class FireboltProcess : ISpecialAbilityProcess
     }
     public void PerformAbility(TileEntity chosenTile)
     {
-
         if (chosenTile == null)
             return;
 
         if (CanBeUsedOnTarget(chosenTile))
         {
             source.LookAt(map.WorldPosition(chosenTile));
+            specialAbilityFX.StartAnimation(chosenTile);
             // unitAnimations.PlaySpecialAbillity(animationId);
             // projectileAnimation.PlayProjectile(map.WorldPosition(chosenTile.Data.TilePos), 0.8f, CreateOnHit(chosenTile));
         }
@@ -79,15 +81,14 @@ public class FireboltProcess : ISpecialAbilityProcess
 
 public class WhirlwindProcess : ISpecialAbilityProcess
 {
-
     private MapEntity map;
     private HeroController source;
     private BasicProperties properties;
 
-    private WhirlwindAbilityFX abilityFx;
+    private ISpecialAbilityFX abilityFx;
     //To cosinder some other way of handling animation instead of passing it as parameter
     public WhirlwindProcess(MapEntity map, HeroController source, BasicProperties properties
-        , WhirlwindAbilityFX abilityFx)
+        , ISpecialAbilityFX abilityFx)
     {
         this.map = map;
         this.source = source;
@@ -105,7 +106,7 @@ public class WhirlwindProcess : ISpecialAbilityProcess
         HashSet<TileEntity> surroundingTiles = map.WalkableTiles(source.currentTile.TilePos, properties.range);
 
         //unitAnimations.PlaySpecialAbillity(animationId);
-        abilityFx.StartAnimation();
+        abilityFx.StartAnimation(null);
         foreach (var tile in surroundingTiles)
         {
             if (tile.IsOccupied && tile?.occupyingHero.ControllingPlayerId != source.ControllingPlayerId && tile?.occupyingHero != source)
@@ -147,12 +148,14 @@ public class PushProcess : ISpecialAbilityProcess
     private MapEntity map;
     private HeroController source;
     private BasicProperties properties;
+    private ISpecialAbilityFX specialAbilityFX;
 
-    public PushProcess(MapEntity map, HeroController source, BasicProperties properties)
+    public PushProcess(MapEntity map, HeroController source, BasicProperties properties, ISpecialAbilityFX specialAbilityFX)
     {
         this.map = map;
         this.source = source;
         this.properties = properties;
+        this.specialAbilityFX = specialAbilityFX;
     }
 
     public void ProcessInput()
@@ -186,11 +189,17 @@ public class PushProcess : ISpecialAbilityProcess
                     (chosenTile.occupyingHero.currentTile.TilePos.y - source.currentTile.TilePos.y) + chosenTile.occupyingHero.currentTile.TilePos.y,
                     (chosenTile.occupyingHero.currentTile.TilePos.z - source.currentTile.TilePos.z) + chosenTile.occupyingHero.currentTile.TilePos.z);
                 var newTile = map.Tile(newPos);
-                if (newTile != null)
-                    chosenTile.occupyingHero.Move(newTile);
+                chosenTile.occupyingHero.DealDamage(properties.damage);
+                
+                if (chosenTile.occupyingHero != null && chosenTile.occupyingHero.GetHeroStats().current.Health > 0)
+                {
+                    if (newTile != null)
+                        chosenTile.occupyingHero.Move(newTile);
+                }
+                                    
                 source?.onSpecialAbilityFinished();
             }
-            // unitAnimations.PlaySpecialAbillity(animationId);
+            specialAbilityFX.StartAnimation(chosenTile);
         }
     }
 

@@ -33,14 +33,12 @@ public class SpecialAbility : ISpecialAbility
     private IAbilityScore abilityScore;
     private ISpecialAbilityProcess abilityProcess;
     private ISpecialAbilityHighlighter abilityHighlight;
-    private ISpecialAbilityFX abilityFx;
     
-    public SpecialAbility(IAbilityScore abilityScore, ISpecialAbilityProcess abilityProcess, ISpecialAbilityHighlighter abilityHighlight, ISpecialAbilityFX abilityFx)
+    public SpecialAbility(IAbilityScore abilityScore, ISpecialAbilityProcess abilityProcess, ISpecialAbilityHighlighter abilityHighlight)
     {
         this.abilityScore = abilityScore;
         this.abilityProcess = abilityProcess;
         this.abilityHighlight = abilityHighlight;
-        this.abilityFx = abilityFx;
     }
     public void ProcessInput()
     {

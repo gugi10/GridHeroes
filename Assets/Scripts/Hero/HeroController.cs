@@ -46,7 +46,7 @@ public class HeroController : MonoBehaviour
     public Action<ISpecialAbility> onSpecialAbilityStarted;
     public Action onSpecialAbilityFinished;
     public int RemainingActions { get; private set; }
-    public SpecialAbility[] specialAbilities { get; private set; }
+    public ISpecialAbility[] specialAbilities { get; private set; }
 
     [SerializeField] private HeroStatisticSheet originalStats;
     [SerializeField] private MovementPreference movementPreference;
@@ -74,7 +74,7 @@ public class HeroController : MonoBehaviour
         heroHighLight = Instantiate(highLightPrefab, Vector3.zero, Quaternion.identity, transform);
     }
 
-    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished, Action<HeroController> onDie, SpecialAbility[] specialAbilities)
+    public void Init(Action<HeroAction> onActionCallback, Action onSpecialAbilityFinished, Action<HeroController> onDie, ISpecialAbility[] specialAbilities)
     {
         this.specialAbilities = specialAbilities;
         this.onActionEvent += onActionCallback;
