@@ -160,11 +160,7 @@ public class HeroController : MonoBehaviour
                 return false;
             }
         }
-        else
-        {
-            Attack(targetTile);
-            Debug.LogError($"Vacant is false or Is occupied");
-        }
+        
         return false;
     }
 

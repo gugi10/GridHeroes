@@ -12,11 +12,11 @@ public enum TaskKind
     MoveForward = 3,
 }
 
-public struct Task
+public struct AITask
 {
     public readonly TaskKind kind;
 
-    public Task(TaskKind kind)
+    public AITask(TaskKind kind)
     {
         this.kind = kind;
     }
@@ -24,12 +24,12 @@ public struct Task
 
 public class PossibleTask
 {
-    public Task task;
+    public AITask AITask;
     public TileEntity objective;
 
-    public PossibleTask(Task task, TileEntity objective)
+    public PossibleTask(AITask aiTask, TileEntity objective)
     {
-        this.task = task;
+        this.AITask = aiTask;
         this.objective = objective;
     }
 }
@@ -87,7 +87,7 @@ public class AIAgent : MonoBehaviour, IPlayer
         if (aiHeroes.Count <= 0)
             return;
 
-        Task[] tasks = { new Task(TaskKind.AttackEnemy), new Task(TaskKind.UseAbility), new Task(TaskKind.MoveForward) };
+        AITask[] tasks = { new AITask(TaskKind.AttackEnemy), new AITask(TaskKind.UseAbility), new AITask(TaskKind.MoveForward) };
         List<TileEntity> allTileEntites = map.GetMapEntity().Tiles.ToList().Select(pair => pair.Value).ToList();
 
         PossibleTask[] possibleTasks = tasks.SelectMany(task =>
@@ -104,7 +104,7 @@ public class AIAgent : MonoBehaviour, IPlayer
         {
             foreach (var aiHero in aiHeroes)
             {
-                if (possibleTask.task.kind == TaskKind.AttackEnemy)
+                if (possibleTask.AITask.kind == TaskKind.AttackEnemy)
                 {
                     if (possibleTask.objective.IsOccupied &&
                         possibleTask.objective.occupyingHero.ControllingPlayerId == 0 &&
@@ -112,24 +112,24 @@ public class AIAgent : MonoBehaviour, IPlayer
                             && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)
                             || TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Attack)))
                     {
-                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.task.kind), possibleTask,
+                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.AITask.kind), possibleTask,
                             aiHero)).ToArray();
                     }
                 }
 
-                if (possibleTask.task.kind == TaskKind.UseAbility && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)))
+                if (possibleTask.AITask.kind == TaskKind.UseAbility && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)))
                 {
                     var objectiveTileEntity = possibleTask.objective;
                     if (aiHero.specialAbilities[0].CanBeUsedOnTarget(objectiveTileEntity))
                     {
                         possibleAssignments = possibleAssignments.Append(new PossibleAssignment(
-                            ScoreAbility(tasks.Length, possibleTask.task.kind, aiHero.specialAbilities[0].ScoreForTarget(possibleTask.objective.occupyingHero)), possibleTask, aiHero)
+                            ScoreAbility(tasks.Length, possibleTask.AITask.kind, aiHero.specialAbilities[0].ScoreForTarget(possibleTask.objective.occupyingHero)), possibleTask, aiHero)
                         ).ToArray();
                     }
 
                 }
 
-                if (possibleTask.task.kind == TaskKind.MoveForward)
+                if (possibleTask.AITask.kind == TaskKind.MoveForward)
                 {
                     if (!possibleTask.objective.IsOccupied &&
                         possibleTask.objective.Vacant &&
@@ -159,7 +159,7 @@ public class AIAgent : MonoBehaviour, IPlayer
 
         }
 
-        if (chosenAssignment.possibleTask.task.kind == TaskKind.AttackEnemy)
+        if (chosenAssignment.possibleTask.AITask.kind == TaskKind.AttackEnemy)
         {
             var targetTileEntity = chosenAssignment.possibleTask.objective;
             chosenAssignment.assignee.Attack(targetTileEntity);
@@ -167,7 +167,7 @@ public class AIAgent : MonoBehaviour, IPlayer
 
         }
 
-        if (chosenAssignment.possibleTask.task.kind == TaskKind.UseAbility)
+        if (chosenAssignment.possibleTask.AITask.kind == TaskKind.UseAbility)
         {
             var targetTileEntity = chosenAssignment.possibleTask.objective;
             chosenAssignment.assignee.specialAbilities[0].PerformAbility(targetTileEntity);
@@ -175,7 +175,7 @@ public class AIAgent : MonoBehaviour, IPlayer
 
         }
 
-        if (chosenAssignment.possibleTask.task.kind == TaskKind.MoveForward)
+        if (chosenAssignment.possibleTask.AITask.kind == TaskKind.MoveForward)
         {
             var aiHero = chosenAssignment.assignee;
             //trzeba przeliczyc pathy dla kazdego wealkable tile'a i odfiltrowac te ktore sa w zasiegu iczy nic nie blokuje.
@@ -328,7 +328,7 @@ public class AIAgent : MonoBehaviour, IPlayer
 
         }
 
-        return (taskCount - (int)task.task.kind) + (bonusScore);
+        return (taskCount - (int)task.AITask.kind) + (bonusScore);
     }
 
 

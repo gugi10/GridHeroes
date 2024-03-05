@@ -32,10 +32,10 @@ public class SpecialAbilityFactory
         var pushProcess = new PushProcess(mapEntity, source, pushProperties, pushFx);
         var pushHighlight = new SingleTargetTileHighlight(new AffectedTilesHiglight(), source, pushProperties);
         
-        var webPullProperties = new BasicProperties { damage = 1, range = 3 };
+        var webPullProperties = new BasicProperties { damage = 0, range = 3 };
         var webPullScore = new FireboltScore(webPullProperties);
-        var webPullFx = new FireboltFx(source, mapEntity, webPullProperties, "Attack03");
-        var webPullProcess = new FireboltProcess(mapEntity, source, webPullProperties, webPullFx);
+        var webPullFx = new WebPullFx(source, mapEntity, webPullProperties, "Attack03");
+        var webPullProcess = new PullProcess(mapEntity, source, webPullProperties, webPullFx);
         var webPullHighlight = new SingleTargetTileHighlight(new AffectedTilesHiglight(),  source, webPullProperties);
 
         if (heroId == HeroId.EvilMage) {
