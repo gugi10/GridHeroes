@@ -100,10 +100,11 @@ public class PlayerInput : MonoBehaviour, IPlayer
             if (processedAbility is not null)
             {
                 var tile = map.GetMapEntity().Tile(MyInput.GroundPosition(map.GetMapEntity().Settings.Plane()));
-                if (previousTile != tile)
+                if (previousTile != tile && tile != null)
                 {
                     previousTile = tile;
                     processedAbility.DisableHighlight(map);
+                    Debug.Log($"Over tile {tile?.Position}");
                     processedAbility.HighlightTargetedTile(tile, map);
                 }
             }

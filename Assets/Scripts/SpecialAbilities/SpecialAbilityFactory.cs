@@ -35,8 +35,8 @@ public class SpecialAbilityFactory
         var webPullProperties = new BasicProperties { damage = 0, range = 3 };
         var webPullScore = new FireboltScore(webPullProperties);
         var webPullFx = new WebPullFx(source, mapEntity, webPullProperties, "Attack03");
-        var webPullProcess = new PullProcess(mapEntity, source, webPullProperties, webPullFx);
         var webPullHighlight = new SingleTargetTileHighlight(new AffectedTilesHiglight(),  source, webPullProperties);
+        var webPullProcess = new PullProcess(mapEntity, source, webPullProperties, webPullFx, webPullHighlight);
 
         if (heroId == HeroId.EvilMage) {
             var abilities = new SpecialAbility[1];

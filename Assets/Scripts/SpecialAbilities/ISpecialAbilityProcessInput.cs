@@ -238,13 +238,19 @@ public class PullProcess : ISpecialAbilityProcess
     private BasicProperties properties;
     private ISpecialAbilityFX specialAbilityFX;
     private TileEntity chosenTile;
+    private TileEntity enemyTile;
+    private ISpecialAbilityHighlighter highlighter;
+    private MapController mapController;
+    private bool isSelectingTileToPull;
 
-    public PullProcess(MapEntity map, HeroController source, BasicProperties properties, ISpecialAbilityFX specialAbilityFX)
+    public PullProcess(MapEntity map, HeroController source, BasicProperties properties, ISpecialAbilityFX specialAbilityFX, ISpecialAbilityHighlighter highlighter)
     {
         this.map = map;
         this.source = source;
         this.properties = properties;
         this.specialAbilityFX = specialAbilityFX;
+        this.highlighter = highlighter;
+        this.mapController = mapController;
     }
 
     public void ProcessInput()
@@ -253,37 +259,97 @@ public class PullProcess : ISpecialAbilityProcess
         {
             return;
         }
+
+        if (isSelectingTileToPull)
+        {
+            //From caluclated possible tiles we need to select one
+            //Right now we do not have any indication to which tile we can pull
+            if (MyInput.GetOnWorldUp(map.Settings.Plane()))
+            {
+                var clickPos = MyInput.GroundPosition(map.Settings.Plane());
+                TileEntity tile = map.Tile(clickPos);
+                if(tile.Position == newTile?.Position || tile.Position == newTile2?.Position || tile.Position == newTile3?.Position)
+                {
+                    PerformAbility(tile);
+                    isSelectingTileToPull = false;
+                }
+                else
+                {
+                    Debug.LogError($"This tile is not possible to pull to {tile.Position}");
+                }
+            }
+            return;
+        }
+        //First we need to detect input on enemy we want  to pull, we need to check all possible conditions here
         if (MyInput.GetOnWorldUp(map.Settings.Plane()))
         {
             var clickPos = MyInput.GroundPosition(map.Settings.Plane());
             TileEntity tile = map.Tile(clickPos);
-            PerformAbility(tile);
+            
+            if (tile == null)
+                return;
+            //We need to calculate possible tiles to pull
+            CalculatePossibleTiles(tile);
+            isSelectingTileToPull = true;
         }
     }
 
+    private TileEntity newTile;
+    private TileEntity newTile2;
+    private TileEntity newTile3;
+    
+    public void CalculatePossibleTiles(TileEntity targetTile)
+    {
+        if (!targetTile.IsOccupied || targetTile.occupyingHero.ControllingPlayerId != PlayerId.AI)
+        {
+            return;
+        }
+        //we need to set enemy tile in order to perform animation towards it
+        enemyTile = targetTile;
+        
+        //Calculate possible tiles to which enemy can be pulled.
+        //There are 3 possible combinations of two differences in vector3. Adjacent tile cannot differ by 3 values only 2 or 1. map.Tile() will return null if such tile does not exist
+        var xDifference = Mathf.Clamp(source.currentTile.TilePos.x - targetTile.occupyingHero.currentTile.TilePos.x, -1, 1);
+        var yDifference = Mathf.Clamp(source.currentTile.TilePos.y - targetTile.occupyingHero.currentTile.TilePos.y, -1, 1);
+        var zDifference = Mathf.Clamp(source.currentTile.TilePos.z - targetTile.occupyingHero.currentTile.TilePos.z, -1, 1);
+        newTile = map.Tile(new Vector3Int(targetTile.occupyingHero.currentTile.TilePos.x + xDifference,
+           targetTile.occupyingHero.currentTile.TilePos.y + yDifference,
+           targetTile.occupyingHero.currentTile.TilePos.z ));
+        newTile2 = map.Tile(new Vector3Int(targetTile.occupyingHero.currentTile.TilePos.x ,
+           targetTile.occupyingHero.currentTile.TilePos.y + yDifference,
+           targetTile.occupyingHero.currentTile.TilePos.z + zDifference));
+        newTile3 = map.Tile(new Vector3Int(targetTile.occupyingHero.currentTile.TilePos.x + xDifference,
+            targetTile.occupyingHero.currentTile.TilePos.y ,
+            targetTile.occupyingHero.currentTile.TilePos.z + zDifference));
+        Debug.Log($"Possible tiles {newTile} {newTile2} {newTile3}");
+    }
     public void PerformAbility(TileEntity chosenTile)
     {
         this.chosenTile = chosenTile;
         if (chosenTile == null)
             return;
 
-        if (chosenTile.IsOccupied)
+        if (!chosenTile.IsOccupied)
         {
-            if (TileUtilities.AreTilesInRange(source.currentTile.TilePos, chosenTile.Position, properties.range) &&
-                chosenTile.occupyingHero != source && chosenTile.occupyingHero.ControllingPlayerId != source.ControllingPlayerId)
-            {
-                specialAbilityFX.StartAnimation(chosenTile, DoPull);
-            }
+            specialAbilityFX.StartAnimation(chosenTile, DoPull);
         }
     }
 
     private void DoPull()
     {
-        //nie dziala wyznaczanie odpowiedniego tile'a wyliczanie nie powinno uwzgledniac wszystkich trzech osi
-        source.LookAt(map.WorldPosition(chosenTile));
-        Vector3Int newPos = new Vector3Int(Mathf.Clamp(chosenTile.occupyingHero.currentTile.TilePos.x + source.currentTile.TilePos.x,-1,1) + chosenTile.occupyingHero.currentTile.TilePos.x,
-            Mathf.Clamp(chosenTile.occupyingHero.currentTile.TilePos.y + source.currentTile.TilePos.y,-1,1) + chosenTile.occupyingHero.currentTile.TilePos.y ,
-            Mathf.Clamp(chosenTile.occupyingHero.currentTile.TilePos.z + source.currentTile.TilePos.z,-1,1) + chosenTile.occupyingHero.currentTile.TilePos.z);
+        //We are looking at enemy but moving it to selected tile
+        source.LookAt(map.WorldPosition(enemyTile));
+        enemyTile.occupyingHero.Move(chosenTile);
+
+       /*Debug.Log($"X: {Mathf.Clamp(source.currentTile.TilePos.x -chosenTile.occupyingHero.currentTile.TilePos.x,-1,1)} " +
+                  $"Y {Mathf.Clamp(source.currentTile.TilePos.y -chosenTile.occupyingHero.currentTile.TilePos.y,-1,1)} " +
+                  $"Z {Mathf.Clamp(source.currentTile.TilePos.z -chosenTile.occupyingHero.currentTile.TilePos.z,-1,1)} " +
+                  $"player {source.currentTile.TilePos} " +
+                  $"ai {chosenTile.occupyingHero.currentTile.TilePos} ");
+        Vector3Int newPos = new Vector3Int(
+            Mathf.Clamp(source.currentTile.TilePos.x -chosenTile.occupyingHero.currentTile.TilePos.x,-1,1) + chosenTile.occupyingHero.currentTile.TilePos.x,
+            Mathf.Clamp(source.currentTile.TilePos.y - chosenTile.occupyingHero.currentTile.TilePos.y,-1,1) + chosenTile.occupyingHero.currentTile.TilePos.y ,
+            Mathf.Clamp(source.currentTile.TilePos.z - chosenTile.occupyingHero.currentTile.TilePos.z, -1,1) + chosenTile.occupyingHero.currentTile.TilePos.z);
         
         var newTile = map.Tile(newPos);
                 
@@ -293,7 +359,7 @@ public class PullProcess : ISpecialAbilityProcess
             {
                 chosenTile.occupyingHero.Move(newTile);
             }
-        }
+        }*/
     }
 
 
