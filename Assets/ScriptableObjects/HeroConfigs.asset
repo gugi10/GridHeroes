@@ -15,14 +15,14 @@ MonoBehaviour:
   startingHeroes: 03000000
   heroConfigData:
   - heroId: 0
-    heroIconSprite: {fileID: 0}
+    heroIconSprite: {fileID: 21300000, guid: 845f970eab41bf94ab61739fe50006bc, type: 3}
     heroPrefab: {fileID: 183312758891173421, guid: 86fdf825a5c3c2b4da15625e11a67273, type: 3}
   - heroId: 1
-    heroIconSprite: {fileID: 0}
+    heroIconSprite: {fileID: 21300000, guid: 845f970eab41bf94ab61739fe50006bc, type: 3}
     heroPrefab: {fileID: 6390770937447195161, guid: 6a5d01e5db674b7408e9f8613a4da383, type: 3}
   - heroId: 2
-    heroIconSprite: {fileID: 0}
+    heroIconSprite: {fileID: 21300000, guid: 845f970eab41bf94ab61739fe50006bc, type: 3}
     heroPrefab: {fileID: 7767804335213319116, guid: 6e0a1335de864904faa635a84db0c685, type: 3}
   - heroId: 3
-    heroIconSprite: {fileID: 0}
+    heroIconSprite: {fileID: 21300000, guid: 845f970eab41bf94ab61739fe50006bc, type: 3}
     heroPrefab: {fileID: 3588406228904922242, guid: 6525f2fce65c647908db13148b15e1ef, type: 3}
