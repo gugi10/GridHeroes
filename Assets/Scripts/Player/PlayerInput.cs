@@ -61,6 +61,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     private void StartSpecialAbility(ISpecialAbility ability)
     {
+        PathHide();
         abilityInputIsProcessing = true;
         processedAbility = ability;
     }
@@ -173,9 +174,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
                 {
                     HandleMovePath();
                 }
-
             }
-
             return;
         }
     }
@@ -234,7 +233,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
             }
             else
             {
-                path.InactiveState();
+                PathHide();
             }
         }
     }
