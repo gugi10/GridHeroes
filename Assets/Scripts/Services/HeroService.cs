@@ -31,7 +31,7 @@ public class HeroService : IService
 
     public HeroController GetHeroPrefab(HeroId id)
     {
-        return heroesConfig.heroPrefabs.FirstOrDefault(val => val.HeroId == id);
+        return heroesConfig.heroConfigData.FirstOrDefault(val => val.heroId == id).heroPrefab;
     }
 
     public bool UnlockHero(HeroId heroToUnlock)
