@@ -52,6 +52,12 @@ namespace RedBjorn.ProtoTiles.Example
             return Input.GetMouseButtonUp(0);
         }
 
+        public static bool GetOnWorldUpFreeAlternative(Plane plane)
+        {
+            Validate(plane);
+            return Input.GetMouseButtonUp(1);
+        }
+
         public static bool GetOnWorldUp(Plane plane)
         {
             Validate(plane);

@@ -82,7 +82,12 @@ public class MapController : MonoBehaviour
     
     public bool GetMapInput()
     {
-        return MyInput.GetOnWorldUp(GetMapEntity().Settings.Plane());
+        return MyInput.GetOnWorldUpFree(GetMapEntity().Settings.Plane());
+    }
+
+    public bool GetAlternativeMapInput()
+    {
+        return MyInput.GetOnWorldUpFreeAlternative(GetMapEntity().Settings.Plane());
     }
 
     public TileEntity GetTile()

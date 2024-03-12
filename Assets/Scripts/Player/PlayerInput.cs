@@ -120,6 +120,10 @@ public class PlayerInput : MonoBehaviour, IPlayer
         {
             HandleWorldClick();
         }
+        
+        else if (map.GetAlternativeMapInput())
+        {
+        }
 
         if (path != null)
         {
