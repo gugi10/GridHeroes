@@ -162,7 +162,7 @@ public class AIAgent : MonoBehaviour, IPlayer
         if (chosenAssignment.possibleTask.AITask.kind == TaskKind.AttackEnemy)
         {
             var targetTileEntity = chosenAssignment.possibleTask.objective;
-            chosenAssignment.assignee.Attack(targetTileEntity);
+            chosenAssignment.assignee.Attack(targetTileEntity, false);
             return;
 
         }
@@ -193,7 +193,7 @@ public class AIAgent : MonoBehaviour, IPlayer
             }
             Debug.Log($"Path string {pathstring}");
             if (path != null || path.Count > 0)
-                aiHero.MoveByPath(path);
+                aiHero.MoveByPath(path, false);
             //randomAiHero.Move(walkableTiles[randomWalkableTileIdx]);
             return;
 

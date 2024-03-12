@@ -62,7 +62,6 @@ namespace SpecialAbilities
         
         private void OnHit(TileEntity chosenTile)
         {
-            chosenTile.occupyingHero.DealDamage(properties.damage);
             source.onSpecialAbilityFinished();
         }
     }
@@ -121,9 +120,7 @@ namespace SpecialAbilities
         private async void OnHit(TileEntity chosenTile)
         {
             onFinishCallback?.Invoke();
-            chosenTile.occupyingHero.DealDamage(properties.damage);
-            await Task.Delay(3000);
-            source.onSpecialAbilityFinished();
+            
         }
     }
 }

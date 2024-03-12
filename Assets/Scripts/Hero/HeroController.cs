@@ -40,6 +40,7 @@ public class HeroController : MonoBehaviour
     public TileEntity currentTileEntity { get; private set; }
     public Action<HeroController> onHeroSelected;
     public Action<HeroAction> onActionEvent { get; set; }
+    public Action<HeroAction> onForcedActionEvent { get; set; }
     public Action<HeroController> onDie { get; set; }
     public Action OnMoveStart { get; set; }
     public Action onHeroUnselected;
@@ -132,7 +133,7 @@ public class HeroController : MonoBehaviour
         //onSpecialAbility.Invoke(specialAbilities[id].GetSkillAnimation());
     }
 
-    public bool Move(TileEntity targetTile)
+    public bool Move(TileEntity targetTile, bool isForced)
     {
         if (map == null || currentTile == null)
         {
@@ -149,7 +150,7 @@ public class HeroController : MonoBehaviour
                 currentTileEntity = map.Tile(currentTile.TilePos);
                 currentTileEntity.OccupyTile(this);
                 OnMoveStart?.Invoke();
-                movingCoroutine = StartCoroutine(Fly(targetTile));
+                movingCoroutine = StartCoroutine(Fly(targetTile, isForced));
                 //transform.position = map.WorldPosition(targetTile);
 
                 return true;
@@ -164,7 +165,7 @@ public class HeroController : MonoBehaviour
         return false;
     }
 
-    public bool MoveByPath(List<TileEntity> path)
+    public bool MoveByPath(List<TileEntity> path, bool isForced)
     {
         if (map == null || currentTile == null || path == null)
         {
@@ -178,11 +179,11 @@ public class HeroController : MonoBehaviour
         currentTileEntity = map.Tile(currentTile.TilePos);
         currentTileEntity.OccupyTile(this);
         OnMoveStart?.Invoke();
-        movingCoroutine = StartCoroutine(Move(path));
+        movingCoroutine = StartCoroutine(Move(path, isForced));
         return true;
     }
 
-    public bool Attack(TileEntity targetTile)
+    public bool Attack(TileEntity targetTile, bool isForced)
     {
 
         if (CheckTileRange(currentTile.TilePos, targetTile.Data.TilePos, currentStats.WeaponRange))
@@ -193,7 +194,10 @@ public class HeroController : MonoBehaviour
                 {
                     LookAt(map.WorldPosition(targetTile));
                     targetTile.occupyingHero.DealDamage(currentStats.WeaponDamage);
-                    onActionEvent?.Invoke(HeroAction.Attack);
+                    if(isForced)
+                        onForcedActionEvent?.Invoke(HeroAction.Attack);
+                    else
+                        onActionEvent?.Invoke(HeroAction.Attack);
                     return true;
                 }
                 else
@@ -215,6 +219,7 @@ public class HeroController : MonoBehaviour
 
     public void DealDamage(int damage)
     {
+        Debug.Log($"DAMAGE DEALT {damage}");
         currentStats.Health -= damage;
         if(currentStats.Health <= 0)
         {
@@ -286,7 +291,7 @@ public class HeroController : MonoBehaviour
     {
         rotationNode.LookAt(target);
     }
-    private IEnumerator Fly(TileEntity targetTile)
+    private IEnumerator Fly(TileEntity targetTile, bool isForced)
     {
         var targetPoint = map.WorldPosition(targetTile);
         var stepDir = (targetPoint - transform.position) * 1;
@@ -309,10 +314,13 @@ public class HeroController : MonoBehaviour
 
         targetTile.OccupyTile(this);
         transform.position = targetPoint;
-        onActionEvent?.Invoke(HeroAction.Move);
+        if(isForced)
+            onForcedActionEvent?.Invoke(HeroAction.Move);
+        else
+            onActionEvent?.Invoke(HeroAction.Move);
     }
 
-    IEnumerator Move(List<TileEntity> path)
+    IEnumerator Move(List<TileEntity> path, bool isForced)
     {
         var nextIndex = 0;
         transform.position = map.Settings.Projection(transform.position);
@@ -341,7 +349,10 @@ public class HeroController : MonoBehaviour
             nextIndex++;
         }
         path[path.Count - 1].OccupyTile(this);
-        onActionEvent?.Invoke(HeroAction.Move);
+        if(isForced)
+            onForcedActionEvent?.Invoke(HeroAction.Move);
+        else
+            onActionEvent?.Invoke(HeroAction.Move);
     }
 
     IEnumerator RemoveModel()

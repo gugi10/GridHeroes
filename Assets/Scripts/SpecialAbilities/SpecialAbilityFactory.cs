@@ -32,7 +32,7 @@ public class SpecialAbilityFactory
         var pushProcess = new PushProcess(mapEntity, source, pushProperties, pushFx);
         var pushHighlight = new SingleTargetTileHighlight(new AffectedTilesHiglight(), source, pushProperties);
         
-        var webPullProperties = new BasicProperties { damage = 0, range = 3 };
+        var webPullProperties = new BasicProperties { damage = 1, range = 3 };
         var webPullScore = new FireboltScore(webPullProperties);
         var webPullFx = new WebPullFx(source, mapEntity, webPullProperties, "Attack03");
         var webPullHighlight = new SingleTargetTileHighlight(new AffectedTilesHiglight(),  source, webPullProperties);

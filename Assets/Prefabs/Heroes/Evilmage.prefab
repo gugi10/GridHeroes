@@ -127,7 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeroId: 0
   ControllingPlayerId: 0
-  originalStats: {fileID: 11400000, guid: 62de22b5096ed9c40bb4b4e8b848e951, type: 2}
+  originalStats: {fileID: 11400000, guid: b7a65bddd377543428513e3daaf64947, type: 2}
   movementPreference: {fileID: 11400000, guid: 3c2581bfad60648498059533c7c001eb, type: 2}
   rotationNode: {fileID: 1225501658626404585}
   highLightPrefab: {fileID: 114964435729023602, guid: fe2319e9d6e840f409af77b3e7a85259, type: 3}

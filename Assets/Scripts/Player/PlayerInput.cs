@@ -104,7 +104,6 @@ public class PlayerInput : MonoBehaviour, IPlayer
                 {
                     previousTile = tile;
                     processedAbility.DisableHighlight(map);
-                    Debug.Log($"Over tile {tile?.Position}");
                     processedAbility.HighlightTargetedTile(tile, map);
                 }
             }
@@ -157,7 +156,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
         {
             if (IsTargetingEnemy(tile) && (HasAction(HeroAction.Attack) || HasAction(HeroAction.Special)))
             {
-                if (selectedHero.Attack(tile))
+                if (selectedHero.Attack(tile, false))
                 {
                     UnselectHero();
                 }
@@ -250,7 +249,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
             PathHide();
             var path = map.GetMapEntity().PathTiles(selectedHero.transform.position, clickPos, (float)selectedHero?.GetHeroStats().current.Move);
             this.path.IsEnabled = true;
-            if (selectedHero.MoveByPath(path))
+            if (selectedHero.MoveByPath(path, false))
             {
                 UnselectHero();
             }

@@ -2,6 +2,7 @@
 using RedBjorn.ProtoTiles;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using SpecialAbilities;
 
 public interface ISpecialAbilityProcess
@@ -18,7 +19,7 @@ public class FireboltProcess : ISpecialAbilityProcess
     private HeroController source;
     private BasicProperties properties;
     private ISpecialAbilityFX specialAbilityFX;
-
+    private TileEntity chosenTile;
     public FireboltProcess(MapEntity map, HeroController source, BasicProperties properties, ISpecialAbilityFX specialAbilityFX)
     {
         this.map = map;
@@ -42,16 +43,22 @@ public class FireboltProcess : ISpecialAbilityProcess
     }
     public void PerformAbility(TileEntity chosenTile)
     {
+        this.chosenTile = chosenTile;
         if (chosenTile == null)
             return;
 
         if (CanBeUsedOnTarget(chosenTile))
         {
             source.LookAt(map.WorldPosition(chosenTile));
-            specialAbilityFX.StartAnimation(chosenTile, null);
+            specialAbilityFX.StartAnimation(chosenTile, OnHit);
             // unitAnimations.PlaySpecialAbillity(animationId);
             // projectileAnimation.PlayProjectile(map.WorldPosition(chosenTile.Data.TilePos), 0.8f, CreateOnHit(chosenTile));
         }
+    }
+
+    private void OnHit()
+    {
+        chosenTile.occupyingHero.DealDamage(properties.damage);
     }
 
     public bool CanBeUsedOnTarget(TileEntity chosenTile)
@@ -194,7 +201,7 @@ public class PushProcess : ISpecialAbilityProcess
                 if (chosenTile.occupyingHero != null && chosenTile.occupyingHero.GetHeroStats().current.Health > 0)
                 {
                     if (newTile != null)
-                        chosenTile.occupyingHero.Move(newTile);
+                        chosenTile.occupyingHero.Move(newTile, true);
                 }
                                     
                 source?.onSpecialAbilityFinished();
@@ -275,6 +282,7 @@ public class PullProcess : ISpecialAbilityProcess
                 }
                 else
                 {
+                    isSelectingTileToPull = false;
                     Debug.LogError($"This tile is not possible to pull to {tile.Position}");
                 }
             }
@@ -321,7 +329,6 @@ public class PullProcess : ISpecialAbilityProcess
         newTile3 = map.Tile(new Vector3Int(targetTile.occupyingHero.currentTile.TilePos.x + xDifference,
             targetTile.occupyingHero.currentTile.TilePos.y ,
             targetTile.occupyingHero.currentTile.TilePos.z + zDifference));
-        Debug.Log($"Possible tiles {newTile} {newTile2} {newTile3}");
     }
     public void PerformAbility(TileEntity chosenTile)
     {
@@ -335,31 +342,15 @@ public class PullProcess : ISpecialAbilityProcess
         }
     }
 
-    private void DoPull()
+    private async void DoPull()
     {
         //We are looking at enemy but moving it to selected tile
         source.LookAt(map.WorldPosition(enemyTile));
-        enemyTile.occupyingHero.Move(chosenTile);
-
-       /*Debug.Log($"X: {Mathf.Clamp(source.currentTile.TilePos.x -chosenTile.occupyingHero.currentTile.TilePos.x,-1,1)} " +
-                  $"Y {Mathf.Clamp(source.currentTile.TilePos.y -chosenTile.occupyingHero.currentTile.TilePos.y,-1,1)} " +
-                  $"Z {Mathf.Clamp(source.currentTile.TilePos.z -chosenTile.occupyingHero.currentTile.TilePos.z,-1,1)} " +
-                  $"player {source.currentTile.TilePos} " +
-                  $"ai {chosenTile.occupyingHero.currentTile.TilePos} ");
-        Vector3Int newPos = new Vector3Int(
-            Mathf.Clamp(source.currentTile.TilePos.x -chosenTile.occupyingHero.currentTile.TilePos.x,-1,1) + chosenTile.occupyingHero.currentTile.TilePos.x,
-            Mathf.Clamp(source.currentTile.TilePos.y - chosenTile.occupyingHero.currentTile.TilePos.y,-1,1) + chosenTile.occupyingHero.currentTile.TilePos.y ,
-            Mathf.Clamp(source.currentTile.TilePos.z - chosenTile.occupyingHero.currentTile.TilePos.z, -1,1) + chosenTile.occupyingHero.currentTile.TilePos.z);
-        
-        var newTile = map.Tile(newPos);
-                
-        if (chosenTile.occupyingHero != null && chosenTile.occupyingHero.GetHeroStats().current.Health > 0 )
-        {
-            if (newTile != null)
-            {
-                chosenTile.occupyingHero.Move(newTile);
-            }
-        }*/
+        var enemyHero = enemyTile.occupyingHero;
+        enemyHero.Move(chosenTile, true);
+        enemyHero.DealDamage(properties.damage);
+        await Task.Delay(3000);
+        source.onSpecialAbilityFinished();
     }
 
 
