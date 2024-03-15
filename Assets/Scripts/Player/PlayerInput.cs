@@ -2,6 +2,7 @@ using RedBjorn.ProtoTiles;
 using RedBjorn.ProtoTiles.Example;
 using System.Collections.Generic;
 using UnityEngine;
+using SpecialAbilities.UI;
 
 public interface IPlayer
 {
@@ -14,7 +15,9 @@ public interface IPlayer
 public class PlayerInput : MonoBehaviour, IPlayer
 {
     public PlayerId Id { get; set; }
-    [SerializeField] PathDrawer PathPrefab;
+    
+    [SerializeField] private PathDrawer PathPrefab;
+    [SerializeField] private HeroPanel HeroPanel;
     private PathDrawer path;
     private MapController map;
     private List<HeroController> heroes = new List<HeroController>();
@@ -123,6 +126,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
         
         else if (map.GetAlternativeMapInput())
         {
+            
         }
 
         if (path != null)
