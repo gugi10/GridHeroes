@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class SkillBarView : MonoBehaviour
 {
     [SerializeField] SkillView skillPrefab;
     List<SkillView> instantiatedSkills = new();
+    private RectTransform _rectTransform;
     private void Awake()
     {
         TurnSequenceController.Instance.onHeroSelected += ShowHeroSkills;
+        TurnSequenceController.Instance.onHeroUnselected += HideAnimation;
     }
 
-    //TODO: NEED TESTING. wanted to avoid instantiating and destroying ability objects, however it might be overengineer and not working. :)
+    //TODO: NEED TESTING. wanted to avoid ins xtantiating and destroying ability objects, however it might be overengineer and not working. :)
     private void ShowHeroSkills(HeroController hero)
     {
         for (int i = 0; i < hero.specialAbilities.Length; i++)
@@ -33,6 +36,19 @@ public class SkillBarView : MonoBehaviour
         {
             instantiatedSkills[i].gameObject.SetActive(false);
         }
-    } 
+        ShowAnimation();
+    }
+
+    private void ShowAnimation()
+    {
+        _rectTransform.DOAnchorPosY(0.15f, 0.5f);
+
+    }
+
+    private void HideAnimation()
+    {
+        _rectTransform.DOAnchorPosY(0f, 0.5f);
+
+    }
 
 }

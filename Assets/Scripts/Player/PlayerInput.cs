@@ -17,7 +17,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
     public PlayerId Id { get; set; }
     
     [SerializeField] private PathDrawer PathPrefab;
-    [SerializeField] private HeroPanel HeroPanel;
+    [SerializeField] private HeroPanel HeroPanelPrefab;
     private PathDrawer path;
     private MapController map;
     private List<HeroController> heroes = new List<HeroController>();
@@ -27,6 +27,7 @@ public class PlayerInput : MonoBehaviour, IPlayer
     private ISpecialAbility processedAbility;
     private bool playerIsActive;
     private TileEntity previousTile;
+    private HeroPanel heroPanel;
 
 
     private void OnEnable()
@@ -46,6 +47,13 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     public void Init(MapController map, List<HeroController> ownedHeroes, PlayerId playerId)
     {
+        //Setup UI for heroes information
+        if (heroPanel != null)
+        {
+            Destroy(heroPanel.gameObject);
+        }
+        heroPanel = Instantiate(HeroPanelPrefab);
+        
         this.map = map;
         heroes = ownedHeroes;
         heroes.ForEach(hero =>
@@ -86,6 +94,11 @@ public class PlayerInput : MonoBehaviour, IPlayer
 
     void Update()
     {
+        if (map.GetAlternativeMapInput())
+        {
+            AlternativeWordClick();
+        }
+        
         if (!playerIsActive)
         {
             return;
@@ -123,11 +136,6 @@ public class PlayerInput : MonoBehaviour, IPlayer
         {
             HandleWorldClick();
         }
-        
-        else if (map.GetAlternativeMapInput())
-        {
-            
-        }
 
         if (path != null)
         {
@@ -135,6 +143,16 @@ public class PlayerInput : MonoBehaviour, IPlayer
         }
     }
 
+    private void AlternativeWordClick()
+    {
+        TileEntity tile = map.GetTile();
+        if (tile == null)
+            return;
+        if (tile.IsOccupied)
+        {
+            heroPanel.Show(tile.occupyingHero);
+        }
+    }
     private void HandleWorldClick()
     {
         TileEntity tile = map.GetTile();

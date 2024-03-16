@@ -3,24 +3,27 @@ using RedBjorn.ProtoTiles.Example;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UI;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public struct HeroStats
 {
-    public HeroStatisticSheet @base;
+    [FormerlySerializedAs("base")] public HeroStatisticSheet baseStats;
     public HeroStatisticSheet current;
 
     public HeroStats(HeroStatisticSheet original, HeroStatisticSheet current)
     {
-        this.@base = original;
+        baseStats = original;
         this.current = current;
     }
 
     public HeroStats(HeroStatisticSheet stats)
     {
-        this.@base = stats;
-        this.current = stats;
+        baseStats = stats;
+        current = stats;
     }
 }
 
@@ -54,7 +57,8 @@ public class HeroController : MonoBehaviour
     [SerializeField] private Transform rotationNode;
     [SerializeField] private AreaOutline highLightPrefab;
     [SerializeField] private AreaOutline walkableAreaPrefab;
-
+    
+    private HealthBar healthBar;
     private HeroStatisticSheet currentStats;
     private Color defaultColor;
     private MapEntity map;
@@ -65,7 +69,9 @@ public class HeroController : MonoBehaviour
 
     private void Awake()
     {
+        healthBar = GetComponentInChildren<HealthBar>();
         currentStats = new HeroStatisticSheet(originalStats);
+        healthBar.Set(currentStats.Health, originalStats.Health);
         RemainingActions = currentStats.ActionLimit;
 
         area = Instantiate(walkableAreaPrefab, Vector3.zero, Quaternion.identity, transform);
@@ -221,6 +227,7 @@ public class HeroController : MonoBehaviour
     {
         Debug.Log($"DAMAGE DEALT {damage}");
         currentStats.Health -= damage;
+        healthBar.UpdateCurrent(currentStats.Health);
         if(currentStats.Health <= 0)
         {
             if(ControllingPlayerId == PlayerId.AI)
