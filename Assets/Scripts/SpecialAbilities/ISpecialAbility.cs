@@ -3,6 +3,7 @@ using RedBjorn.ProtoTiles;
 using SpecialAbilities;
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Linq;
 
 public struct AbilitySpec
 {
@@ -26,6 +27,7 @@ public struct BasicProperties
 
 public interface ISpecialAbility : IAbilityScore, ISpecialAbilityProcess, ISpecialAbilityHighlighter
 {
+    public Sprite GetSkillIcon();
 }
 
 public class SpecialAbility : ISpecialAbility
@@ -33,12 +35,19 @@ public class SpecialAbility : ISpecialAbility
     private IAbilityScore abilityScore;
     private ISpecialAbilityProcess abilityProcess;
     private ISpecialAbilityHighlighter abilityHighlight;
+    private SkillId skillId;
+    private SkillIconsConfig _skillIconsConfig;
+    private Sprite skillSprite;
     
-    public SpecialAbility(IAbilityScore abilityScore, ISpecialAbilityProcess abilityProcess, ISpecialAbilityHighlighter abilityHighlight)
+    public SpecialAbility(IAbilityScore abilityScore, ISpecialAbilityProcess abilityProcess, ISpecialAbilityHighlighter abilityHighlight, SkillId skillId)
     {
         this.abilityScore = abilityScore;
         this.abilityProcess = abilityProcess;
         this.abilityHighlight = abilityHighlight;
+        this.skillId = skillId;
+        _skillIconsConfig = GameSession.Instance.GetConfig<SkillIconsConfig>();
+        skillSprite = _skillIconsConfig.SkillIcons.FirstOrDefault(val => val.skillId == skillId).SkillSprite;
+
     }
     public void ProcessInput()
     {
@@ -67,9 +76,7 @@ public class SpecialAbility : ISpecialAbility
 
     public Sprite GetSkillIcon()
     {
-        //return abilityFx.GetSkillIcon();
-        throw new NotImplementedException();
-        return null;
+        return skillSprite;
     }
 
     public AffectedTilesHiglight GetAffectedTiles()

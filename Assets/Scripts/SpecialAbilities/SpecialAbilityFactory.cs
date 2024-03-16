@@ -40,28 +40,28 @@ public class SpecialAbilityFactory
 
         if (heroId == HeroId.EvilMage) {
             var abilities = new SpecialAbility[1];
-            abilities[0] = new SpecialAbility(fireboltScore, fireboltProcess, fireboltHighlight);
+            abilities[0] = new SpecialAbility(fireboltScore, fireboltProcess, fireboltHighlight, SkillId.FireBolt);
             return abilities;
         }
 
         if (heroId == HeroId.SpiderRanger)
         {
             var abilities = new SpecialAbility[1];
-            abilities[0] = new SpecialAbility(webPullScore, webPullProcess, webPullHighlight);
+            abilities[0] = new SpecialAbility(webPullScore, webPullProcess, webPullHighlight, SkillId.PullShot);
             return abilities;
         }
 
         if (heroId == HeroId.Crab)
         {
             var abilities = new SpecialAbility[1];
-            abilities[0] = new SpecialAbility(whirlwindScore, whirlwindProcess, whirlwindHighlight);
+            abilities[0] = new SpecialAbility(whirlwindScore, whirlwindProcess, whirlwindHighlight, SkillId.Whirlwind);
             return abilities;
         }
 
         // if (heroId == HeroId.BlackKnight)
         // {
             var blackKnightAbilities = new SpecialAbility[1];
-            blackKnightAbilities[0] = new SpecialAbility(pushScore, pushProcess, pushHighlight);
+            blackKnightAbilities[0] = new SpecialAbility(pushScore, pushProcess, pushHighlight, SkillId.PushStrike);
             return blackKnightAbilities;
         // }
     }

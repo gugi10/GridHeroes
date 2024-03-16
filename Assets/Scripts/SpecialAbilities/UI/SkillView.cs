@@ -31,8 +31,7 @@ public class SkillView : MonoBehaviour
         this.hero = hero;
         this.specialAbility = specialAbility;
         this.id = id;
-        // TODO: GET SKILL ICON
-        // icon.sprite = specialAbility.GetSkillIcon();
+        icon.sprite = specialAbility.GetSkillIcon();
         isInit = true;
     }
 
