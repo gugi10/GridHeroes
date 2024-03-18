@@ -95,12 +95,12 @@ public class HeroController : MonoBehaviour
         this.map = map;
         currentTile = startingTile;
         currentTileEntity = map.Tile(startingTile.TilePos);
-        
         var tile = map.Tile(currentTile.TilePos);
-        transform.position = map.WorldPosition(tile);
-
-        heroHighLight.Show(map.WalkableBorder(transform.position, 0), map);
-        heroHighLight.transform.position = Vector3.zero;
+        var newPosXZ = map.WorldPosition(tile);
+        transform.position = newPosXZ;
+        
+        ShowHeroHighlight();
+        
         if (ControllingPlayerId == PlayerId.Human)
             heroHighLight.ActiveState();
         else
@@ -141,6 +141,7 @@ public class HeroController : MonoBehaviour
 
     public bool Move(TileEntity targetTile, bool isForced)
     {
+        heroHighLight.Hide();
         if (map == null || currentTile == null)
         {
             Debug.LogError($"Hero Controller map or currentTile is null to use MOVE function you need to specify them first.");
@@ -300,8 +301,10 @@ public class HeroController : MonoBehaviour
     }
     private IEnumerator Fly(TileEntity targetTile, bool isForced)
     {
+        area.gameObject.SetActive(false);
         var targetPoint = map.WorldPosition(targetTile);
         var stepDir = (targetPoint - transform.position) * 1;
+
         if (map.RotationType == RotationType.LookAt)
         {
             rotationNode.rotation = Quaternion.LookRotation(stepDir, Vector3.up);
@@ -321,6 +324,8 @@ public class HeroController : MonoBehaviour
 
         targetTile.OccupyTile(this);
         transform.position = targetPoint;
+        ShowHeroHighlight();
+
         if(isForced)
             onForcedActionEvent?.Invoke(HeroAction.Move);
         else
@@ -329,6 +334,9 @@ public class HeroController : MonoBehaviour
 
     IEnumerator Move(List<TileEntity> path, bool isForced)
     {
+        heroHighLight.Hide();
+        area.gameObject.SetActive(false);
+
         var nextIndex = 0;
         transform.position = map.Settings.Projection(transform.position);
 
@@ -356,12 +364,19 @@ public class HeroController : MonoBehaviour
             nextIndex++;
         }
         path[path.Count - 1].OccupyTile(this);
+        ShowHeroHighlight();
+
         if(isForced)
             onForcedActionEvent?.Invoke(HeroAction.Move);
         else
             onActionEvent?.Invoke(HeroAction.Move);
     }
 
+    private void ShowHeroHighlight()
+    {
+        heroHighLight.Show(map.WalkableBorder(transform.position, 0), map);
+        heroHighLight.transform.position = new Vector3(0, transform.position.y+0.1f, 0);
+    }
     IEnumerator RemoveModel()
     {
         yield return new WaitForSeconds(2f);
