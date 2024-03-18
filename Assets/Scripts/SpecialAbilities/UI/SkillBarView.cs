@@ -8,15 +8,19 @@ public class SkillBarView : MonoBehaviour
     [SerializeField] SkillView skillPrefab;
     List<SkillView> instantiatedSkills = new();
     private RectTransform _rectTransform;
+    private CanvasGroup _canvasGroup;
     private void Awake()
     {
         TurnSequenceController.Instance.onHeroSelected += ShowHeroSkills;
         TurnSequenceController.Instance.onHeroUnselected += HideAnimation;
+        _rectTransform = GetComponent<RectTransform>();
+        _canvasGroup = GetComponent<CanvasGroup>();
     }
 
     //TODO: NEED TESTING. wanted to avoid ins xtantiating and destroying ability objects, however it might be overengineer and not working. :)
     private void ShowHeroSkills(HeroController hero)
     {
+        ShowAnimation();
         for (int i = 0; i < hero.specialAbilities.Length; i++)
         {
             if (instantiatedSkills.Count > i)
@@ -36,19 +40,22 @@ public class SkillBarView : MonoBehaviour
         {
             instantiatedSkills[i].gameObject.SetActive(false);
         }
-        ShowAnimation();
     }
 
     private void ShowAnimation()
     {
-        _rectTransform.DOAnchorPosY(0.15f, 0.5f);
-
+        Debug.Log($"Show");
+        _canvasGroup.DOFade(1, 0.5f);
+        _rectTransform.DOScale(Vector3.one, 0.5f);
+        //_rectTransform.DOAnchorPosY(0, 0.5f);
     }
 
     private void HideAnimation()
     {
-        _rectTransform.DOAnchorPosY(0f, 0.5f);
-
+        Debug.Log("Hide");
+        _canvasGroup.DOFade(0, 0.5f);
+        _rectTransform.DOScale(Vector3.zero, 0.5f);
+        //_rectTransform.DOMoveY(-200, 0.5f);
     }
 
 }

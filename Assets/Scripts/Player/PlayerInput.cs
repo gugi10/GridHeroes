@@ -128,10 +128,19 @@ public class PlayerInput : MonoBehaviour, IPlayer
             return;
         }
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (selectedHero != null)
+            {
+                UnselectHero();
+            }
+        }
+        
         if (map == null)
         {
             return;
         }
+        
         if (map.GetMapInput())
         {
             HandleWorldClick();
@@ -158,27 +167,23 @@ public class PlayerInput : MonoBehaviour, IPlayer
         TileEntity tile = map.GetTile();
         if (tile == null)
             return;
-        //Select hero
-        if (tile.IsOccupied && selectedHero == null)
-        {
-            foreach (var hero in heroes)
-            {
-                if (hero.currentTile.TilePos == tile.Data.TilePos)
-                {
-                    selectedHero = hero.SelectHero(Id);
-                }
-                else
-                    hero.Unselect();
-            }
-            return;
-        }
-        //Unselect hero
+        
+        //Unselect hero when click on selected hero
         if (tile.IsOccupied && selectedHero != null && tile.occupyingHero == selectedHero)
         {
             UnselectHero();
             return;
         }
-        //Attack or move
+        
+        //Select Hero - you can only select hero if noone is selected
+        if (tile.IsOccupied && selectedHero == null)
+        {
+            selectedHero = tile.occupyingHero;
+            tile.occupyingHero.SelectHero(PlayerId.Human);
+            return;
+        }
+        
+        //If hero is selected you can perform move or attack
         if (selectedHero != null && selectedHero.ControllingPlayerId == Id)
         {
             if (IsTargetingEnemy(tile) && (HasAction(HeroAction.Attack) || HasAction(HeroAction.Special)))
