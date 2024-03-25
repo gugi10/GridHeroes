@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using RedBjorn.ProtoTiles;
 using RedBjorn.Utils;
 using System.Collections;
@@ -24,12 +25,12 @@ public struct AITask
 
 public class PossibleTask
 {
-    public AITask AITask;
+    public AITask aiTask;
     public TileEntity objective;
 
     public PossibleTask(AITask aiTask, TileEntity objective)
     {
-        this.AITask = aiTask;
+        this.aiTask = aiTask;
         this.objective = objective;
     }
 }
@@ -104,35 +105,36 @@ public class AIAgent : MonoBehaviour, IPlayer
         {
             foreach (var aiHero in aiHeroes)
             {
-                if (possibleTask.AITask.kind == TaskKind.AttackEnemy)
+                if (possibleTask.aiTask.kind == TaskKind.AttackEnemy)
                 {
                     if (possibleTask.objective.IsOccupied &&
                         possibleTask.objective.occupyingHero.ControllingPlayerId == 0 &&
-                        IsTileInRange(aiHero, possibleTask.objective.Data, aiHero.GetHeroStats().current.WeaponRange)
+                        IsTileInRange(aiHero, possibleTask.objective, aiHero.GetHeroStats().current.WeaponRange)
                             && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)
                             || TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Attack)))
                     {
-                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.AITask.kind), possibleTask,
+                        possibleAssignments = possibleAssignments.Append(new PossibleAssignment((tasks.Length - (int)possibleTask.aiTask.kind), possibleTask,
                             aiHero)).ToArray();
                     }
                 }
 
-                if (possibleTask.AITask.kind == TaskKind.UseAbility && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)))
+                if (possibleTask.aiTask.kind == TaskKind.UseAbility && (TurnSequenceController.Instance.GetPlayerRemainingActions(this.Id).Contains(HeroAction.Special)))
                 {
                     var objectiveTileEntity = possibleTask.objective;
                     if (aiHero.specialAbilities[0].CanBeUsedOnTarget(objectiveTileEntity))
                     {
                         possibleAssignments = possibleAssignments.Append(new PossibleAssignment(
-                            ScoreAbility(tasks.Length, possibleTask.AITask.kind, aiHero.specialAbilities[0].ScoreForTarget(possibleTask.objective.occupyingHero)), possibleTask, aiHero)
+                            ScoreAbility(tasks.Length, possibleTask.aiTask.kind, aiHero.specialAbilities[0].ScoreForTarget(possibleTask.objective.occupyingHero)), possibleTask, aiHero)
                         ).ToArray();
                     }
 
                 }
 
-                if (possibleTask.AITask.kind == TaskKind.MoveForward)
+                if (possibleTask.aiTask.kind == TaskKind.MoveForward)
                 {
                     if (!possibleTask.objective.IsOccupied &&
                         possibleTask.objective.Vacant &&
+                        IsTileInRange(aiHero, possibleTask.objective, aiHero.GetHeroStats().current.Move) &&
                         // TODO:
                         // without this check AI scores movement also for tiles that are currently not reachable, so it means it will move along a path to a destination even
                         // if it would reach it not in a single activation. Is this what we want?
@@ -142,6 +144,11 @@ public class AIAgent : MonoBehaviour, IPlayer
                     {
                         possibleAssignments = possibleAssignments.Append(new PossibleAssignment(ScoreMovement(tasks.Length, possibleTask, aiHero), possibleTask, aiHero)).ToArray();
                     }
+                }
+
+                if (IsHeroHoldingAnObjective(aiHero, map))
+                {
+                    possibleAssignments = possibleAssignments.Where(assignment => assignment.possibleTask.aiTask.kind != TaskKind.MoveForward).ToArray();
                 }
             }
         }
@@ -159,7 +166,7 @@ public class AIAgent : MonoBehaviour, IPlayer
 
         }
 
-        if (chosenAssignment.possibleTask.AITask.kind == TaskKind.AttackEnemy)
+        if (chosenAssignment.possibleTask.aiTask.kind == TaskKind.AttackEnemy)
         {
             var targetTileEntity = chosenAssignment.possibleTask.objective;
             chosenAssignment.assignee.Attack(targetTileEntity, false);
@@ -167,7 +174,7 @@ public class AIAgent : MonoBehaviour, IPlayer
 
         }
 
-        if (chosenAssignment.possibleTask.AITask.kind == TaskKind.UseAbility)
+        if (chosenAssignment.possibleTask.aiTask.kind == TaskKind.UseAbility)
         {
             var targetTileEntity = chosenAssignment.possibleTask.objective;
             chosenAssignment.assignee.specialAbilities[0].PerformAbility(targetTileEntity);
@@ -175,7 +182,7 @@ public class AIAgent : MonoBehaviour, IPlayer
 
         }
 
-        if (chosenAssignment.possibleTask.AITask.kind == TaskKind.MoveForward)
+        if (chosenAssignment.possibleTask.aiTask.kind == TaskKind.MoveForward)
         {
             var aiHero = chosenAssignment.assignee;
             //trzeba przeliczyc pathy dla kazdego wealkable tile'a i odfiltrowac te ktore sa w zasiegu iczy nic nie blokuje.
@@ -204,9 +211,9 @@ public class AIAgent : MonoBehaviour, IPlayer
         TurnSequenceController.Instance.FinishTurn(TurnSequenceController.Instance.GetPlayerRemainingActions(Id)[0]);
     }
 
-    private bool IsTileInRange(HeroController aiHero, TileData tileData, int range)
+    private bool IsTileInRange(HeroController aiHero, TileEntity tileEntity, int range)
     {
-        return TileUtilities.AreTilesInRange(aiHero.currentTile.TilePos, tileData.TilePos, range);
+        return TileUtilities.AreTilesInRange(aiHero.currentTile.TilePos, tileEntity.Data.TilePos, range);
     }
 
     private bool IsEnemyInRange(HeroController aiHero, HeroController playerHero, int range)
@@ -276,6 +283,7 @@ public class AIAgent : MonoBehaviour, IPlayer
     {
         TileEntity objectiveTile = task.objective;
 
+
         List<TileEntity> tilesInWeaponRange = FindTilesInRangeFromTile(objectiveTile, aiHero.GetHeroStats().current.WeaponRange);
         int enemiesInWeaponRange = tilesInWeaponRange.Where(tile => tile.IsOccupied && tile.occupyingHero.ControllingPlayerId == PlayerId.Human).Count();
 
@@ -323,14 +331,47 @@ public class AIAgent : MonoBehaviour, IPlayer
             bonusScore += enemiesInWeaponRange * 0.2f;
         }
 
-        if (bonusScore == 0)
+        var scoreTile = map.AccessibleTiles.FirstOrDefault(val => val.entity?.Data.TilePos == objectiveTile.Data.TilePos);
+        if (scoreTile.representation is ObjectiveTile)
         {
+            bonusScore += 0.5f;
+        }
+        // Let's also add some minimal emphasis on closing on objectives and enemies
+        var currentDistanceToClosestEnemy = playerHeroes.Select(hero => hero.currentTileEntity).Select(tile => map.GetMapEntity().Distance(tile, aiHero.currentTileEntity)).Min();
+        var newDistanceToClosestEnemy = playerHeroes.Select(hero => hero.currentTileEntity).Select(tile => map.GetMapEntity().Distance(tile, objectiveTile)).Min();
 
+        var objectiveTiles = GetObjectiveTiles(map);
+        var currentDistanceToClosestObjective = objectiveTiles.Select(tile => map.GetMapEntity().Distance(tile, aiHero.currentTileEntity)).Min();
+        var newDistancesToClosestObjective = objectiveTiles.Select(tile => map.GetMapEntity().Distance(tile, objectiveTile)).Min();
+
+        if (newDistanceToClosestEnemy < currentDistanceToClosestEnemy)
+        {
+            bonusScore += 0.05f;
         }
 
-        return (taskCount - (int)task.AITask.kind) + (bonusScore);
+        if (newDistancesToClosestObjective < currentDistanceToClosestObjective)
+        {
+            bonusScore += 0.05f;
+        }
+
+
+        return (taskCount - (int)task.aiTask.kind) + (bonusScore);
     }
 
+    private bool IsHeroHoldingAnObjective(HeroController hero, MapController mapController)
+    {
+        var currentTileIsObjective = mapController.AccessibleTiles.FirstOrDefault(val => val.entity?.Data.TilePos == hero.currentTileEntity.Data.TilePos);
+        return currentTileIsObjective.representation is ObjectiveTile;
+    }
+
+    private List<TileEntity> GetObjectiveTiles(MapController mapController)
+    {
+        List<TileEntity> objectives = mapController.GetMapEntity().Tiles
+            .Where(pair => map.AccessibleTiles.FirstOrDefault(val => val.entity?.Data.TilePos == pair.Value.Data.TilePos).representation is ObjectiveTile)
+            .Select(pair => pair.Value).ToList();
+        return objectives;
+
+    }
 
     private List<TileEntity> FindTilesInRangeFromTile(TileEntity objectiveTile, int range)
     {
@@ -350,7 +391,14 @@ public class AIAgent : MonoBehaviour, IPlayer
     private PossibleAssignment ChooseBestPossibleAssignment(PossibleAssignment[] possibleAssignments)
     {
         var sortedPossibleAssignments = possibleAssignments.OrderByDescending(assignment => assignment.score).ToArray();
-
+        //var bestFive = sortedPossibleAssignments.Take(5);
+        //foreach (var one in bestFive)
+        //{
+        //    var converted = JsonConvert.SerializeObject(one.possibleTask.aiTask);
+        //    var convertedTwo = JsonConvert.SerializeObject(one.possibleTask.objective.Data);
+        //    Debug.Log(one.possibleTask.aiTask.ToString());
+        //    Debug.Log(one.score);
+        //}
         var bestScore = sortedPossibleAssignments[0].score;
         var bestPossibleAssignments = sortedPossibleAssignments.Where(assignment => assignment.score == bestScore).ToList();
 

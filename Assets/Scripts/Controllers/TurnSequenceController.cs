@@ -150,8 +150,8 @@ public class TurnSequenceController : MonoBehaviour
             .Count(val => val.entity.occupyingHero.ControllingPlayerId == PlayerId.AI);
         Score = new Tuple<int, int>(Score.Item1 + playerScore, Score.Item2 + aiScore);
         OnScoreUpdated?.Invoke(Score.Item1, Score.Item2);
-        bool playerWon = Score.Item1 >= 6;
-        bool aiWon = Score.Item1 >= 6;
+        bool playerWon = Score.Item1 >= 5;
+        bool aiWon = Score.Item2 >= 5;
         if (playerWon)
         {
             onGameFinished?.Invoke(new LevelFinishedResults { winner = 0} );
